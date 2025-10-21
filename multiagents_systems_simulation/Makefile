@@ -18,7 +18,7 @@ run: all
 
 # Lancer les tests
 test: all
-	java -cp bin:../lib/gui.jar tests.TestBalls
+	java -cp bin:../lib/gui.jar tests.TestBoid
 
 # Nettoyer les fichiers compilés
 clean:

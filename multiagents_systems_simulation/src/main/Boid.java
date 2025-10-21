@@ -99,6 +99,15 @@ public class Boid {
         this.acceleration.multiply(0.0);
     }
     
+    public void reInit() {
+        this.position.setX(this.position_0.getX());
+        this.position.setY(this.position_0.getY());
+        this.velocity.setX(this.velocity_0.getX());
+        this.velocity.setY(this.velocity_0.getY());
+        this.acceleration.setX(this.acceleration_0.getX());
+        this.acceleration.setY(this.acceleration_0.getY());
+}
+
 
 }
 
