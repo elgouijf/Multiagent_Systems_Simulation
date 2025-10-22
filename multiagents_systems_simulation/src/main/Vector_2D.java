@@ -12,6 +12,10 @@ public class Vector_2D {
     public double getMagnitude() {
         return Math.sqrt(x*x + y*y);
     }
+    public double getdistance(Vector_2D other){
+        Vector_2D X = new Vector_2D(this.x - other.x, this.y - other.y);
+        return X.getMagnitude();
+    }
 
     public void normalize() {
         double magnitude = this.getMagnitude();
@@ -31,6 +35,9 @@ public class Vector_2D {
         this.setX(this.getX() * magnitude);
         this.setY(this.getY() * magnitude);
     }
+    public void  limit_magnitude(double magnitude){
+
+    }
 
     public void add(Vector_2D other) {
         this.x += other.x;
@@ -43,15 +50,15 @@ public class Vector_2D {
     }
 
     public void multiply(double scalar) {
-        if (scalar != 0) {
-            this.x /= scalar;
-            this.y /= scalar;
-        }
+            this.x *= scalar;
+            this.y *= scalar;
     }
 
     public void divide(double scalar) {
+        if (scalar != 0){
         this.x /= scalar;
         this.y /= scalar;
+        }
     }
 
     public  void limit(double max) {

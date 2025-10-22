@@ -14,6 +14,7 @@ public class Boid {
     with unrealistic speed or just be crushed if we're being realistic*/
     private double forcelimit;
     private double mass;
+    private double target_radius;
 
     // Constructor
     public Boid(Vector_2D position, Vector_2D velocity, Vector_2D acceleration, double speedlimit, double forcelimit, double mass) { 
@@ -22,7 +23,7 @@ public class Boid {
         */
         this.position = new Vector_2D(position.getX(), position.getY());
         this.velocity = new Vector_2D(velocity.getX(), velocity.getY());
-        this.acceleration= new Vector_2D(acceleration.getX(), acceleration.getY());
+        this.acceleration = new Vector_2D(acceleration.getX(), acceleration.getY());
 
         this.speedlimit = speedlimit;
         this.forcelimit = forcelimit;
@@ -75,7 +76,12 @@ public class Boid {
         // Calculate the desired direction towards a target position
         Vector_2D desired = new Vector_2D(target.getX() , target.getY() );
         desired.subtract(this.position);
-        desired.updateMagnitude(this.speedlimit);
+        double distance = this.position.getdistance(target);
+        if (distance < target_radius){
+            desired.updateMagnitude(this.speedlimit*distance/target_radius);
+        }else{
+            desired.updateMagnitude(this.speedlimit); 
+        }
         return desired;
     }
 
