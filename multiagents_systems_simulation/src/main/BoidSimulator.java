@@ -2,6 +2,8 @@ package main;
 import java.awt.Color;
 import gui.Simulable;
 import gui.GUISimulator;
+import gui.Oval;
+
 import java.awt.Point;
 import java.util.List;
 
@@ -13,18 +15,19 @@ public class BoidSimulator implements Simulable {
     private int width;
     private int height;
     private Vector_2D target;
+    private double target_radius;
     int radius = 7;
 
 
     // Constructor
-    public BoidSimulator(GUISimulator guis, Boid boid, Color color, Vector_2D target){ 
+    public BoidSimulator(GUISimulator guis, Boid boid, Color color, Vector_2D target, double target_radius){ 
         this.guis = guis;
         this.boid = boid;
         this.width = guis.getWidth();
         this.height = guis.getHeight();
         this.color = color;
         this.target = target;
-
+        this.target_radius = target_radius;
         this.reDisplay();
     }
     
@@ -34,7 +37,7 @@ public class BoidSimulator implements Simulable {
         this.width = guis.getWidth();
         this.height = guis.getHeight();
 
-        this.boid.seek(target);
+        this.boid.seek(target,target_radius);
         this.boid.updatestate();
         // Bounce horizontally
         if (boid.getPosition().getX() < 0 || boid.getPosition().getX() + 2*radius > width) {
@@ -69,6 +72,8 @@ public class BoidSimulator implements Simulable {
         double y_off = y + vy;
         guis.addGraphicalElement(new gui.Oval((int)x, (int)y, Color.YELLOW, Color.BLACK, 8));
         guis.addGraphicalElement(new gui.Oval((int)x_off, (int)y_off, Color.BLACK, Color.BLACK, 3));
+        Oval oval = new Oval(45, 45,Color.GREEN,Color.GREEN,4,4);
+        guis.addGraphicalElement(oval);
     }
 }
 

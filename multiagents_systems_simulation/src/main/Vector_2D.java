@@ -35,8 +35,9 @@ public class Vector_2D {
         this.setX(this.getX() * magnitude);
         this.setY(this.getY() * magnitude);
     }
-    public void  limit_magnitude(double magnitude){
-
+    public void add(Vector_2D v1, Vector_2D v2){
+        this.x = v1.x + v2.x;
+        this.y = v1.y + v2.y;
     }
 
     public void add(Vector_2D other) {
@@ -80,4 +81,8 @@ public class Vector_2D {
     // simple setters if needed
     public void setX(double x) { this.x = x; }
     public void setY(double y) { this.y = y; }
-}
+    @Override
+    public String toString(){
+        return "(" + Double.toString(this.x) + "," + Double.toString(this.y) + ")" ;
+    }
+} 

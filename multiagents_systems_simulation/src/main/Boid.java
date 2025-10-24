@@ -1,5 +1,5 @@
 package main;
-
+import java.util.Random;
 public class Boid {
     private Vector_2D position_0;
     private Vector_2D velocity_0;
@@ -13,11 +13,13 @@ public class Boid {
     the force should be at the same scale of the boid's weight otherwise it'll just move
     with unrealistic speed or just be crushed if we're being realistic*/
     private double forcelimit;
-    private double mass;
-    private double target_radius;
+    private double mass = 1;
+    private double boid_radius;
+    private double angle_wander = Math.PI/6;
+    private double wander_radius;
 
     // Constructor
-    public Boid(Vector_2D position, Vector_2D velocity, Vector_2D acceleration, double speedlimit, double forcelimit, double mass) { 
+    public Boid(Vector_2D position, Vector_2D velocity, Vector_2D acceleration, double speedlimit, double forcelimit, double wander_radius) { 
         /* 
         This function is the constructor of the Balls class
         */
@@ -27,12 +29,12 @@ public class Boid {
 
         this.speedlimit = speedlimit;
         this.forcelimit = forcelimit;
-        this.mass = mass;
         
         // We need to keep track of the initial positions of the balls for reseting, so we create copies of the input vectors
         this.position_0 = new Vector_2D(position.getX(), position.getY());
         this.velocity_0 = new Vector_2D(velocity.getX(), velocity.getY());
         this.acceleration_0 = new Vector_2D(acceleration.getX(), acceleration.getY());
+        this.wander_radius = wander_radius;
     }
     
     public Vector_2D getPosition() {
@@ -71,28 +73,55 @@ public class Boid {
     }
     
 
-
-    public Vector_2D getDesiredDirection(Vector_2D target) {
+    
+    public Vector_2D getDesiredDirection(Vector_2D target, double target_radius) {
         // Calculate the desired direction towards a target position
         Vector_2D desired = new Vector_2D(target.getX() , target.getY() );
         desired.subtract(this.position);
+        Random rand = new Random();
+        double angle = rand.nextDouble()*Math.PI/6 + angle_wander;
         double distance = this.position.getdistance(target);
         if (distance < target_radius){
             desired.updateMagnitude(this.speedlimit*distance/target_radius);
+            wander_radius *= distance/target_radius;
+
         }else{
             desired.updateMagnitude(this.speedlimit); 
         }
+        Vector_2D green_point = new Vector_2D(wander_radius*Math.cos(angle),wander_radius*Math.sin(angle));
+        desired.add(green_point);
         return desired;
     }
+    public void FlowMov(FlowField field){
+        // Movement in a flowfield
+        Vector_2D future_position = new Vector_2D(0,0);
+        future_position.add(this.velocity,this.position);
 
+        Vector_2D future_desired = field.get_vector(future_position);
+        Vector_2D actual_steer = getSteeringForce(future_desired);
+        actual_steer.limit(speedlimit);
+        this.applyForce(actual_steer);
+    }
+    
+    public Vector_2D future_pos(Vector_2D steer){
+        // Calculate the future position with a steering force
+        steer.limit(forcelimit);
+        Vector_2D future_position = new Vector_2D(0,0);
+        future_position.add(steer,this.velocity);
+        future_position.limit(speedlimit);
+        future_position.add(this.position);
+        return future_position ;
+    }
 
-    public void seek(Vector_2D target) {
+    public void seek(Vector_2D target,double target_radius) {
         // Seek towards a target position
-        Vector_2D desired = getDesiredDirection(target);
+        Vector_2D desired = getDesiredDirection(target,target_radius);
         Vector_2D steer = getSteeringForce(desired);
         steer.limit(this.forcelimit);
         this.applyForce(steer);
+        
     }
+
 
     public void updatestate(){
         // Update velocity

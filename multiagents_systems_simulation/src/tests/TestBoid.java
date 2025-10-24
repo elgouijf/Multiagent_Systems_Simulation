@@ -3,11 +3,12 @@ import main.*;
 
 import java.awt.Color;
 import gui.GUISimulator;
+import gui.Oval;
 
 public class TestBoid {
     public static void main(String[] args) {
-        int width  = (args.length > 0) ? Integer.parseInt(args[0]) : 500;
-        int height = (args.length > 1) ? Integer.parseInt(args[1]) : 500;
+        int width  = (args.length > 0) ? Integer.parseInt(args[0]) : 1000;
+        int height = (args.length > 1) ? Integer.parseInt(args[1]) : 1000;
 
         GUISimulator gui = new GUISimulator(width, height, Color.BLACK);
 
@@ -23,15 +24,16 @@ public class TestBoid {
         // Limites et masse
         double speedLimit = 5.0;
         double forceLimit = 0.2;
-        double mass = 1.0;
+        double wander_radius = 2;
+        double target_radius = 10;
 
-        Boid boid = new Boid(position, velocity, acceleration, speedLimit, forceLimit, mass);
+        Boid boid = new Boid(position, velocity, acceleration, speedLimit, forceLimit,wander_radius);
 
         // Direction vers laquelle il veut aller (target)
-        Vector_2D target = new Vector_2D(width - 50, height - 50);
+        Vector_2D target = new Vector_2D(45, 45);
 
         // Création du simulateur pour un seul boid
-        BoidSimulator simulator = new BoidSimulator(gui, boid, Color.RED, target);
+        BoidSimulator simulator = new BoidSimulator(gui, boid, Color.RED, target,target_radius);
 
         gui.setSimulable(simulator);
     }
