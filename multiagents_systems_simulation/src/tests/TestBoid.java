@@ -26,8 +26,9 @@ public class TestBoid {
         double forceLimit = 0.2;
         double wander_radius = 2;
         double target_radius = 10;
+        double path_radius = 10;
 
-        Boid boid = new Boid(position, velocity, acceleration, speedLimit, forceLimit,wander_radius);
+        Boid boid = new Boid(position, velocity, acceleration, speedLimit, forceLimit,wander_radius,path_radius);
 
         // Direction vers laquelle il veut aller (target)
         Vector_2D target = new Vector_2D(45, 45);

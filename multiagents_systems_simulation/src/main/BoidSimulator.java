@@ -37,7 +37,7 @@ public class BoidSimulator implements Simulable {
         this.width = guis.getWidth();
         this.height = guis.getHeight();
 
-        this.boid.seek(target,target_radius);
+        this.boid.wander(target,target_radius);
         this.boid.updatestate();
         // Bounce horizontally
         if (boid.getPosition().getX() < 0 || boid.getPosition().getX() + 2*radius > width) {

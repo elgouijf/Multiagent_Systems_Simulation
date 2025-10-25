@@ -9,6 +9,10 @@ public class Vector_2D {
         this.y = y;
     }
 
+    public Vector_2D(){
+
+    }
+
     public double getMagnitude() {
         return Math.sqrt(x*x + y*y);
     }
@@ -72,6 +76,24 @@ public class Vector_2D {
 
     public double heading() {
         return Math.atan2(y, x);
+    }
+    public double dot(Vector_2D other){
+        return this.x*other.x+this.y*other.y;
+    }
+
+    public Vector_2D getNormalPoint(Vector_2D start, Vector_2D end){
+        // Return the normal projection of self on the segment [start, end]
+        Vector_2D a = new Vector_2D(this.x,this.y );
+        a.subtract(start);
+        Vector_2D b = new Vector_2D(end.x,end.y);
+        
+        b.subtract(start);
+        b.normalize();
+        b.updateMagnitude(a.dot(b));
+        
+        Vector_2D normal_point = new Vector_2D(start.x+b.x, start.y+b.y);
+        
+        return normal_point;
     }
 
     // getters
