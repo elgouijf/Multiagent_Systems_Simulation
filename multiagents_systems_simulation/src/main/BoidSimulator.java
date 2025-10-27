@@ -15,19 +15,19 @@ public class BoidSimulator implements Simulable {
     private int width;
     private int height;
     private Vector_2D target;
-    private double target_radius;
+    //private double target_radius;
     int radius = 7;
 
 
     // Constructor
-    public BoidSimulator(GUISimulator guis, Boid boid, Color color, Vector_2D target, double target_radius){ 
+    public BoidSimulator(GUISimulator guis, Boid boid, Color color, Vector_2D target){ 
         this.guis = guis;
         this.boid = boid;
         this.width = guis.getWidth();
         this.height = guis.getHeight();
         this.color = color;
         this.target = target;
-        this.target_radius = target_radius;
+        //this.target_radius = target_radius;
         this.reDisplay();
     }
     
@@ -37,7 +37,7 @@ public class BoidSimulator implements Simulable {
         this.width = guis.getWidth();
         this.height = guis.getHeight();
 
-        this.boid.wander(target,target_radius);
+        this.boid.wander(target);
         this.boid.updatestate();
         // Bounce horizontally
         if (boid.getPosition().getX() < 0 || boid.getPosition().getX() + 2*radius > width) {

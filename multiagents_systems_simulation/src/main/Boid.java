@@ -1,5 +1,7 @@
 package main;
+import java.util.ArrayList;
 import java.util.Random;
+
 public class Boid {
     private Vector_2D position_0;
     private Vector_2D velocity_0;
@@ -18,6 +20,7 @@ public class Boid {
     private double angle_wander = Math.PI/2;
     private double wander_radius;
     private double path_radius;
+    private double slowRadius;
 
     // Constructor
     public Boid(Vector_2D position, Vector_2D velocity, Vector_2D acceleration, double speedlimit, double forcelimit, double wander_radius, double path_radius) { 
@@ -37,6 +40,7 @@ public class Boid {
         this.acceleration_0 = new Vector_2D(acceleration.getX(), acceleration.getY());
         this.wander_radius = wander_radius;
         this.path_radius = path_radius;
+        this.slowRadius = 1.5*Math.pow(speedlimit,2)/(2*forcelimit);
     }
     
     public Vector_2D getPosition() {
@@ -74,28 +78,30 @@ public class Boid {
         return steer;
     }
     
-    public Vector_2D target_path(Vector_2D target){
-        // Make the boid follow the segement [pos_initial,target]
+    public Vector_2D target_path(Vector_2D start,Vector_2D end){
+        // Make the boid follow the segement [start,end]
          Vector_2D future_pos = future_pos();
-         Vector_2D normal_point = future_pos.getNormalPoint(this.position_0, target);
+         Vector_2D normal_point = future_pos.getNormalPoint(start,end);
          double distance = normal_point.getdistance(future_pos);
          if (distance > path_radius){
             return normal_point;
          }else{
-            return target;
+            return end;
          }
     }
 
     
-    public Vector_2D getDesiredDirection(Vector_2D target, double target_radius) {
+    public Vector_2D getDesiredDirection(Vector_2D target) {
         // Calculate the desired direction towards a target position with a target_raduis
-        target = target_path(target);
+        target = target_path(this.position_0,target);
         Vector_2D desired = new Vector_2D(target.getX() , target.getY() );
         desired.subtract(this.position);
         double distance = this.position.getdistance(target);
-        if (distance < target_radius){
-            desired.updateMagnitude(this.speedlimit*distance/target_radius);
-            wander_radius *= Math.pow((distance/target_radius),2);
+        if (distance < this.slowRadius){
+            desired.updateMagnitude(this.speedlimit*distance/this.slowRadius);
+            wander_radius *= Math.pow((distance/this.slowRadius),2); // Lowering the circle
+                                                                   // raduis when we are near
+                                                                   // the target
 
         }else{
             desired.updateMagnitude(this.speedlimit); 
@@ -103,9 +109,9 @@ public class Boid {
         return desired;
     }
     
-    public Vector_2D getDesiredDirection(Vector_2D target) {
+    public Vector_2D getDesiredDirection2(Vector_2D target) {
         // Calculate the desired direction towards a target position without a target_radius
-        target = target_path(target);
+        target = target_path(this.position_0,target);
         Vector_2D desired = new Vector_2D(target.getX() , target.getY() );
         desired.subtract(this.position);
         return desired;
@@ -121,9 +127,9 @@ public class Boid {
         this.applyForce(actual_steer);
     }
 
-    public void wander(Vector_2D target, double target_radius){
+    public void wander(Vector_2D target){
         // Implement the wander movement
-        Vector_2D desired = getDesiredDirection(target, target_radius);
+        Vector_2D desired = getDesiredDirection(target);
         Vector_2D steer = getSteeringForce(desired);
         Vector_2D future_position = future_pos();
         
@@ -132,12 +138,37 @@ public class Boid {
         Vector_2D green_point = new Vector_2D(wander_radius*Math.cos(angle),wander_radius*Math.sin(angle));
         future_position.add(green_point);
         
-        Vector_2D desired_wander = getDesiredDirection(future_position);
+        Vector_2D desired_wander = getDesiredDirection2(future_position);
         Vector_2D steer_wander = getSteeringForce(desired_wander);
         steer.multiply(0.6);
-        steer_wander.multiply(0.4);
+        steer_wander.multiply(0.9);
         steer.add(steer_wander);
+        steer.limit(forcelimit);
         this.applyForce(steer);
+    }
+    public void follow_path(Path path){
+        int taille = path.getTaille();
+        ArrayList<Vector_2D> tableauPoints = path.gettableauPoints();
+        Vector_2D futurePosition = future_pos();
+        double smallestDistance = Double.POSITIVE_INFINITY;
+        Vector_2D actualTarget = new Vector_2D();
+       for (int i = 0;i<taille-1;i++){
+          Vector_2D start = tableauPoints.get(i);
+          Vector_2D end = tableauPoints.get(i+1);
+          Vector_2D normalPoint = futurePosition.getNormalPoint(start, end);
+          double maxX = Math.max(start.getX(),end.getX());
+          double minX = Math.min(start.getX(),end.getX());
+          double nX = normalPoint.getX();
+          if (nX < minX || nX > maxX ){
+            normalPoint = new Vector_2D(end.getX(),end.getY());
+          }
+          double distance = futurePosition.getdistance(normalPoint);
+          if (distance < smallestDistance){
+            smallestDistance = distance;
+            actualTarget = normalPoint;
+          }
+       }
+       wander(actualTarget);
     }
 
     public Vector_2D future_pos_steer(Vector_2D steer){
@@ -150,9 +181,9 @@ public class Boid {
         return future_position ;
     }
 
-    public void seek(Vector_2D target,double target_radius) {
+    public void seek(Vector_2D target) {
         // Seek towards a target position
-        Vector_2D desired = getDesiredDirection(target,target_radius);
+        Vector_2D desired = getDesiredDirection(target);
         Vector_2D steer = getSteeringForce(desired);
         steer.limit(this.forcelimit);
         this.applyForce(steer);

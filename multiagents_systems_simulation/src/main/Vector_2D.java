@@ -10,7 +10,6 @@ public class Vector_2D {
     }
 
     public Vector_2D(){
-
     }
 
     public double getMagnitude() {
@@ -95,7 +94,6 @@ public class Vector_2D {
         
         return normal_point;
     }
-
     // getters
     public double getX() { return x; }
     public double getY() { return y; }

@@ -23,9 +23,9 @@ public class TestBoid {
 
         // Limites et masse
         double speedLimit = 5.0;
-        double forceLimit = 0.2;
+        double forceLimit = 5.5;
         double wander_radius = 2;
-        double target_radius = 10;
+        //double target_radius = 10;
         double path_radius = 10;
 
         Boid boid = new Boid(position, velocity, acceleration, speedLimit, forceLimit,wander_radius,path_radius);
@@ -34,7 +34,7 @@ public class TestBoid {
         Vector_2D target = new Vector_2D(45, 45);
 
         // Création du simulateur pour un seul boid
-        BoidSimulator simulator = new BoidSimulator(gui, boid, Color.RED, target,target_radius);
+        BoidSimulator simulator = new BoidSimulator(gui, boid, Color.RED, target);
 
         gui.setSimulable(simulator);
     }

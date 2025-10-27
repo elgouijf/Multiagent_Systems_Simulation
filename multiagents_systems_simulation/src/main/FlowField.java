@@ -5,7 +5,9 @@ public class FlowField{
     private Vector_2D[][] field;
     private int lignes;
     private int colonnes;
-    public FlowField(int width, int height,Vector_2D[][] field_array){
+    public FlowField(int resolution,int width, int height,Vector_2D[][] field_array){
+        this.resolution = resolution;
+        this.field = new Vector_2D[lignes][colonnes];
         lignes = height / resolution;
         colonnes = width / resolution;
         for (int i = 0; i < lignes; i++){
@@ -19,6 +21,15 @@ public class FlowField{
         int i = (int) position.getX() / resolution;
         int j = (int) position.getY() / resolution;
         return field[i][j];
+    }
+    public int getResolution(){
+        return this.resolution;
+    }
+    public int getLignes(){
+        return this.lignes;
+    }
+    public int getColonnes(){
+       return this.colonnes;
     }
 
 }
