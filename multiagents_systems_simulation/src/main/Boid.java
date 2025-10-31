@@ -54,7 +54,7 @@ public class Boid {
         this.color = color;
         this.compassColor = compassColor;
 
-        this.close_distance = this.boid_size * 2; // Separation distance based on boid size
+        this.close_distance = this.boid_size * 4; // Separation distance based on boid size
 
     }
     

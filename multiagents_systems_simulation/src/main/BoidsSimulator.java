@@ -87,9 +87,9 @@ public class BoidsSimulator implements Simulable {
             // Get the velocity direction angle
             double orientation = b.getVelocity().heading();
             // Create a triangle shape for the boid relative to the center
-            Vector_2D triangle_tip = new Vector_2D(0, -1.5*size);
+            Vector_2D triangle_tip = new Vector_2D(2*size, 0);
             Vector_2D left_wing = new Vector_2D(-size, size);
-            Vector_2D right_wing = new Vector_2D(size, size);
+            Vector_2D right_wing = new Vector_2D(-size, -size);
 
             // Rotate the triangle according to the orientation
             triangle_tip.rotate(orientation);
