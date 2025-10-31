@@ -3,7 +3,6 @@ import main.*;
 
 import java.awt.Color;
 import gui.GUISimulator;
-import gui.Oval;
 
 public class TestBoid {
     public static void main(String[] args) {

@@ -1,9 +1,6 @@
 package main;
-
-import java.awt.Color;
 import gui.Simulable;
 import gui.GUISimulator;
-import gui.Oval;
 
 public class BoidsSimulator implements Simulable {
 
@@ -78,8 +75,8 @@ public class BoidsSimulator implements Simulable {
         for (Boid b : boids.getlisteBoids()) {
             double x = b.getPosition().getX();
             double y = b.getPosition().getY();
-            double vx = b.getVelocity().getX();
-            double vy = b.getVelocity().getY();
+            /* double vx = b.getVelocity().getX();
+            double vy = b.getVelocity().getY(); */
             int size = b.getSize();
 
             // Draw boid 
