@@ -83,7 +83,7 @@ public class Vector_2D {
 
 
     public double heading() {
-        return Math.atan2(y, x);
+        return Math.atan2(y, x) ;
     }
     public double dot(Vector_2D other){
         return this.x*other.x+this.y*other.y;
@@ -107,10 +107,12 @@ public class Vector_2D {
     public void rotate(double angle){
         double[][] Rotation_matrix = {{Math.cos(angle), -Math.sin(angle)},
                                       {Math.sin(angle), Math.cos(angle)}};
-        this.x = Rotation_matrix[0][0]* this.x + Rotation_matrix[0][1]* this.y;
-        this.y = Rotation_matrix[1][0]* this.x + Rotation_matrix[1][1]* this.y;
+        double x_old = this.x;
+        double y_old = this.y;
+        this.x = Rotation_matrix[0][0]* x_old + Rotation_matrix[0][1]* y_old;
+        this.y = Rotation_matrix[1][0]* x_old + Rotation_matrix[1][1]* y_old;
     }
-    
+
     // getters
     public double getX() { return x; }
     public double getY() { return y; }
