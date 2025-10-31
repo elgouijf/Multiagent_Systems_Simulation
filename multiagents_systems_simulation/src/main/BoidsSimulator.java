@@ -80,17 +80,39 @@ public class BoidsSimulator implements Simulable {
             double y = b.getPosition().getY();
             double vx = b.getVelocity().getX();
             double vy = b.getVelocity().getY();
-            int r = b.getSize();
+            int size = b.getSize();
 
             // Draw boid 
-            gui.addGraphicalElement(
-                new Oval((int)x, (int)y, b.getColor(), b.getColor(), r)
-            );
 
-            // Draw a small "compass" indicating direction
-            gui.addGraphicalElement(
-                new Oval((int)(x + vx), (int)(y + vy), b.getCompassColor(), b.getCompassColor(), Math.max(2, r/3))
-            );
+            // Get the velocity direction angle
+            double orientation = b.getVelocity().heading();
+            // Create a triangle shape for the boid relative to the center
+            Vector_2D triangle_tip = new Vector_2D(0, -2*size);
+            Vector_2D left_wing = new Vector_2D(-size, size);
+            Vector_2D right_wing = new Vector_2D(size, size);
+
+            // Rotate the triangle according to the orientation
+            triangle_tip.rotate(orientation);
+            left_wing.rotate(orientation);
+            right_wing.rotate(orientation);
+
+            // Translate the triangle to the boid's position
+            triangle_tip.add(new Vector_2D(x , y));
+            left_wing.add(new Vector_2D(x , y));
+            right_wing.add(new Vector_2D(x , y));
+
+            // Draw the triangle
+            int[] triangle_x = { (int)Math.round(triangle_tip.getX()), 
+             (int)Math.round(left_wing.getX()), 
+             (int)Math.round(right_wing.getX()) };
+
+            int[] triangle_y = { (int)Math.round(triangle_tip.getY()), 
+             (int)Math.round(left_wing.getY()), 
+             (int)Math.round(right_wing.getY()) };
+            PolygonGraphics triangle_boid = new PolygonGraphics(triangle_x, triangle_y, 3, b.getColor());
+
+           // Add to GUI
+            gui.addGraphicalElement(triangle_boid); 
         }
     }
 }

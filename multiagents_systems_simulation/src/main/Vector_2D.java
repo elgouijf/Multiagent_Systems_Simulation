@@ -103,6 +103,14 @@ public class Vector_2D {
         
         return normal_point;
     }
+
+    public void rotate(double angle){
+        double[][] Rotation_matrix = {{Math.cos(angle), -Math.sin(angle)},
+                                      {Math.sin(angle), Math.cos(angle)}};
+        this.x = Rotation_matrix[0][0]* this.x + Rotation_matrix[0][1]* this.y;
+        this.y = Rotation_matrix[1][0]* this.x + Rotation_matrix[1][1]* this.y;
+    }
+    
     // getters
     public double getX() { return x; }
     public double getY() { return y; }

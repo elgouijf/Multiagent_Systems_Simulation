@@ -17,7 +17,7 @@ public class Boid {
     with unrealistic speed or just be crushed if we're being realistic*/
     private double forcelimit;
     private double mass = 1;
-    private int boid_radius;
+    private int boid_size; // the radius if it is represented by a circle and 1/2 its hight if it's a triangle
     private double angle_wander = Math.PI/2;
     private double wander_radius;
     private double path_radius;
@@ -31,14 +31,14 @@ public class Boid {
     private double close_distance;
 
     // Constructor
-    public Boid(Vector_2D position, Vector_2D velocity, Vector_2D acceleration, double speedlimit, double forcelimit, double wander_radius, double path_radius, int boid_radius, Color color, Color compassColor) { 
+    public Boid(Vector_2D position, Vector_2D velocity, Vector_2D acceleration, double speedlimit, double forcelimit, double wander_radius, double path_radius, int boid_size, Color color, Color compassColor) { 
         /* 
         This function is the constructor of the Balls class
         */
         this.position = new Vector_2D(position.getX(), position.getY());
         this.velocity = new Vector_2D(velocity.getX(), velocity.getY());
         this.acceleration = new Vector_2D(acceleration.getX(), acceleration.getY());
-        this.boid_radius = boid_radius;
+        this.boid_size = boid_size;
 
         this.speedlimit = speedlimit;
         this.forcelimit = forcelimit;
@@ -54,7 +54,7 @@ public class Boid {
         this.color = color;
         this.compassColor = compassColor;
 
-        this.close_distance = this.boid_radius * 2; // Separation distance based on boid size
+        this.close_distance = this.boid_size * 2; // Separation distance based on boid size
 
     }
     
@@ -79,7 +79,7 @@ public class Boid {
     }
 
     public int getSize(){
-        return this.boid_radius;
+        return this.boid_size;
     }
 
     public Color getColor() {
