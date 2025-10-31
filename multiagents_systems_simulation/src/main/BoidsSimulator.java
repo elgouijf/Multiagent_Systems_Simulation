@@ -1,79 +1,96 @@
 package main;
+
+import java.awt.Color;
 import gui.Simulable;
 import gui.GUISimulator;
-import java.awt.Point;
-import java.util.List;
-import java.awt.Color;
-
+import gui.Oval;
 
 public class BoidsSimulator implements Simulable {
-    private GUISimulator guis;
-    private Balls balls;
-    private Color[] colors;
+
+    private GUISimulator gui;
+    private Boids boids;
     private int width;
     private int height;
-    int radius = 7;
 
+    public BoidsSimulator(GUISimulator gui, Boids boids) {
+        this.gui = gui;
+        this.boids = boids;
 
-    // Constructor
-    public BoidsSimulator(GUISimulator guis, Balls balls, Color[] colors){
-        this.balls = balls;
-        this.guis = guis;
-        this.width = guis.getWidth();
-        this.height = guis.getHeight();
-        this.colors = colors;
-        
-        reDisplay();
+        this.width = gui.getWidth();
+        this.height = gui.getHeight();
+
+        this.reDisplay();
     }
+
+    @Override
+    public void next() {
+        this.width = gui.getWidth();
+        this.height = gui.getHeight();
+
+        // Apply separation force for each boid
+        for (Boid b : boids.getlisteBoids()) {
+            boids.separation(b);
+        }
+
+        // Update all boids
+        for (Boid b : boids.getlisteBoids()) {
+            b.updatestate();
+            handleBorderBounce(b);
+        }
+
+        this.reDisplay();
+    }
+
+    @Override
+    public void restart() {
+        // Reinit each boid
+        for (Boid b : boids.getlisteBoids()) {
+            b.reInit();
+        }
+        this.reDisplay();
+    }
+
+    /** Bounce on window borders */
+    private void handleBorderBounce(Boid boid) {
+        int r = boid.getSize();
+        double x = boid.getPosition().getX();
+        double y = boid.getPosition().getY();
+
+        if (x < 0 || x + 2*r > width) {
+            boid.getVelocity().setX(-boid.getVelocity().getX());
+            boid.getPosition().setX(
+                Math.max(0, Math.min(x, width - 2*r))
+            );
+        }
+
+        if (y < 0 || y + 2*r > height) {
+            boid.getVelocity().setY(-boid.getVelocity().getY());
+            boid.getPosition().setY(
+                Math.max(0, Math.min(y, height - 2*r))
+            );
+        }
+    }
+
     
-    @Override
-    public void next(){
-        List<Point> points = balls.getBalls();
-        List<Point> velocities = balls.getVelocities();
-        // Update dimensions in case of window resize
-        this.width = guis.getWidth();
-        this.height = guis.getHeight();
+    private void reDisplay() {
+        gui.reset();
 
-        for (int i = 0; i < points.size(); i++) {
-            Point p = points.get(i);
-            Point v = velocities.get(i);
+        for (Boid b : boids.getlisteBoids()) {
+            double x = b.getPosition().getX();
+            double y = b.getPosition().getY();
+            double vx = b.getVelocity().getX();
+            double vy = b.getVelocity().getY();
+            int r = b.getSize();
 
-            // Move
-            p.translate(v.x, v.y); // time step = 1
+            // Draw boid 
+            gui.addGraphicalElement(
+                new Oval((int)x, (int)y, b.getColor(), b.getColor(), r)
+            );
 
-            // Bounce horizontally
-            if (p.x < 0 || p.x + 2*this.radius > width) {
-                v.x = -v.x;
-                // Keep inside window
-                p.x = Math.max(0, Math.min(p.x, width - 2*this.radius));
-            }
-
-            // Bounce vertically
-            if (p.y < 0 || p.y + 2*this.radius > height) {
-                v.y = -v.y;
-                p.y = Math.max(0, Math.min(p.y, height - 2*this.radius));
-            }
+            // Draw a small "compass" indicating direction
+            gui.addGraphicalElement(
+                new Oval((int)(x + vx), (int)(y + vy), b.getCompassColor(), b.getCompassColor(), Math.max(2, r/3))
+            );
         }
-        reDisplay();
-    }
-
-    @Override
-    public void restart(){
-        balls.reInit();
-        reDisplay();
-    }
-
-    public void reDisplay(){
-        this.guis.reset();
-        List<Point> points = this.balls.getBalls();
-        Color[] colors = this.colors;
-        for (int i = 0; i < points.size(); i++){
-            Color color = colors[i % colors.length];
-            Point p = points.get(i);
-            gui.Oval ballg = new gui.Oval(p.x, p.y, color, color, 2*this.radius, 2*this.radius);
-            guis.addGraphicalElement(ballg);
-        }
-
     }
 }
-

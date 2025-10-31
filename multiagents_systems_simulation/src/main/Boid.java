@@ -1,6 +1,7 @@
 package main;
 import java.util.ArrayList;
 import java.util.Random;
+import java.awt.Color;
 
 public class Boid {
     private Vector_2D position_0;
@@ -16,20 +17,28 @@ public class Boid {
     with unrealistic speed or just be crushed if we're being realistic*/
     private double forcelimit;
     private double mass = 1;
-    private double boid_radius;
+    private int boid_radius;
     private double angle_wander = Math.PI/2;
     private double wander_radius;
     private double path_radius;
     private double slowRadius;
 
+    // for simulations
+    private Color color;
+    private Color compassColor;
+
+    // for separation behavior
+    private double close_distance;
+
     // Constructor
-    public Boid(Vector_2D position, Vector_2D velocity, Vector_2D acceleration, double speedlimit, double forcelimit, double wander_radius, double path_radius) { 
+    public Boid(Vector_2D position, Vector_2D velocity, Vector_2D acceleration, double speedlimit, double forcelimit, double wander_radius, double path_radius, int boid_radius, Color color, Color compassColor) { 
         /* 
         This function is the constructor of the Balls class
         */
         this.position = new Vector_2D(position.getX(), position.getY());
         this.velocity = new Vector_2D(velocity.getX(), velocity.getY());
         this.acceleration = new Vector_2D(acceleration.getX(), acceleration.getY());
+        this.boid_radius = boid_radius;
 
         this.speedlimit = speedlimit;
         this.forcelimit = forcelimit;
@@ -41,6 +50,12 @@ public class Boid {
         this.wander_radius = wander_radius;
         this.path_radius = path_radius;
         this.slowRadius = 1.5*Math.pow(speedlimit,2)/(2*forcelimit);
+
+        this.color = color;
+        this.compassColor = compassColor;
+
+        this.close_distance = this.boid_radius * 2; // Separation distance based on boid size
+
     }
     
     public Vector_2D getPosition() {
@@ -58,6 +73,36 @@ public class Boid {
     public double getSpeedlimit() {
         return this.speedlimit;
     }
+
+    public double getForceLimit(){
+        return this.forcelimit;
+    }
+
+    public int getSize(){
+        return this.boid_radius;
+    }
+
+    public Color getColor() {
+    return color;
+    }
+
+    public Color getCompassColor() {
+    return compassColor;
+    }
+
+    public void updateClose(double new_close_distance){
+        if (new_close_distance > 0){
+            this.close_distance = new_close_distance;
+        }
+        else{
+            System.out.println("Distance must be positive");
+        }
+    }
+
+    public double getClose_distance(){
+        return this.close_distance;
+    }
+
     //////////////////////////// Forces ////////////////////////////
     public void applyForce(Vector_2D force) {
         // Newton’s second law, but with force accumulation, adding all input forces to acceleration
@@ -182,7 +227,7 @@ public class Boid {
     }
 
     public void seek(Vector_2D target) {
-        // Seek towards a target position
+        // Seek towards a target position in a realistic manner
         Vector_2D desired = getDesiredDirection(target);
         Vector_2D steer = getSteeringForce(desired);
         steer.limit(this.forcelimit);
@@ -219,6 +264,30 @@ public class Boid {
         this.acceleration.setY(this.acceleration_0.getY());
 }
 
+    public double distance_to(Boid other){
+        double x_this = this.position.getX();
+        double y_this = this.position.getY();
+        double x_other = other.position.getX();
+        double y_other = other.position.getY();
+
+        double diffX = x_this - x_other;
+        double diffY = y_this - y_other;
+        
+        return Math.sqrt(diffX*diffX + diffY*diffY);
+    }
+
+/*     public double distance_to_optimized(Boid other){
+        // Optimized version without square root
+        double x_this = this.position.getX();
+        double y_this = this.position.getY();
+        double x_other = other.position.getX();
+        double y_other = other.position.getY();
+
+        double diffX = x_this - x_other;
+        double diffY = y_this - y_other;
+        
+        return diffX*diffX + diffY*diffY;
+    } */
 
 }
 

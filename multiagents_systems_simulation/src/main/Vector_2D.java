@@ -5,11 +5,15 @@ public class Vector_2D {
     private double y;
 
     public Vector_2D(double x, double y) {
+        // Constructor for a vector with given x and y components
         this.x = x;
         this.y = y;
     }
 
     public Vector_2D(){
+        // Constructor for a zero vector, it is the default setting in java if this.x and this.y are not specified, but to be explicit:
+        this.x = 0;
+        this.y = 0;
     }
 
     public double getMagnitude() {
@@ -51,6 +55,11 @@ public class Vector_2D {
     public void subtract(Vector_2D other) {
         this.x -= other.x;
         this.y -= other.y;
+    }
+
+    public void subtract2New(Vector_2D v1, Vector_2D v2){
+        this.x = v2.x - v1.x;
+        this.y = v2.y - v1.y;
     }
 
     public void multiply(double scalar) {
