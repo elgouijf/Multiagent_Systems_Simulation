@@ -41,9 +41,10 @@ public class TestBoids {
         }
 
         Boids boids = new Boids(list);
-
+        
+        Vector_2D target = new Vector_2D(50,50);
         // Simulator for multiple boids
-        BoidsSimulator simulator = new BoidsSimulator(gui, boids);
+        BoidsSimulator simulator = new BoidsSimulator(gui, boids,target);
 
         gui.setSimulable(simulator);
     }

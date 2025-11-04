@@ -75,7 +75,7 @@ public class BoidSimulator implements Simulable {
         double y_off = y + vy;
         guis.addGraphicalElement(new gui.Oval((int)x, (int)y, color, color, boid_radius));
         guis.addGraphicalElement(new gui.Oval((int)x_off, (int)y_off, compass_color, compass_color, (int)(boid_radius/3)));
-        Oval oval = new Oval(45, 45,Color.GREEN,Color.GREEN,4,4);
+        Oval oval = new Oval((int) target.getX(),(int) target.getY(),Color.GREEN,Color.GREEN,4,4);
         guis.addGraphicalElement(oval);
     }
 }

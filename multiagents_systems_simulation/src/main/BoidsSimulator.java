@@ -1,21 +1,24 @@
 package main;
 import gui.Simulable;
 import gui.GUISimulator;
-
+import java.awt.Color;
+import gui.Oval;
 public class BoidsSimulator implements Simulable {
 
     private GUISimulator gui;
     private Boids boids;
     private int width;
     private int height;
+    private Vector_2D target;
 
-    public BoidsSimulator(GUISimulator gui, Boids boids) {
+    public BoidsSimulator(GUISimulator gui, Boids boids,Vector_2D target) {
         this.gui = gui;
         this.boids = boids;
 
         this.width = gui.getWidth();
         this.height = gui.getHeight();
-
+        this.target = target;
+        
         this.reDisplay();
     }
 
@@ -26,7 +29,8 @@ public class BoidsSimulator implements Simulable {
 
         // Apply separation force for each boid
         for (Boid b : boids.getlisteBoids()) {
-            boids.separation(b);
+            boids.separation(b,2);
+            b.wander(target,1);
         }
 
         // Update all boids
@@ -110,6 +114,8 @@ public class BoidsSimulator implements Simulable {
 
            // Add to GUI
             gui.addGraphicalElement(triangle_boid); 
+            Oval oval = new Oval((int) target.getX(),(int) target.getY(),Color.GREEN,Color.GREEN,4,4);
+            gui.addGraphicalElement(oval);
         }
     }
 }

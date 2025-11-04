@@ -15,7 +15,9 @@ public class Vector_2D {
         this.x = 0;
         this.y = 0;
     }
-
+    public Vector_2D copy(){
+        return new Vector_2D(this.x,this.y);
+    }
     public double getMagnitude() {
         return Math.sqrt(x*x + y*y);
     }
@@ -83,7 +85,10 @@ public class Vector_2D {
 
 
     public double heading() {
-        return Math.atan2(y, x) ;
+        return Math.atan2(this.y, this.x) ;
+    }
+    public double heading2() {
+        return Math.atan2(this.x, this.y) ;
     }
     public double dot(Vector_2D other){
         return this.x*other.x+this.y*other.y;

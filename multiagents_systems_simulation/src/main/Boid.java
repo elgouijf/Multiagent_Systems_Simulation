@@ -1,7 +1,7 @@
 package main;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Random;
-import java.awt.Color;
 
 public class Boid {
     private Vector_2D position_0;
@@ -22,7 +22,7 @@ public class Boid {
     private double wander_radius;
     private double path_radius;
     private double slowRadius;
-
+    private double angleDistance;
     // for simulations
     private Color color;
     private Color compassColor;
@@ -31,7 +31,7 @@ public class Boid {
     private double close_distance;
 
     // Constructor
-    public Boid(Vector_2D position, Vector_2D velocity, Vector_2D acceleration, double speedlimit, double forcelimit, double wander_radius, double path_radius, int boid_size, Color color, Color compassColor) { 
+    public Boid(Vector_2D position, Vector_2D velocity, Vector_2D acceleration, double speedlimit, double forcelimit, double wander_radius, double path_radius, int boid_size, Color color, Color compassColor, double angleDistance) { 
         /* 
         This function is the constructor of the Balls class
         */
@@ -55,7 +55,7 @@ public class Boid {
         this.compassColor = compassColor;
 
         this.close_distance = this.boid_size * 4; // Separation distance based on boid size
-
+        this.angleDistance = angleDistance;
     }
     
     public Vector_2D getPosition() {
@@ -106,6 +106,7 @@ public class Boid {
     //////////////////////////// Forces ////////////////////////////
     public void applyForce(Vector_2D force) {
         // Newton’s second law, but with force accumulation, adding all input forces to acceleration
+        force.limit(forcelimit);
         double actualX = this.acceleration.getX();
         double actualY = this.acceleration.getY();
         this.acceleration.setX(actualX + force.getX()/this.mass);
@@ -121,6 +122,20 @@ public class Boid {
         Vector_2D steer = new Vector_2D(desired.getX(), desired.getY());
         steer.subtract(this.velocity);
         return steer;
+    }
+
+    public boolean inSight(Boid other){
+        double distance = this.position.getdistance(other.position);
+        Vector_2D AB = other.position.copy();
+        AB.subtract(this.position);
+        double angle = AB.heading2();
+        if (distance > close_distance){
+            return false;
+        }else if (Math.abs(angle - Math.PI) <= angleDistance/2) {
+            return false;
+        }else{
+            return true;
+        }
     }
     
     public Vector_2D target_path(Vector_2D start,Vector_2D end){
@@ -172,7 +187,7 @@ public class Boid {
         this.applyForce(actual_steer);
     }
 
-    public void wander(Vector_2D target){
+    public void wander(Vector_2D target, double forceFactor){
         // Implement the wander movement
         Vector_2D desired = getDesiredDirection(target);
         Vector_2D steer = getSteeringForce(desired);
@@ -188,8 +203,13 @@ public class Boid {
         steer.multiply(0.6);
         steer_wander.multiply(0.9);
         steer.add(steer_wander);
+        steer.multiply(forceFactor);
         steer.limit(forcelimit);
         this.applyForce(steer);
+    }
+    public void wander(Vector_2D target){
+        // Implement the wander movement
+        wander(target,1);
     }
     public void follow_path(Path path){
         int taille = path.getTaille();
@@ -264,16 +284,11 @@ public class Boid {
         this.acceleration.setY(this.acceleration_0.getY());
 }
 
-    public double distance_to(Boid other){
-        double x_this = this.position.getX();
-        double y_this = this.position.getY();
-        double x_other = other.position.getX();
-        double y_other = other.position.getY();
-
-        double diffX = x_this - x_other;
-        double diffY = y_this - y_other;
+    public double distance_to(Boid other){     
+        Vector_2D X = this.position;
+        Vector_2D Y = other.position;
         
-        return Math.sqrt(diffX*diffX + diffY*diffY);
+        return X.getdistance(Y);
     }
 
 /*     public double distance_to_optimized(Boid other){

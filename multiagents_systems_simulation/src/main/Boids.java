@@ -51,7 +51,7 @@ public class Boids{
         }
     }
 
-    public void separation(Boid boid){
+    public void separation(Boid boid,double forceFactor){
         int n_close_boids = 0;
         Vector_2D average_flee = new Vector_2D(); // intiialize to an empty vector
 
@@ -62,8 +62,8 @@ public class Boids{
             (dist <= boid.getClose_distance())){
                 // update n_close_boids
                 n_close_boids += 1;
-                Vector_2D from_me_to_you = new Vector_2D();
-                from_me_to_you.subtract2New(otherboid.getPosition(), boid.getPosition());
+                Vector_2D from_me_to_you = boid.getPosition().copy();
+                from_me_to_you.subtract(otherboid.getPosition());
                 // the closer boid is to other the more it is urging to flee away
                 from_me_to_you.updateMagnitude(1/dist);
 
@@ -78,8 +78,12 @@ public class Boids{
             // the boid wants to flee as fast as possible in the direction of the average_flee vector
             average_flee.updateMagnitude(boid.getSpeedlimit());
             Vector_2D flee_force = boid.getSteeringForce(average_flee);
+            flee_force.multiply(forceFactor);
             flee_force.limit(boid.getForceLimit());
             boid.applyForce(flee_force);
         }
+    }
+    public void separation(Boid boid){
+       separation(boid,1);
     }
 }
