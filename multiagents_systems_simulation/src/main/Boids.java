@@ -51,63 +51,7 @@ public class Boids{
         }
     }
 
-    public void separation(Boid boid,double forceFactor){
-        int n_close_boids = 0;
-        Vector_2D average_flee = new Vector_2D(); // intiialize to an empty vector
 
-        for (Boid otherboid : this.listBoids){
-            
-            
-            if ((otherboid != boid) && 
-            (boid.inSight(otherboid))){
-                // update n_close_boids
-                n_close_boids += 1;
-                Vector_2D from_me_to_you = boid.getPosition().copy();
-                from_me_to_you.subtract(otherboid.getPosition());
-                // the closer boid is to other the more it is urging to flee away
-                double dist = boid.distance_to(otherboid);
-                from_me_to_you.updateMagnitude(1/dist);
 
-                // update average_flee
-                average_flee.add(from_me_to_you);
-                
-            }
-        }
-        
-        if (n_close_boids >= 1){
-            average_flee.divide(n_close_boids);
-            // the boid wants to flee as fast as possible in the direction of the average_flee vector
-            average_flee.updateMagnitude(boid.getSpeedlimit());
-            Vector_2D flee_force = boid.getSteeringForce(average_flee);
-            flee_force.multiply(forceFactor);
-            flee_force.limit(boid.getForceLimit());
-            boid.applyForce(flee_force);
-        }
-    }
-    public void separation(Boid boid){
-       separation(boid,1);
-    }
-    public void align(Boid boid,double forceFactor){
-        int n_close_boids = 0;
-        Vector_2D average_flee = new Vector_2D();
-        for (Boid otherboid : this.listBoids){
-            if ((otherboid != boid) && 
-            (boid.inSight(otherboid))){
-                average_flee.add(otherboid.getVelocity());
-                n_close_boids++;
-            }
-        }
-        if (n_close_boids >= 1){
-            average_flee.divide(n_close_boids);
-            // the boid wants to flee as fast as possible in the direction of the average_flee vector
-            average_flee.updateMagnitude(boid.getSpeedlimit());
-            Vector_2D flee_force = boid.getSteeringForce(average_flee);
-            flee_force.multiply(forceFactor);
-            flee_force.limit(boid.getForceLimit());
-            boid.applyForce(flee_force);
-        }
-    }
-    public void align(Boid boid){
-        align(boid,1);
-       }
+    
 }

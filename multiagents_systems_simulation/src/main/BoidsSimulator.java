@@ -2,6 +2,9 @@ package main;
 import gui.Simulable;
 import gui.GUISimulator;
 import java.awt.Color;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+
 import gui.Oval;
 public class BoidsSimulator implements Simulable {
 
@@ -26,12 +29,14 @@ public class BoidsSimulator implements Simulable {
     public void next() {
         this.width = gui.getWidth();
         this.height = gui.getHeight();
-
+        ArrayList<Boid> listeBoids = boids.getlisteBoids();
         // Apply separation force for each boid
-        for (Boid b : boids.getlisteBoids()) {
-            boids.separation(b,2);
-            b.wander(target,1);
-            //boids.align(b,5);
+        for (Boid b : listeBoids) {
+            
+            /* b.wander(target,1); */
+            Vector_2D alignement = b.align(this.boids,5);
+            Vector_2D separation = b.separation(this.boids,2);
+            b.applyForce(separation); 
         }
 
         // Update all boids

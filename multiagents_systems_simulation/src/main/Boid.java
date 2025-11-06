@@ -1,5 +1,6 @@
 package main;
 import java.awt.Color;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -247,13 +248,13 @@ public class Boid {
         return future_position ;
     }
 
-    public void seek(Vector_2D target) {
+    public Vector_2D seek(Vector_2D target) {
         // Seek towards a target position in a realistic manner
         Vector_2D desired = getDesiredDirection(target);
         Vector_2D steer = getSteeringForce(desired);
         steer.limit(this.forcelimit);
-        this.applyForce(steer);
-        
+        /* this.applyForce(steer) */;
+        return steer; // return the steering force this will allow us to apply all the forces at once
     }
     
     public Vector_2D future_pos(){
@@ -305,6 +306,69 @@ public class Boid {
         return diffX*diffX + diffY*diffY;
     } */
 
+    public Vector_2D separation(Boids boids,double forceFactor){
+        int n_close_boids = 0;
+        Vector_2D average_flee = new Vector_2D(); // intiialize to an empty vector
+        
+        ArrayList<Boid> listBoids = boids.getlisteBoids();
+        for (Boid otherboid : listBoids){
+            if ((otherboid != this) && 
+            (this.inSight(otherboid))){
+                // update n_close_boids
+                n_close_boids += 1;
+                Vector_2D from_me_to_you = this.getPosition().copy();
+                from_me_to_you.subtract(otherboid.getPosition());
+                // the closer boid is to other the more it is urging to flee away
+                double dist = this.distance_to(otherboid);
+                if (dist > 0) {
+                    from_me_to_you.updateMagnitude(1.0 / dist);}
+                // update average_flee
+                average_flee.add(from_me_to_you);
+                
+            }
+        }
+        
+        if (n_close_boids >= 1){
+            average_flee.divide(n_close_boids);
+            // the boid wants to flee as fast as possible in the direction of the average_flee vector
+            average_flee.updateMagnitude(this.getSpeedlimit());
+            Vector_2D flee_force = this.getSteeringForce(average_flee);
+            flee_force.multiply(forceFactor);
+            flee_force.limit(this.getForceLimit());
+            return flee_force;
+        }
+        return new Vector_2D(0,0);// no close boids detected
+    }
+
+    public Vector_2D separation(Boids boids){
+       return separation(boids,1);
+    }
+
+    public Vector_2D align(Boids boids,double forceFactor){
+        int n_close_boids = 0;
+        Vector_2D average_align = new Vector_2D();
+        ArrayList<Boid> listBoids = boids.getlisteBoids();
+        for (Boid otherboid : listBoids){
+            if ((otherboid != this) && 
+            (this.inSight(otherboid))){
+                average_align.add(otherboid.getVelocity());
+                n_close_boids++;
+            }
+        }
+        if (n_close_boids >= 1){
+            average_align.divide(n_close_boids);
+            // the boid wants to flee as fast as possible in the direction of the average_flee vector
+            average_align.updateMagnitude(this.getSpeedlimit());
+            Vector_2D align_force = this.getSteeringForce(average_align);
+            align_force.multiply(forceFactor);
+            align_force.limit(this.getForceLimit());
+            /* return align_force; */
+        }
+        return new Vector_2D(0,0);// no close boids detected
+    }
+    public Vector_2D align(Boids boids){
+        return align(boids,1);
+       }
 }
 
 
