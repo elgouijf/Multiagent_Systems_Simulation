@@ -31,6 +31,7 @@ public class BoidsSimulator implements Simulable {
         for (Boid b : boids.getlisteBoids()) {
             boids.separation(b,2);
             b.wander(target,1);
+            //boids.align(b,5);
         }
 
         // Update all boids

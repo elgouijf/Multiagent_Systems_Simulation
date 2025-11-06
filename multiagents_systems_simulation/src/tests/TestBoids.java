@@ -36,7 +36,7 @@ public class TestBoids {
             Color color = bodyColors[i % bodyColors.length];
             Color compass_color = compassColors[i % compassColors.length];
 
-            Boid b = new Boid(pos, vel, acc, speedLimit, forceLimit, wanderRadius, pathRadius, boidRadius, color, compass_color);
+            Boid b = new Boid(pos, vel, acc, speedLimit, forceLimit, wanderRadius, pathRadius, boidRadius, color, compass_color,Math.PI/12);
             list.add(b);
         }
 

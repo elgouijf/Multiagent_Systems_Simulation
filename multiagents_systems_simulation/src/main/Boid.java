@@ -125,13 +125,14 @@ public class Boid {
     }
 
     public boolean inSight(Boid other){
+        // Implements the innsight vision ;
         double distance = this.position.getdistance(other.position);
         Vector_2D AB = other.position.copy();
         AB.subtract(this.position);
         double angle = AB.heading2();
         if (distance > close_distance){
             return false;
-        }else if (Math.abs(angle - Math.PI) <= angleDistance/2) {
+        }else if (Math.PI - Math.abs(angle) < angleDistance/2) {
             return false;
         }else{
             return true;
