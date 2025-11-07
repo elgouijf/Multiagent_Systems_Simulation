@@ -2,7 +2,6 @@ package main;
 import gui.Simulable;
 import gui.GUISimulator;
 import java.awt.Color;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 
 import gui.Oval;
@@ -34,9 +33,7 @@ public class BoidsSimulator implements Simulable {
         for (Boid b : listeBoids) {
             
             /* b.wander(target,1); */
-            Vector_2D alignement = b.align(this.boids,5);
-            Vector_2D separation = b.separation(this.boids,2);
-            b.applyForce(separation); 
+            b.submittoGroupBehavior(this.boids);
         }
 
         // Update all boids

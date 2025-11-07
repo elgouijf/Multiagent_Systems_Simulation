@@ -14,7 +14,7 @@ public class TestBoids {
         GUISimulator gui = new GUISimulator(width, height, Color.BLACK);
         Random rand = new Random();
 
-        int n = 30; // number of boids
+        int n = 100; // number of boids
         ArrayList<Boid> list = new ArrayList<>();
 
         // Colors to cycle through
@@ -23,7 +23,7 @@ public class TestBoids {
 
         for (int i = 0; i < n; i++) {
             Vector_2D pos = new Vector_2D(Math.random()*width, Math.random()*height);
-            Vector_2D vel = new Vector_2D(Math.random()*4 - 2, Math.random()*4 - 2); // small random velocity
+            Vector_2D vel = new Vector_2D(Math.random()*4 - 2, Math.random()*4 - 2); // small random velocity 
             Vector_2D acc = new Vector_2D(0,0);
 
             // Randomized parameters for each boid
@@ -31,12 +31,13 @@ public class TestBoids {
             double forceLimit   = 2 + rand.nextDouble()*4;      // 2 to 6
             double wanderRadius = 1 + rand.nextDouble()*3;      // 1 to 4
             double pathRadius   = 5 + rand.nextDouble()*10;     // 5 to 15
-            int boidRadius      = 5 + rand.nextInt(6);          // 5 to 10
+            int boidRadius      = 3 + rand.nextInt(1)*6;          // 2 to 4
 
             Color color = bodyColors[i % bodyColors.length];
             Color compass_color = compassColors[i % compassColors.length];
 
             Boid b = new Boid(pos, vel, acc, speedLimit, forceLimit, wanderRadius, pathRadius, boidRadius, color, compass_color,Math.PI/12);
+            /* b.setCloseDistance(100); */
             list.add(b);
         }
 

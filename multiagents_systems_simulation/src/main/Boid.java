@@ -1,6 +1,5 @@
 package main;
 import java.awt.Color;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -30,7 +29,8 @@ public class Boid {
 
     // for separation behavior
     private double close_distance;
-
+    // for align behavior
+    private double neighbor_distance;
     // Constructor
     public Boid(Vector_2D position, Vector_2D velocity, Vector_2D acceleration, double speedlimit, double forcelimit, double wander_radius, double path_radius, int boid_size, Color color, Color compassColor, double angleDistance) { 
         /* 
@@ -57,7 +57,9 @@ public class Boid {
 
         this.close_distance = this.boid_size * 4; // Separation distance based on boid size
         this.angleDistance = angleDistance;
+        this.neighbor_distance = this.boid_size * 6 + 40; // the bigger you are the more you see, but you still have to see something even if you're small
     }
+
     
     public Vector_2D getPosition() {
         return this.position;
@@ -91,7 +93,7 @@ public class Boid {
     return compassColor;
     }
 
-    public void updateClose(double new_close_distance){
+    public void setCloseDistance(double new_close_distance){
         if (new_close_distance > 0){
             this.close_distance = new_close_distance;
         }
@@ -102,6 +104,99 @@ public class Boid {
 
     public double getClose_distance(){
         return this.close_distance;
+    }
+
+    public double getWander_radius(){
+        return this.wander_radius;
+    }
+
+    public double getPath_radius(){
+        return this.path_radius;
+    }
+
+    public double getSlowRadius(){
+        return this.slowRadius;
+    }
+
+    public double getAngleDistance(){
+        return this.angleDistance;
+    }
+
+    public void setAngleDistance(double new_angleDistance){
+        if (new_angleDistance >= 0 && new_angleDistance <= Math.PI){
+            this.angleDistance = new_angleDistance;
+        }else{
+            System.out.println("Angle distance must be between 0 and pi");
+        }
+    }
+
+    public void setWander_radius(double new_wander_radius){
+        if (new_wander_radius > 0){
+            this.wander_radius = new_wander_radius;
+        }else{
+            System.out.println("Wander radius must be positive");
+        }
+    }
+
+    public void setPath_radius(double new_path_radius){
+        if (new_path_radius > 0){
+            this.path_radius = new_path_radius;
+        }else{
+            System.out.println("Path radius must be positive");
+        }
+    }
+
+    public void setSlowRadius(double new_slowRadius){
+        if (new_slowRadius > 0){
+            this.slowRadius = new_slowRadius;
+        }else{
+            System.out.println("Slow radius must be positive");
+        }
+    }
+
+    public void setMass(double new_mass){
+        if (new_mass > 0){
+            System.out.println("Mass updated from " + this.mass + " to " + new_mass + "default is 1");
+            this.mass = new_mass;
+        }else{
+            System.out.println("Mass must be positive");
+        }
+    }
+
+    public double getMass(){
+        return this.mass;
+    }
+
+    public void setSpeedlimit(double new_speedlimit){
+        if (new_speedlimit > 0){
+            this.speedlimit = new_speedlimit;
+        }else{
+            System.out.println("Speed limit must be positive");
+        }
+    }
+
+    public void setForcelimit(double new_forcelimit){
+        if (new_forcelimit > 0){
+            this.forcelimit = new_forcelimit;
+        }else{
+            System.out.println("Force limit must be positive");
+        }
+    }
+
+    public void setSize(int new_size){
+        if (new_size > 0){
+            this.boid_size = new_size;
+        }else{
+            System.out.println("Boid size must be positive");
+        }
+    }
+
+    public void setneighbor_distance(double new_distance){
+        if (new_distance > 0){
+            this.neighbor_distance = new_distance;
+        }else{
+            System.out.println("Neighbor distance must be positive");
+        }
     }
 
     //////////////////////////// Forces ////////////////////////////
@@ -131,7 +226,7 @@ public class Boid {
         Vector_2D AB = other.position.copy();
         AB.subtract(this.position);
         double angle = AB.heading2();
-        if (distance > close_distance){
+        if (distance > this.neighbor_distance){
             return false;
         }else if (Math.PI - Math.abs(angle) < angleDistance/2) {
             return false;
@@ -313,7 +408,7 @@ public class Boid {
         ArrayList<Boid> listBoids = boids.getlisteBoids();
         for (Boid otherboid : listBoids){
             if ((otherboid != this) && 
-            (this.inSight(otherboid))){
+            (distance_to(otherboid) < this.close_distance)){
                 // update n_close_boids
                 n_close_boids += 1;
                 Vector_2D from_me_to_you = this.getPosition().copy();
@@ -363,12 +458,21 @@ public class Boid {
             align_force.multiply(forceFactor);
             align_force.limit(this.getForceLimit());
             /* return align_force; */
+            return align_force;
         }
         return new Vector_2D(0,0);// no close boids detected
     }
     public Vector_2D align(Boids boids){
         return align(boids,1);
        }
+    
+    public void submittoGroupBehavior(Boids boids){
+        /* Apply all group behavior forces at once */
+        Vector_2D separation = this.separation(boids);
+        Vector_2D alignement = this.align(boids);
+        this.applyForce(separation);
+        this.applyForce(alignement);
+    }
 }
 
 
