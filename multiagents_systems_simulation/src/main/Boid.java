@@ -55,9 +55,9 @@ public class Boid {
         this.color = color;
         this.compassColor = compassColor;
 
-        this.close_distance = this.boid_size * 4; // Separation distance based on boid size
+        this.close_distance = this.boid_size * 7; // Separation distance based on boid size
         this.angleDistance = angleDistance;
-        this.neighbor_distance = this.boid_size * 6 + 40; // the bigger you are the more you see, but you still have to see something even if you're small
+        this.neighbor_distance = this.boid_size * 6 + 70; // the bigger you are the more you see, but you still have to see something even if you're small
     }
 
     
@@ -122,82 +122,10 @@ public class Boid {
         return this.angleDistance;
     }
 
-    public void setAngleDistance(double new_angleDistance){
-        if (new_angleDistance >= 0 && new_angleDistance <= Math.PI){
-            this.angleDistance = new_angleDistance;
-        }else{
-            System.out.println("Angle distance must be between 0 and pi");
-        }
-    }
-
-    public void setWander_radius(double new_wander_radius){
-        if (new_wander_radius > 0){
-            this.wander_radius = new_wander_radius;
-        }else{
-            System.out.println("Wander radius must be positive");
-        }
-    }
-
-    public void setPath_radius(double new_path_radius){
-        if (new_path_radius > 0){
-            this.path_radius = new_path_radius;
-        }else{
-            System.out.println("Path radius must be positive");
-        }
-    }
-
-    public void setSlowRadius(double new_slowRadius){
-        if (new_slowRadius > 0){
-            this.slowRadius = new_slowRadius;
-        }else{
-            System.out.println("Slow radius must be positive");
-        }
-    }
-
-    public void setMass(double new_mass){
-        if (new_mass > 0){
-            System.out.println("Mass updated from " + this.mass + " to " + new_mass + "default is 1");
-            this.mass = new_mass;
-        }else{
-            System.out.println("Mass must be positive");
-        }
-    }
-
     public double getMass(){
         return this.mass;
     }
 
-    public void setSpeedlimit(double new_speedlimit){
-        if (new_speedlimit > 0){
-            this.speedlimit = new_speedlimit;
-        }else{
-            System.out.println("Speed limit must be positive");
-        }
-    }
-
-    public void setForcelimit(double new_forcelimit){
-        if (new_forcelimit > 0){
-            this.forcelimit = new_forcelimit;
-        }else{
-            System.out.println("Force limit must be positive");
-        }
-    }
-
-    public void setSize(int new_size){
-        if (new_size > 0){
-            this.boid_size = new_size;
-        }else{
-            System.out.println("Boid size must be positive");
-        }
-    }
-
-    public void setneighbor_distance(double new_distance){
-        if (new_distance > 0){
-            this.neighbor_distance = new_distance;
-        }else{
-            System.out.println("Neighbor distance must be positive");
-        }
-    }
 
     //////////////////////////// Forces ////////////////////////////
     public void applyForce(Vector_2D force) {
@@ -343,14 +271,20 @@ public class Boid {
         return future_position ;
     }
 
-    public Vector_2D seek(Vector_2D target) {
+    public Vector_2D seek(Vector_2D target, double factor) {
         // Seek towards a target position in a realistic manner
         Vector_2D desired = getDesiredDirection(target);
         Vector_2D steer = getSteeringForce(desired);
+        steer.multiply(factor);
         steer.limit(this.forcelimit);
         /* this.applyForce(steer) */;
         return steer; // return the steering force this will allow us to apply all the forces at once
     }
+
+    public Vector_2D seek(Vector_2D target){
+        return seek(target,1);
+    }
+
     
     public Vector_2D future_pos(){
         // Calculating thbe future position with the current velocity
@@ -413,8 +347,10 @@ public class Boid {
                 n_close_boids += 1;
                 Vector_2D from_me_to_you = this.getPosition().copy();
                 from_me_to_you.subtract(otherboid.getPosition());
+
                 // the closer boid is to other the more it is urging to flee away
                 double dist = this.distance_to(otherboid);
+
                 if (dist > 0) {
                     from_me_to_you.updateMagnitude(1.0 / dist);}
                 // update average_flee
@@ -424,13 +360,16 @@ public class Boid {
         }
         
         if (n_close_boids >= 1){
+            // divide by the number of close boids to get the average flee
             average_flee.divide(n_close_boids);
-            // the boid wants to flee as fast as possible in the direction of the average_flee vector
+            // the boid wants to flee as fast as possible in the direction of the average_velocity vector
             average_flee.updateMagnitude(this.getSpeedlimit());
-            Vector_2D flee_force = this.getSteeringForce(average_flee);
-            flee_force.multiply(forceFactor);
-            flee_force.limit(this.getForceLimit());
-            return flee_force;
+            Vector_2D separ_force = this.getSteeringForce(average_flee);
+            separ_force.multiply(forceFactor);
+            separ_force.limit(this.getForceLimit());
+
+            // return separation force
+            return separ_force;
         }
         return new Vector_2D(0,0);// no close boids detected
     }
@@ -439,39 +378,85 @@ public class Boid {
        return separation(boids,1);
     }
 
-    public Vector_2D align(Boids boids,double forceFactor){
-        int n_close_boids = 0;
-        Vector_2D average_align = new Vector_2D();
+
+
+    public Vector_2D cohesion(Boids boids,double forceFactor){
+        Vector_2D average_pos = new Vector_2D();
+        double sum_mass = 0;
         ArrayList<Boid> listBoids = boids.getlisteBoids();
+
         for (Boid otherboid : listBoids){
             if ((otherboid != this) && 
             (this.inSight(otherboid))){
-                average_align.add(otherboid.getVelocity());
-                n_close_boids++;
+                double m = otherboid.getMass();
+                sum_mass += m;
+
+                // Compute the weighted sum of positions
+                Vector_2D weighted_pos = otherboid.getPosition().copy();
+                weighted_pos.multiply(m);
+
+                // update average_pos
+                average_pos.add(weighted_pos);
+                
             }
         }
-        if (n_close_boids >= 1){
-            average_align.divide(n_close_boids);
+        if (sum_mass > 0){
+            // divide by the sum of masses to get the average position (aka the center of inertia)
+            average_pos.divide(sum_mass);
+            Vector_2D desired = average_pos.copy();
+            Vector_2D inertia_seek = this.seek(desired, forceFactor);
+            
+            return inertia_seek;
+        }
+        return new Vector_2D(0,0);// no close boids detected
+    }
+    public Vector_2D cohesion(Boids boids){
+        return cohesion(boids,1);
+       }
+
+
+
+    public Vector_2D alignment(Boids boids,double forceFactor){
+        int n_sight_boids = 0;
+        Vector_2D average_velocity = new Vector_2D();
+        ArrayList<Boid> listBoids = boids.getlisteBoids();
+
+        for (Boid otherboid : listBoids){
+            if ((otherboid != this) && 
+            (this.inSight(otherboid))){
+                // update average_velocity
+                average_velocity.add(otherboid.getVelocity());
+                n_sight_boids++;
+            }
+        }
+
+        if (n_sight_boids >= 1){
+            // divide by number of close boids to get the average velocity
+            average_velocity.divide(n_sight_boids);
+
             // the boid wants to flee as fast as possible in the direction of the average_flee vector
-            average_align.updateMagnitude(this.getSpeedlimit());
-            Vector_2D align_force = this.getSteeringForce(average_align);
+            average_velocity.updateMagnitude(this.getSpeedlimit());
+            Vector_2D align_force = this.getSteeringForce(average_velocity);
             align_force.multiply(forceFactor);
             align_force.limit(this.getForceLimit());
+
             /* return align_force; */
             return align_force;
         }
         return new Vector_2D(0,0);// no close boids detected
     }
-    public Vector_2D align(Boids boids){
-        return align(boids,1);
+    public Vector_2D alignment(Boids boids){
+        return alignment(boids,1);
        }
     
     public void submittoGroupBehavior(Boids boids){
         /* Apply all group behavior forces at once */
         Vector_2D separation = this.separation(boids);
-        Vector_2D alignement = this.align(boids);
+        Vector_2D alignement = this.alignment(boids);
+        Vector_2D cohesion   = this.cohesion(boids);
         this.applyForce(separation);
-        this.applyForce(alignement);
+        /* this.applyForce(alignement);  */
+        this.applyForce(cohesion);
     }
 }
 

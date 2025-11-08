@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import gui.GUISimulator;
 
-public class TestBoidsAlignement {
+public class TestBoidsCohesion {
     public static void main(String[] args) {
         int width  = (args.length > 0) ? Integer.parseInt(args[0]) : 1000;
         int height = (args.length > 1) ? Integer.parseInt(args[1]) : 1000;
@@ -23,7 +23,7 @@ public class TestBoidsAlignement {
         int cluster_n = 70;
 
         // maximum distance between elements of a cluster
-        double clusterSize = 40; 
+        double clusterSize = 200; 
 
         
 
