@@ -57,7 +57,7 @@ public class TestBoidsCohesion {
                 double pathRadius = 10;
                 int boidRadius = 6;
 
-                Boid b = new Boid(pos, vel, acc, speedLimit, forceLimit, wanderRadius, pathRadius, boidRadius, bodyColor, Color.WHITE, Math.PI / 12);
+                Boid b = new Boid(pos, vel, acc, speedLimit, forceLimit, wanderRadius, pathRadius, boidRadius, bodyColor, Color.WHITE, Math.PI / 12, width, height);
                 list.add(b);
             }
         }

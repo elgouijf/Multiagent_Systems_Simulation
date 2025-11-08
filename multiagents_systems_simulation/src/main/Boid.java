@@ -32,7 +32,7 @@ public class Boid {
     // for align behavior
     private double neighbor_distance;
     // Constructor
-    public Boid(Vector_2D position, Vector_2D velocity, Vector_2D acceleration, double speedlimit, double forcelimit, double wander_radius, double path_radius, int boid_size, Color color, Color compassColor, double angleDistance) { 
+    public Boid(Vector_2D position, Vector_2D velocity, Vector_2D acceleration, double speedlimit, double forcelimit, double wander_radius, double path_radius, int boid_size, Color color, Color compassColor, double angleDistance, int windowWidth, int windowHeight) { 
         /* 
         This function is the constructor of the Balls class
         */
@@ -55,10 +55,34 @@ public class Boid {
         this.color = color;
         this.compassColor = compassColor;
 
-        this.close_distance = this.boid_size * 7; // Separation distance based on boid size
-        this.angleDistance = angleDistance;
-        this.neighbor_distance = this.boid_size * 6 + 70; // the bigger you are the more you see, but you still have to see something even if you're small
+        this.close_distance = this.boid_size * 10; // Separation distance based on boid size
+        this.TuneDistances(windowWidth, windowHeight, boid_size);
     }
+
+    public Boid(Vector_2D position, Vector_2D velocity, Vector_2D acceleration, double speedlimit, double forcelimit,
+      double wander_radius, double path_radius, int boid_size, Color color, Color compassColor, double angleDistance) {
+        this(position, velocity, acceleration, speedlimit, forcelimit, wander_radius, path_radius, boid_size, color, compassColor, angleDistance, 0,0);
+        this.close_distance = 6*this.boid_size;
+        this.neighbor_distance = 6*this.boid_size + 40;
+        
+     }
+
+    public void TuneDistances(int windowWidth, int windowHeight, int boidSize) {
+        double diag = Math.sqrt(windowWidth*windowWidth + windowHeight*windowHeight);
+
+        // Tunable constants
+        double k_s = 10.0;     // size contribution for separation
+        double k_d = 0.01;    // window contribution for separation
+        double k_s2 = 6.0;    // size contribution for sight
+        double k_d2 = 0.04;   // window contribution for sight
+
+        this.close_distance = boidSize * k_s + diag * k_d; 
+        this.neighbor_distance = boidSize * k_s2 + diag * k_d2;
+
+        System.out.println("close_distance = " + this.close_distance +
+                        ", neighbor_distance = " + this.neighbor_distance);
+    }
+
 
     
     public Vector_2D getPosition() {
@@ -455,7 +479,7 @@ public class Boid {
         Vector_2D alignement = this.alignment(boids);
         Vector_2D cohesion   = this.cohesion(boids);
         this.applyForce(separation);
-        /* this.applyForce(alignement);  */
+        this.applyForce(alignement);
         this.applyForce(cohesion);
     }
 }
