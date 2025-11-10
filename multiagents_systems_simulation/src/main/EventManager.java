@@ -1,18 +1,31 @@
 package main;
-import java.util.ArrayList;
+import java.util.PriorityQueue;
+
 /**
  * Gestionnaire d'événements discrets.
  * Il maintient une liste d'événements ordonnés et exécute ceux dont la date correspond au temps courant.
  */
 public class EventManager {
     private long currentDate;
-    private ArrayList<Event> events;
+    private PriorityQueue<Event> events;;
     // Constructor
     public EventManager(){
         this.currentDate = 0;
-        this.events = new ArrayList<>() ;
+        this.events = new PriorityQueue<Event>() ;
 
     } 
+    /**
+     * retourne la "date" actuelle.
+     */
+    public long getCurrentDate(){
+        return this.currentDate;
+    }
+    /**
+     * retourne la liste des événemnts.
+     */
+    public PriorityQueue<Event> getEvents(){
+        return this.events;
+    }
     /**
      * Ajoute un événement à la liste des événements à exécuter.
      * @param e l'événement à ajouter
@@ -32,14 +45,10 @@ public class EventManager {
      */
     public void next(){
         currentDate++;
-        ArrayList<Event> to_remove = new ArrayList<>();
-        for(Event e : events){
-            if(e.getDate() <= currentDate){
+        while (!events.isEmpty() && events.peek().getDate() <= currentDate){
+                Event e = events.poll(); // Récupère et supprime l'événement le plus prioritaire
                 e.execute();
-                to_remove.add(e);
             }
-        }
-        events.removeAll(to_remove);
     }
     /**
      *  Cette méthode réinitialise les attribus du gestionnaire.

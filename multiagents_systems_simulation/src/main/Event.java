@@ -5,7 +5,7 @@ package main;
  * Les sous-classes qui représenteront des évènements réels avec  leurs propres propriétés  devront redéfinir la méthode execute() de manière adéquate.
  */
 
-public abstract class Event {
+public abstract class Event implements Comparable<Event>{
     protected long date;
     // Constructor
     public Event(long date){
@@ -15,4 +15,9 @@ public abstract class Event {
         return this.date;
     }
     public abstract void execute();
+    @Override
+    public int compareTo(Event other) {
+        // Les événements avec les dates les plus petites en premier
+        return Long.compare(this.date, other.date);
+    }
 }
