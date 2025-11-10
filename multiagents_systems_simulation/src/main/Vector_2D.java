@@ -41,8 +41,8 @@ public class Vector_2D {
     public void updateMagnitude(double magnitude) {
         // Set the magnitude of a vector to a specific value
         this.normalize();
-        this.setX(this.getX() * magnitude);
-        this.setY(this.getY() * magnitude);
+        this.x *= magnitude;
+        this.y *= magnitude;
     }
     public void add(Vector_2D v1, Vector_2D v2){
         this.x = v1.x + v2.x;
@@ -122,9 +122,6 @@ public class Vector_2D {
     public double getX() { return x; }
     public double getY() { return y; }
 
-    // simple setters if needed
-    public void setX(double x) { this.x = x; }
-    public void setY(double y) { this.y = y; }
     @Override
     public String toString(){
         return "(" + Double.toString(this.x) + "," + Double.toString(this.y) + ")" ;

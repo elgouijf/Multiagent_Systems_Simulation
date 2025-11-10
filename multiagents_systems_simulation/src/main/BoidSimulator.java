@@ -37,21 +37,28 @@ public class BoidSimulator implements Simulable {
         this.width = guis.getWidth();
         this.height = guis.getHeight();
 
-        this.boid.wander(target);
+        Vector_2D wanderForce = this.boid.wander();
+        Vector_2D steer = this.boid.seek(target);
+        this.boid.applyForce(wanderForce);
+        this.boid.applyForce(steer);
         this.boid.updatestate();
         // Bounce horizontally
         if (boid.getPosition().getX() < 0 || boid.getPosition().getX() + 2*radius > width) {
-            boid.getVelocity().setX(-boid.getVelocity().getX());
-            boid.getPosition().setX(
-                Math.max(0, Math.min(boid.getPosition().getX(), width - 2*radius))
-            );
+            Vector_2D v = new Vector_2D(-2*boid.getVelocity().getX(),0);
+            boid.getVelocity().add(v);
+            Vector_2D pos = boid.getPosition();
+            double x = Math.max(0, Math.min(pos.getX(), width - 2*radius)) - pos.getX();
+            Vector_2D X = new Vector_2D(x,0);
+            pos.add(X);  // Faical must write the comments 
         }
         // Bounce vertically
         if (boid.getPosition().getY() < 0 || boid.getPosition().getY() + 2*radius > height) {
-            boid.getVelocity().setY(-boid.getVelocity().getY());
-            boid.getPosition().setY(
-                Math.max(0, Math.min(boid.getPosition().getY(), height - 2*radius))
-            );
+            Vector_2D v = new Vector_2D(0,-2*boid.getVelocity().getY());
+            boid.getVelocity().add(v);
+            Vector_2D pos = boid.getPosition();
+            double y = Math.max(0, Math.min(pos.getY(), height - 2*radius)) - pos.getY();
+            Vector_2D Y = new Vector_2D(0,y);
+            pos.add(Y);  // Faical must write the comments 
         }
         this.reDisplay();
     }

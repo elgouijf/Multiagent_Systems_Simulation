@@ -15,7 +15,7 @@ public class Boid {
     /*Force limit to avoid excessive forces (or even instantaneous acceleration), in fact
     the force should be at the same scale of the boid's weight otherwise it'll just move
     with unrealistic speed or just be crushed if we're being realistic*/
-    private double forcelimit;
+    private double forceLimit;
     private double mass = 1;
     private int boid_size; // the radius if it is represented by a circle and 1/2 its hight if it's a triangle
     private double angle_wander = Math.PI/2;
@@ -32,7 +32,7 @@ public class Boid {
     // for align behavior
     private double neighbor_distance;
     // Constructor
-    public Boid(Vector_2D position, Vector_2D velocity, Vector_2D acceleration, double speedlimit, double forcelimit, double wander_radius, double path_radius, int boid_size, Color color, Color compassColor, double angleDistance, int windowWidth, int windowHeight) { 
+    public Boid(Vector_2D position, Vector_2D velocity, Vector_2D acceleration, double speedlimit, double forceLimit, double wander_radius, double path_radius, int boid_size, Color color, Color compassColor, double angleDistance, int windowWidth, int windowHeight) { 
         /* 
         This function is the constructor of the Balls class
         */
@@ -42,7 +42,7 @@ public class Boid {
         this.boid_size = boid_size;
 
         this.speedlimit = speedlimit;
-        this.forcelimit = forcelimit;
+        this.forceLimit = forceLimit;
         
         // We need to keep track of the initial positions of the balls for reseting, so we create copies of the input vectors
         this.position_0 = new Vector_2D(position.getX(), position.getY());
@@ -50,7 +50,7 @@ public class Boid {
         this.acceleration_0 = new Vector_2D(acceleration.getX(), acceleration.getY());
         this.wander_radius = wander_radius;
         this.path_radius = path_radius;
-        this.slowRadius = 1.5*Math.pow(speedlimit,2)/(2*forcelimit);
+        this.slowRadius = 1.5*Math.pow(speedlimit,2)/(2*forceLimit);
 
         this.color = color;
         this.compassColor = compassColor;
@@ -59,9 +59,9 @@ public class Boid {
         this.TuneDistances(windowWidth, windowHeight, boid_size);
     }
 
-    public Boid(Vector_2D position, Vector_2D velocity, Vector_2D acceleration, double speedlimit, double forcelimit,
+    public Boid(Vector_2D position, Vector_2D velocity, Vector_2D acceleration, double speedlimit, double forceLimit,
       double wander_radius, double path_radius, int boid_size, Color color, Color compassColor, double angleDistance) {
-        this(position, velocity, acceleration, speedlimit, forcelimit, wander_radius, path_radius, boid_size, color, compassColor, angleDistance, 0,0);
+        this(position, velocity, acceleration, speedlimit, forceLimit, wander_radius, path_radius, boid_size, color, compassColor, angleDistance, 0,0);
         this.close_distance = 6*this.boid_size;
         this.neighbor_distance = 6*this.boid_size + 40;
         
@@ -101,8 +101,8 @@ public class Boid {
         return this.speedlimit;
     }
 
-    public double getForceLimit(){
-        return this.forcelimit;
+    public double getforceLimit(){
+        return this.forceLimit;
     }
 
     public int getSize(){
@@ -154,11 +154,10 @@ public class Boid {
     //////////////////////////// Forces ////////////////////////////
     public void applyForce(Vector_2D force) {
         // Newton’s second law, but with force accumulation, adding all input forces to acceleration
-        force.limit(forcelimit);
+        force.limit(forceLimit);
         double actualX = this.acceleration.getX();
         double actualY = this.acceleration.getY();
-        this.acceleration.setX(actualX + force.getX()/this.mass);
-        this.acceleration.setY(actualY + force.getY()/this.mass);
+        this.acceleration = new Vector_2D(actualX + force.getX()/this.mass,actualY + force.getY()/this.mass);
 
     }
 
@@ -208,7 +207,7 @@ public class Boid {
         double distance = this.position.getdistance(target);
         if (distance < this.slowRadius){
             desired.updateMagnitude(this.speedlimit*distance/this.slowRadius);
-            wander_radius *= Math.pow((distance/this.slowRadius),2); // Lowering the circle
+            //wander_radius *= Math.pow((distance/this.slowRadius),2); // Lowering the circle
                                                                    // raduis when we are near
                                                                    // the target
 
@@ -236,10 +235,8 @@ public class Boid {
         this.applyForce(actual_steer);
     }
 
-    public void wander(Vector_2D target, double forceFactor){
+    public Vector_2D wander(double forceFactor){
         // Implement the wander movement
-        Vector_2D desired = getDesiredDirection(target);
-        Vector_2D steer = getSteeringForce(desired);
         Vector_2D future_position = future_pos();
         
         Random rand = new Random();
@@ -247,18 +244,14 @@ public class Boid {
         Vector_2D green_point = new Vector_2D(wander_radius*Math.cos(angle),wander_radius*Math.sin(angle));
         future_position.add(green_point);
         
-        Vector_2D desired_wander = getDesiredDirection2(future_position);
-        Vector_2D steer_wander = getSteeringForce(desired_wander);
-        steer.multiply(0.6);
-        steer_wander.multiply(0.9);
-        steer.add(steer_wander);
-        steer.multiply(forceFactor);
-        steer.limit(forcelimit);
-        this.applyForce(steer);
+        Vector_2D desired_wander = getDesiredDirection(future_position);
+        Vector_2D steerWander = getSteeringForce(desired_wander);
+        steerWander.limit(forceLimit);
+      return steerWander;
     }
-    public void wander(Vector_2D target){
-        // Implement the wander movement
-        wander(target,1);
+    public Vector_2D wander(){
+        // Implement the wander movement without a forceFactor
+        return wander(1);
     }
     public void follow_path(Path path){
         int taille = path.getTaille();
@@ -282,12 +275,12 @@ public class Boid {
             actualTarget = normalPoint;
           }
        }
-       wander(actualTarget);
+       
     }
 
     public Vector_2D future_pos_steer(Vector_2D steer){
         // Calculate the future position with a steering force
-        steer.limit(forcelimit);
+        steer.limit(forceLimit);
         Vector_2D future_position = new Vector_2D(0,0);
         future_position.add(steer,this.velocity);
         future_position.limit(speedlimit);
@@ -300,7 +293,7 @@ public class Boid {
         Vector_2D desired = getDesiredDirection(target);
         Vector_2D steer = getSteeringForce(desired);
         steer.multiply(factor);
-        steer.limit(this.forcelimit);
+        steer.limit(this.forceLimit);
         /* this.applyForce(steer) */;
         return steer; // return the steering force this will allow us to apply all the forces at once
     }
@@ -331,14 +324,10 @@ public class Boid {
     }
     
     public void reInit() {
-        this.position.setX(this.position_0.getX());
-        this.position.setY(this.position_0.getY());
-        this.velocity.setX(this.velocity_0.getX());
-        this.velocity.setY(this.velocity_0.getY());
-        this.acceleration.setX(this.acceleration_0.getX());
-        this.acceleration.setY(this.acceleration_0.getY());
-}
-
+        this.position = new Vector_2D(this.position_0.getX(),this.position_0.getY());
+        this.velocity = new Vector_2D(this.velocity_0.getX(),this.velocity_0.getY());
+        this.acceleration = new Vector_2D(this.acceleration_0.getX(),this.acceleration_0.getY());
+    }
     public double distance_to(Boid other){     
         Vector_2D X = this.position;
         Vector_2D Y = other.position;
@@ -390,7 +379,7 @@ public class Boid {
             average_flee.updateMagnitude(this.getSpeedlimit());
             Vector_2D separ_force = this.getSteeringForce(average_flee);
             separ_force.multiply(forceFactor);
-            separ_force.limit(this.getForceLimit());
+            separ_force.limit(this.getforceLimit());
 
             // return separation force
             return separ_force;
@@ -401,7 +390,6 @@ public class Boid {
     public Vector_2D separation(Boids boids){
        return separation(boids,1);
     }
-
 
 
     public Vector_2D cohesion(Boids boids,double forceFactor){
@@ -429,7 +417,6 @@ public class Boid {
             average_pos.divide(sum_mass);
             Vector_2D desired = average_pos.copy();
             Vector_2D inertia_seek = this.seek(desired, forceFactor);
-            
             return inertia_seek;
         }
         return new Vector_2D(0,0);// no close boids detected
@@ -462,7 +449,7 @@ public class Boid {
             average_velocity.updateMagnitude(this.getSpeedlimit());
             Vector_2D align_force = this.getSteeringForce(average_velocity);
             align_force.multiply(forceFactor);
-            align_force.limit(this.getForceLimit());
+            align_force.limit(this.getforceLimit());
 
             /* return align_force; */
             return align_force;
@@ -478,6 +465,8 @@ public class Boid {
         Vector_2D separation = this.separation(boids);
         Vector_2D alignement = this.alignment(boids);
         Vector_2D cohesion   = this.cohesion(boids);
+        Vector_2D wanderForce = this.wander();
+        this.applyForce(wanderForce);
         this.applyForce(separation);
         this.applyForce(alignement);
         this.applyForce(cohesion);
