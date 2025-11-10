@@ -12,6 +12,8 @@ public class BoidsSimulator implements Simulable {
     private int width;
     private int height;
     private Vector_2D target;
+    EventManager manager;
+
 
     public BoidsSimulator(GUISimulator gui, Boids boids,Vector_2D target) {
         this.gui = gui;
@@ -20,12 +22,16 @@ public class BoidsSimulator implements Simulable {
         this.width = gui.getWidth();
         this.height = gui.getHeight();
         this.target = target;
-        
+        this.manager = new EventManager();
+        this.manager.addEvent(new EventBoids(0, this.boids, this, this.manager));
         this.reDisplay();
     }
 
     @Override
-    public void next() {
+    public void next(){
+        manager.next();
+    }
+    public void moveBoids() {
         this.width = gui.getWidth();
         this.height = gui.getHeight();
         ArrayList<Boid> listeBoids = boids.getlisteBoids();
@@ -51,6 +57,8 @@ public class BoidsSimulator implements Simulable {
         for (Boid b : boids.getlisteBoids()) {
             b.reInit();
         }
+        manager.restart();
+        manager.addEvent(new EventBoids(0, this.boids, this, this.manager));
         this.reDisplay();
     }
 
@@ -76,7 +84,7 @@ public class BoidsSimulator implements Simulable {
     }
 
     
-    private void reDisplay() {
+    public void reDisplay() {
         gui.reset();
 
         for (Boid b : boids.getlisteBoids()) {
