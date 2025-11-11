@@ -18,8 +18,8 @@ public class BallsSimulator implements Simulable {
 
     // Constructor
     public BallsSimulator(GUISimulator guis, Balls balls, Color[] colors){
-        this.balls = balls;
         this.guis = guis;
+        this.balls = balls;
         this.width = guis.getWidth();
         this.height = guis.getHeight();
         this.colors = colors;
