@@ -16,6 +16,4 @@ public class EventBoids extends Event {
         simulator.reDisplay();
         manager.addEvent(new EventBoids(getDate()+1, boids, simulator,manager));
     }
-    
-    
 }
