@@ -12,6 +12,8 @@ public class BoidsSimulator implements Simulable {
     private int width;
     private int height;
     private Vector_2D target;
+    EventManager manager;
+
 
     public BoidsSimulator(GUISimulator gui, Boids boids,Vector_2D target) {
         this.gui = gui;
@@ -20,12 +22,16 @@ public class BoidsSimulator implements Simulable {
         this.width = gui.getWidth();
         this.height = gui.getHeight();
         this.target = target;
-        
+        this.manager = new EventManager();
+        this.manager.addEvent(new EventBoids(0, this.boids, this, this.manager));
         this.reDisplay();
     }
 
     @Override
-    public void next() {
+    public void next(){
+        manager.next();
+    }
+    public void moveBoids() {
         this.width = gui.getWidth();
         this.height = gui.getHeight();
         ArrayList<Boid> listeBoids = boids.getlisteBoids();
@@ -51,6 +57,8 @@ public class BoidsSimulator implements Simulable {
         for (Boid b : boids.getlisteBoids()) {
             b.reInit();
         }
+        manager.restart();
+        manager.addEvent(new EventBoids(0, this.boids, this, this.manager));
         this.reDisplay();
     }
 
@@ -61,22 +69,22 @@ public class BoidsSimulator implements Simulable {
         double y = boid.getPosition().getY();
 
         if (x < 0 || x + 2*r > width) {
-            boid.getVelocity().setX(-boid.getVelocity().getX());
-            boid.getPosition().setX(
-                Math.max(0, Math.min(x, width - 2*r))
-            );
+            Vector_2D v = new Vector_2D(-2*boid.getVelocity().getX(),0);
+            boid.getVelocity().add(v);
+            Vector_2D X = new Vector_2D(Math.max(0, Math.min(x, width - 2*r))-x,0);
+            boid.getPosition().add(X); // Faicil must write the comments 
         }
 
         if (y < 0 || y + 2*r > height) {
-            boid.getVelocity().setY(-boid.getVelocity().getY());
-            boid.getPosition().setY(
-                Math.max(0, Math.min(y, height - 2*r))
-            );
+            Vector_2D v = new Vector_2D(0,-2*boid.getVelocity().getY());
+            boid.getVelocity().add(v);
+            Vector_2D Y = new Vector_2D(0,Math.max(0, Math.min(y, height - 2*r)));
+            boid.getPosition().add(Y);
         }
     }
 
     
-    private void reDisplay() {
+    public void reDisplay() {
         gui.reset();
 
         for (Boid b : boids.getlisteBoids()) {
