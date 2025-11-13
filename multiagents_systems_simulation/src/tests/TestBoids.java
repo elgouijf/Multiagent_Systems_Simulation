@@ -46,8 +46,8 @@ public class TestBoids {
         double separation_distance = list.get(0).getClose_distance();
         double neighbor_distance   = list.get(0).getNeighbor_distance();
 
-        Grid grid_separation = new Grid(width, height, separation_distance);
-        Grid grid_together   = new Grid(width, height, neighbor_distance);
+        Grid grid_separation = new Grid(width, height, separation_distance, Grid.GridType.SEPARATION);
+        Grid grid_together   = new Grid(width, height, neighbor_distance, Grid.GridType.TOGETHER);
         
         Boids boids = new Boids(list, grid_separation, grid_together);
         
