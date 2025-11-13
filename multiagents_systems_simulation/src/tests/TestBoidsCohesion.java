@@ -16,15 +16,18 @@ public class TestBoidsCohesion {
 
         ArrayList<Boid> list = new ArrayList<>();
 
+
         // Color par cluster of boids
         Color[] clusterColors = { Color.YELLOW, Color.CYAN, Color.MAGENTA, Color.ORANGE };
 
         // number of boids par Cluster
-        int cluster_n = 70;
+        int cluster_n = 500;
 
         // maximum distance between elements of a cluster
         double clusterSize = 200; 
 
+        int number_boids = cluster_n * 4;
+        System.out.println("Number of boids: " + number_boids);
         
 
         // === Création de 4 clusters ===
@@ -34,6 +37,13 @@ public class TestBoidsCohesion {
             new Vector_2D(250, 250), // top left
             new Vector_2D(250, 750), // bottom left
         };
+
+        // define boid parameters
+        double speedLimit = 8;
+        double forceLimit = 3;
+        double wanderRadius = 2;
+        double pathRadius = 10;
+        int boidRadius = 6;
 
         for (int c = 0; c < 4; c++) {
             Vector_2D center = clusterCenters[c];
@@ -51,18 +61,19 @@ public class TestBoidsCohesion {
 
                 Vector_2D acc = new Vector_2D(0, 0);
 
-                double speedLimit = 8;
-                double forceLimit = 3;
-                double wanderRadius = 2;
-                double pathRadius = 10;
-                int boidRadius = 6;
+                
 
                 Boid b = new Boid(pos, vel, acc, speedLimit, forceLimit, wanderRadius, pathRadius, boidRadius, bodyColor, Color.WHITE, Math.PI / 12, width, height);
                 list.add(b);
             }
         }
+        double separation_distance = list.get(0).getClose_distance();
+        double neighbor_distance   = list.get(0).getNeighbor_distance();
 
-        Boids boids = new Boids(list);
+        Grid grid_separation = new Grid(width, height, separation_distance);
+        Grid grid_together   = new Grid(width, height, neighbor_distance);
+
+        Boids boids = new Boids(list, grid_separation, grid_together);
         Vector_2D target = new Vector_2D(width / 2.0, height / 2.0);
 
         // Création du simulateur

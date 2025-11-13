@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 @SuppressWarnings("unchecked") // To suppress generic array creation warning (ligne 18)
 public class Grid {
+    private int screen_width;
+    private int screen_height;
     private int n_cols;
     private int n_rows;
     private double cell_width;
@@ -11,9 +13,11 @@ public class Grid {
     private ArrayList<Boid>[][] grid_cells;
 
 
-    public Grid(int n_cols, int n_rows, double cell_width, double cell_height) {
-        this.n_cols = n_cols;
-        this.n_rows = n_rows;
+    public Grid(int screen_width, int screen_height,double cell_width, double cell_height) {
+        this.screen_width = screen_width;
+        this.screen_height = screen_height;
+        this.n_cols = (int)Math.ceil((double)screen_width / cell_width);
+        this.n_rows = (int)Math.ceil((double)screen_height / cell_height);
         this.cell_width = cell_width;
         this.cell_height = cell_height;
         this.grid_cells = new ArrayList[n_cols][n_rows];
@@ -24,10 +28,15 @@ public class Grid {
         }
     }
 
+    public Grid(int screen_width, int screen_height, double cell_size) {
+        // Uniform cell size
+        this(screen_width, screen_height, cell_size, cell_size);
+    }
+
     public void addBoid(Boid b){
         double x = b.getPosition().getX();
         double y = b.getPosition().getY();
-        int column = Math.min(n_cols - 1, Math.max(0, (int)Math.floor(x / this.cell_width)));
+        int column = Math.min(n_cols - 1, Math.max(0, (int)Math.floor(x / this.cell_width))); // ensure within bounds : boids could get out of screen, and maybe be become negative
         int row = Math.min(n_rows - 1, Math.max(0, (int)Math.floor(y / this.cell_height)));
         this.grid_cells[column][row].add(b);
     }
@@ -35,8 +44,8 @@ public class Grid {
     public void removeBoid(Boid b){
         double x = b.getPosition().getX();
         double y = b.getPosition().getY();
-        int column = (int)Math.floor(x/this.cell_width);
-        int row = (int)Math.floor(y/this.cell_height);
+        int column = Math.min(n_cols - 1, Math.max(0, (int)Math.floor(x / this.cell_width)));
+        int row = Math.min(n_rows - 1, Math.max(0, (int)Math.floor(y / this.cell_height)));
         this.grid_cells[column][row].remove(b);
     }
 

@@ -25,9 +25,13 @@ public class TestBoidsAlignement {
         // maximum distance between elements of a cluster
         double clusterSize = 40; 
 
-        
+        double speedLimit = 8;
+        double forceLimit = 3;
+        double wanderRadius = 2;
+        double pathRadius = 10;
+        int boidRadius = 6;
 
-        // === Création de 4 clusters ===
+        // Creating 4 clusters
         Vector_2D[] clusterCenters = {
             new Vector_2D(750, 750), // bottom right
             new Vector_2D(750, 250), // top right
@@ -51,18 +55,20 @@ public class TestBoidsAlignement {
 
                 Vector_2D acc = new Vector_2D(0, 0);
 
-                double speedLimit = 8;
-                double forceLimit = 3;
-                double wanderRadius = 2;
-                double pathRadius = 10;
-                int boidRadius = 6;
+               
 
                 Boid b = new Boid(pos, vel, acc, speedLimit, forceLimit, wanderRadius, pathRadius, boidRadius, bodyColor, Color.WHITE, Math.PI / 12);
                 list.add(b);
             }
         }
 
-        Boids boids = new Boids(list);
+        double separation_distance = list.get(0).getClose_distance();
+        double neighbor_distance   = list.get(0).getNeighbor_distance();
+
+        Grid grid_separation = new Grid(width, height, separation_distance);
+        Grid grid_together   = new Grid(width, height, neighbor_distance);
+        
+        Boids boids = new Boids(list, grid_separation, grid_together);
         Vector_2D target = new Vector_2D(width / 2.0, height / 2.0);
 
         // Création du simulateur

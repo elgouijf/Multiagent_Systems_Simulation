@@ -21,17 +21,20 @@ public class TestBoids {
         Color[] bodyColors = { Color.YELLOW, Color.CYAN, Color.GREEN, Color.MAGENTA, Color.ORANGE };
         Color[] compassColors = { Color.BLACK, Color.RED, Color.BLUE, Color.WHITE, Color.GRAY };
 
+        // parameters for boids
+        double speedLimit   = 6 + rand.nextDouble()*4;      // 6 to 10
+        double forceLimit   = 2 + rand.nextDouble()*4;      // 2 to 6
+        double wanderRadius = 1 + rand.nextDouble()*3;      // 1 to 4
+        double pathRadius   = 5 + rand.nextDouble()*10;     // 5 to 15
+        int boidRadius      = 3 + rand.nextInt(1)*6;          // 2 to 4
+
+
         for (int i = 0; i < n; i++) {
             Vector_2D pos = new Vector_2D(Math.random()*width, Math.random()*height);
             Vector_2D vel = new Vector_2D(Math.random()*4 - 2, Math.random()*4 - 2); // small random velocity 
             Vector_2D acc = new Vector_2D(0,0);
 
-            // Randomized parameters for each boid
-            double speedLimit   = 6 + rand.nextDouble()*4;      // 6 to 10
-            double forceLimit   = 2 + rand.nextDouble()*4;      // 2 to 6
-            double wanderRadius = 1 + rand.nextDouble()*3;      // 1 to 4
-            double pathRadius   = 5 + rand.nextDouble()*10;     // 5 to 15
-            int boidRadius      = 3 + rand.nextInt(1)*6;          // 2 to 4
+            
 
             Color color = bodyColors[i % bodyColors.length];
             Color compass_color = compassColors[i % compassColors.length];
@@ -40,8 +43,13 @@ public class TestBoids {
             /* b.setCloseDistance(100); */
             list.add(b);
         }
+        double separation_distance = list.get(0).getClose_distance();
+        double neighbor_distance   = list.get(0).getNeighbor_distance();
 
-        Boids boids = new Boids(list);
+        Grid grid_separation = new Grid(width, height, separation_distance);
+        Grid grid_together   = new Grid(width, height, neighbor_distance);
+        
+        Boids boids = new Boids(list, grid_separation, grid_together);
         
         Vector_2D target = new Vector_2D(50,50);
         // Simulator for multiple boids

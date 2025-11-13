@@ -35,11 +35,15 @@ public class BoidsSimulator implements Simulable {
         this.width = gui.getWidth();
         this.height = gui.getHeight();
         ArrayList<Boid> listeBoids = boids.getlisteBoids();
-        // Apply separation force for each boid
+
+        Grid grid_separation = boids.getGridSeparation();
+        Grid grid_together   = boids.getGridTogether();
+
+        long start = System.nanoTime();
         for (Boid b : listeBoids) {
             
             /* b.wander(target,1); */
-            b.submittoGroupBehavior(this.boids);
+            b.submittoGroupBehavior(grid_separation, grid_together);
         }
 
         // Update all boids
@@ -47,7 +51,9 @@ public class BoidsSimulator implements Simulable {
             b.updatestate();
             handleBorderBounce(b);
         }
-
+        long end = System.nanoTime();
+        double time_per_frame = (end - start) / 1e6; // milliseconds
+        System.out.println("Frame time: " + time_per_frame + " ms");
         this.reDisplay();
     }
 

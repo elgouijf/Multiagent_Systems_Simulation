@@ -31,6 +31,14 @@ public class Boid {
     private double close_distance;
     // for align behavior
     private double neighbor_distance;
+
+    // For the grid used in separation behavior
+    private int cell_row_sep;
+    private int cell_col_sep;
+
+    // For the grid used in cohesion/alignment (together)
+    private int cell_row_tog;
+    private int cell_col_tog;
     // Constructor
     public Boid(Vector_2D position, Vector_2D velocity, Vector_2D acceleration, double speedlimit, double forceLimit, double wander_radius, double path_radius, int boid_size, Color color, Color compassColor, double angleDistance, int windowWidth, int windowHeight) { 
         /* 
@@ -117,13 +125,8 @@ public class Boid {
     return compassColor;
     }
 
-    public void setCloseDistance(double new_close_distance){
-        if (new_close_distance > 0){
-            this.close_distance = new_close_distance;
-        }
-        else{
-            System.out.println("Distance must be positive");
-        }
+    public double getNeighbor_distance(){
+        return this.neighbor_distance;
     }
 
     public double getClose_distance(){
@@ -150,6 +153,23 @@ public class Boid {
         return this.mass;
     }
 
+    public void setCellSeparation(int row, int col) {
+    this.cell_row_sep = row;
+    this.cell_col_sep = col;
+    }
+    public int getCellRowSeparation() { 
+        return this.cell_row_sep; }
+    public int getCellColSeparation() { 
+        return this.cell_col_sep; }
+
+    public void setCellTogether(int row, int col) {
+        this.cell_row_tog = row;
+        this.cell_col_tog = col;
+    }
+    public int getCellRowTogether() { 
+        return this.cell_row_tog; }
+    public int getCellColTogether() { 
+        return this.cell_col_tog; }
 
     //////////////////////////// Forces ////////////////////////////
     public void applyForce(Vector_2D force) {
@@ -348,28 +368,28 @@ public class Boid {
         return diffX*diffX + diffY*diffY;
     } */
 
-    public Vector_2D separation(Boids boids,double forceFactor){
+    public Vector_2D separation(Grid grid,double forceFactor){
         int n_close_boids = 0;
         Vector_2D average_flee = new Vector_2D(); // intiialize to an empty vector
         
-        ArrayList<Boid> listBoids = boids.getlisteBoids();
-        for (Boid otherboid : listBoids){
-            if ((otherboid != this) && 
-            (distance_to(otherboid) < this.close_distance)){
-                // update n_close_boids
-                n_close_boids += 1;
-                Vector_2D from_me_to_you = this.getPosition().copy();
-                from_me_to_you.subtract(otherboid.getPosition());
+        /* ArrayList<Boid> listBoids = boids.getlisteBoids(); */
+        ArrayList<Boid> list_potential_neighbors = grid.getNeighbors(this);
+        for (Boid otherboid : list_potential_neighbors){
+            /* if ((otherboid != this) && 
+            (distance_to(otherboid) < this.close_distance)){ */
+            // update n_close_boids
+            n_close_boids += 1;
+            Vector_2D from_me_to_you = this.getPosition().copy();
+            from_me_to_you.subtract(otherboid.getPosition());
 
-                // the closer boid is to other the more it is urging to flee away
-                double dist = this.distance_to(otherboid);
+            // the closer boid is to other the more it is urging to flee away
+            double dist = this.distance_to(otherboid);
 
-                if (dist > 0) {
-                    from_me_to_you.updateMagnitude(1.0 / dist);}
-                // update average_flee
-                average_flee.add(from_me_to_you);
-                
-            }
+            if (dist > 0) {
+                from_me_to_you.updateMagnitude(1.0 / dist);}
+            // update average_flee
+            average_flee.add(from_me_to_you);
+            
         }
         
         if (n_close_boids >= 1){
@@ -387,19 +407,22 @@ public class Boid {
         return new Vector_2D(0,0);// no close boids detected
     }
 
-    public Vector_2D separation(Boids boids){
-       return separation(boids,1);
+    public Vector_2D separation(Grid grid){
+       return separation(grid,1);
     }
 
 
-    public Vector_2D cohesion(Boids boids,double forceFactor){
+    public Vector_2D cohesion(Grid grid,double forceFactor){
         Vector_2D average_pos = new Vector_2D();
         double sum_mass = 0;
-        ArrayList<Boid> listBoids = boids.getlisteBoids();
+        /* ArrayList<Boid> listBoids = boids.getlisteBoids(); */
+        ArrayList<Boid> list_potential_neighbors = grid.getNeighbors(this);
 
-        for (Boid otherboid : listBoids){
-            if ((otherboid != this) && 
-            (this.inSight(otherboid))){
+
+        for (Boid otherboid : list_potential_neighbors){
+            /* if ((otherboid != this) && 
+            (this.inSight(otherboid))){ */
+            if (this.inSight(otherboid)){
                 double m = otherboid.getMass();
                 sum_mass += m;
 
@@ -409,9 +432,7 @@ public class Boid {
 
                 // update average_pos
                 average_pos.add(weighted_pos);
-                
-            }
-        }
+            }}
         if (sum_mass > 0){
             // divide by the sum of masses to get the average position (aka the center of inertia)
             average_pos.divide(sum_mass);
@@ -421,24 +442,26 @@ public class Boid {
         }
         return new Vector_2D(0,0);// no close boids detected
     }
-    public Vector_2D cohesion(Boids boids){
-        return cohesion(boids,1);
+    public Vector_2D cohesion(Grid grid){
+        return cohesion(grid,1);
        }
 
 
 
-    public Vector_2D alignment(Boids boids,double forceFactor){
+    public Vector_2D alignment(Grid grid,double forceFactor){
         int n_sight_boids = 0;
         Vector_2D average_velocity = new Vector_2D();
-        ArrayList<Boid> listBoids = boids.getlisteBoids();
+        ArrayList<Boid> list_potential_neighbors = grid.getNeighbors(this);
 
-        for (Boid otherboid : listBoids){
-            if ((otherboid != this) && 
+        for (Boid otherboid : list_potential_neighbors){
+            /* if ((otherboid != this) && 
             (this.inSight(otherboid))){
-                // update average_velocity
+                // update average_velocity */
+            if (this.inSight(otherboid)){
                 average_velocity.add(otherboid.getVelocity());
                 n_sight_boids++;
-            }
+            }   
+            
         }
 
         if (n_sight_boids >= 1){
@@ -456,15 +479,15 @@ public class Boid {
         }
         return new Vector_2D(0,0);// no close boids detected
     }
-    public Vector_2D alignment(Boids boids){
-        return alignment(boids,1);
+    public Vector_2D alignment(Grid grid){
+        return alignment(grid,1);
        }
     
-    public void submittoGroupBehavior(Boids boids){
+    public void submittoGroupBehavior(Grid grid_separation, Grid grid_together){
         /* Apply all group behavior forces at once */
-        Vector_2D separation = this.separation(boids);
-        Vector_2D alignement = this.alignment(boids);
-        Vector_2D cohesion   = this.cohesion(boids);
+        Vector_2D separation = this.separation(grid_separation);
+        Vector_2D alignement = this.alignment(grid_together);
+        Vector_2D cohesion   = this.cohesion(grid_together);
         Vector_2D wanderForce = this.wander();
         this.applyForce(wanderForce);
         this.applyForce(separation);
@@ -472,5 +495,3 @@ public class Boid {
         this.applyForce(cohesion);
     }
 }
-
-
