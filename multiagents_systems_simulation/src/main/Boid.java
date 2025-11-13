@@ -193,11 +193,11 @@ public class Boid {
 
     public boolean inSight(Boid other){
         // Implements the innsight vision ;
-        double distance = this.position.getdistance(other.position);
+        double distance = this.distance_to_optimized(other);
         Vector_2D AB = other.position.copy();
         AB.subtract(this.position);
         double angle = AB.heading2();
-        if (distance > this.neighbor_distance){
+        if (distance > this.neighbor_distance*this.neighbor_distance){
             return false;
         }else if (Math.PI - Math.abs(angle) < angleDistance/2) {
             return false;
@@ -355,7 +355,7 @@ public class Boid {
         return X.getdistance(Y);
     }
 
-/*     public double distance_to_optimized(Boid other){
+     public double distance_to_optimized(Boid other){
         // Optimized version without square root
         double x_this = this.position.getX();
         double y_this = this.position.getY();
@@ -366,7 +366,7 @@ public class Boid {
         double diffY = y_this - y_other;
         
         return diffX*diffX + diffY*diffY;
-    } */
+    } 
 
     public Vector_2D separation(Grid grid,double forceFactor){
         int n_close_boids = 0;
