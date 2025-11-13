@@ -14,7 +14,7 @@ public class TestBoids {
         GUISimulator gui = new GUISimulator(width, height, Color.BLACK);
         Random rand = new Random();
 
-        int n = 100; // number of boids
+        int n = 2000; // number of boids
         ArrayList<Boid> list = new ArrayList<>();
 
         // Colors to cycle through
