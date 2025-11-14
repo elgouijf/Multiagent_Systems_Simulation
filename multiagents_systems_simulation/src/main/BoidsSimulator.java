@@ -43,9 +43,8 @@ public class BoidsSimulator implements Simulable {
         for (Boid b : listeBoids) {
             
             /* b.wander(target,1); */
-            b.submittoGroupBehavior(grid_separation, grid_together);
-            grid_separation.updateBoidCell(b);
-            grid_together.updateBoidCell(b);
+            b.submittoGroupBehavior();
+            
         }
 
         // Update all boids

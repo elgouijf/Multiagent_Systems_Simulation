@@ -4,43 +4,46 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Boid {
-    private Vector_2D position_0;
-    private Vector_2D velocity_0;
-    private Vector_2D acceleration_0;
-    private Vector_2D position;
-    private Vector_2D velocity;
-    private Vector_2D acceleration;
+    protected Vector_2D position_0;
+    protected Vector_2D velocity_0;
+    protected Vector_2D acceleration_0;
+    protected Vector_2D position;
+    protected Vector_2D velocity;
+    protected Vector_2D acceleration;
     // Speed limit to avoid excessive speeds (or even instantaneous teleportation)
-    private double speedlimit;
+    protected double speedlimit;
     /*Force limit to avoid excessive forces (or even instantaneous acceleration), in fact
     the force should be at the same scale of the boid's weight otherwise it'll just move
     with unrealistic speed or just be crushed if we're being realistic*/
-    private double forceLimit;
-    private double mass = 1;
-    private int boid_size; // the radius if it is represented by a circle and 1/2 its hight if it's a triangle
-    private double angle_wander = Math.PI/2;
-    private double wander_radius;
-    private double path_radius;
-    private double slowRadius;
-    private double angleDistance;
+    protected double forceLimit;
+    protected double mass = 1;
+    protected int boid_size; // the radius if it is represented by a circle and 1/2 its hight if it's a triangle
+    protected double angle_wander = Math.PI/2;
+    protected double wander_radius;
+    protected double path_radius;
+    protected double slowRadius;
+    protected double angleDistance;
     // for simulations
-    private Color color;
-    private Color compassColor;
+    protected Color color;
+    protected Color compassColor;
 
     // for separation behavior
-    private double close_distance;
+    protected double close_distance;
     // for align behavior
-    private double neighbor_distance;
+    protected double neighbor_distance;
 
     // For the grid used in separation behavior
-    private int cell_row_sep;
-    private int cell_col_sep;
+    protected int cell_row_sep;
+    protected int cell_col_sep;
 
     // For the grid used in cohesion/alignment (together)
-    private int cell_row_tog;
-    private int cell_col_tog;
+    protected int cell_row_tog;
+    protected int cell_col_tog;
+
+    protected ArrayList<Behavior> behaviors = new ArrayList<Behavior>();
     // Constructor
-    public Boid(Vector_2D position, Vector_2D velocity, Vector_2D acceleration, double speedlimit, double forceLimit, double wander_radius, double path_radius, int boid_size, Color color, Color compassColor, double angleDistance, int windowWidth, int windowHeight) { 
+    public Boid(Vector_2D position, Vector_2D velocity, Vector_2D acceleration, double speedlimit, double forceLimit, double wander_radius, 
+    double path_radius, int boid_size, Color color, Color compassColor, double angleDistance, int windowWidth, int windowHeight) { 
         /* 
         This function is the constructor of the Balls class
         */
@@ -65,11 +68,15 @@ public class Boid {
 
         this.close_distance = this.boid_size * 10; // Separation distance based on boid size
         this.TuneDistances(windowWidth, windowHeight, boid_size);
+
+        this.angleDistance = angleDistance;
+        
     }
 
     public Boid(Vector_2D position, Vector_2D velocity, Vector_2D acceleration, double speedlimit, double forceLimit,
       double wander_radius, double path_radius, int boid_size, Color color, Color compassColor, double angleDistance) {
-        this(position, velocity, acceleration, speedlimit, forceLimit, wander_radius, path_radius, boid_size, color, compassColor, angleDistance, 0,0);
+        this(position, velocity, acceleration, speedlimit, forceLimit, wander_radius, path_radius, boid_size, color, compassColor,
+         angleDistance, 0,0);
         this.close_distance = 6*this.boid_size;
         this.neighbor_distance = 6*this.boid_size + 40;
         
@@ -91,7 +98,7 @@ public class Boid {
                         ", neighbor_distance = " + this.neighbor_distance);
     }
 
-
+////////////////////////////////////////////// Getters /////////////////////////////////////////////
     
     public Vector_2D getPosition() {
         return this.position;
@@ -171,7 +178,7 @@ public class Boid {
     public int getCellColTogether() { 
         return this.cell_col_tog; }
 
-    //////////////////////////// Forces ////////////////////////////
+    /////////////////////////////////////// Methods /////////////////////////////////////////////
     public void applyForce(Vector_2D force) {
         // Newton’s second law, but with force accumulation, adding all input forces to acceleration
         force.limit(forceLimit);
@@ -482,16 +489,20 @@ public class Boid {
     public Vector_2D alignment(Grid grid){
         return alignment(grid,1);
        }
-    
-    public void submittoGroupBehavior(Grid grid_separation, Grid grid_together){
+////////////////////////////////////////////// Group Behavior /////////////////////////////////////////////
+    public void submittoGroupBehavior(){
         /* Apply all group behavior forces at once */
-        Vector_2D separation = this.separation(grid_separation);
+        /* Vector_2D separation = this.separation(grid_separation);
         Vector_2D alignement = this.alignment(grid_together);
         Vector_2D cohesion   = this.cohesion(grid_together);
         Vector_2D wanderForce = this.wander();
         this.applyForce(wanderForce);
         this.applyForce(separation);
         this.applyForce(alignement);
-        this.applyForce(cohesion);
-    }
+        this.applyForce(cohesion);*/
+        for (Behavior behavior : behaviors) {
+            Vector_2D force = behavior.behave(this); // Assuming BehaviorOnGrids is not used here
+            this.applyForce(force);
+        }
+    } 
 }
