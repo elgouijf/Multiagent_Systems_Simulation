@@ -1,4 +1,5 @@
 package main;
+import main.Boids.*;
 
 import java.util.ArrayList;
 

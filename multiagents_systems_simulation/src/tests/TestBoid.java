@@ -1,5 +1,6 @@
 package tests;
 import main.*;
+import main.Boids.Boid;
 
 import java.awt.Color;
 import gui.GUISimulator;

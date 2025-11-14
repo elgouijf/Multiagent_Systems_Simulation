@@ -1,5 +1,10 @@
-package main;
+package main.Boids;
 import main.Behaviors.*;
+import main.Vector_2D;
+import main.Grid;
+import main.GridType;
+import main.Path;
+import main.FlowField;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;

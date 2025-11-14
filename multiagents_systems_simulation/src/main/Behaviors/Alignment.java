@@ -1,7 +1,7 @@
 package main.Behaviors;
-import main.Boid;
-import main.Vector_2D;
+import main.Boids.*;
 import main.Grid;
+import main.Vector_2D;
 import main.GridType;
 
 import java.util.ArrayList;

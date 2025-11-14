@@ -1,6 +1,7 @@
 package tests;
 import main.*;
-
+import main.Boids.*;
+import main.Boids.Species.*;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;

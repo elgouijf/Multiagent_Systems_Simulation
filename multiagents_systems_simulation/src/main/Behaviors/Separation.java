@@ -1,5 +1,5 @@
 package main.Behaviors;
-import main.Boid;
+import main.Boids.*;
 import main.Vector_2D;
 import main.Grid;
 import main.GridType;

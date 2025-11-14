@@ -1,4 +1,6 @@
-package main;
+package main.Boids;
+import main.Grid;
+import main.GridType;
 import java.util.ArrayList;
 import java.util.HashMap;
 

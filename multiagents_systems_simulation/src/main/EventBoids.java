@@ -1,4 +1,5 @@
 package main;
+import main.Boids.*;
 
 public class EventBoids extends Event {
     Boids boids;

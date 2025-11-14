@@ -1,4 +1,6 @@
-package main;
+package main.Boids.Species;
+import main.Boids.Boid;
+import main.Vector_2D;
 import main.Behaviors.*;
 import java.awt.Color;
 
