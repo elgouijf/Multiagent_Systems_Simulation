@@ -1,6 +1,8 @@
 package main;
 import java.awt.Color;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 public class Boid {
@@ -18,8 +20,10 @@ public class Boid {
     protected double forceLimit;
     protected double mass = 1;
     protected int boid_size; // the radius if it is represented by a circle and 1/2 its hight if it's a triangle
-    protected double angle_wander = Math.PI/2;
+
+    protected double angle_wander = 0.1;
     protected double wander_radius;
+    protected double wander_factor;
     protected double path_radius;
     protected double slowRadius;
     protected double angleDistance;
@@ -177,6 +181,11 @@ public class Boid {
         return this.cell_row_tog; }
     public int getCellColTogether() { 
         return this.cell_col_tog; }
+
+    public ArrayList<Behavior> getBehaviors(){
+        return this.behaviors;
+    }
+
 
     /////////////////////////////////////// Methods /////////////////////////////////////////////
     public void applyForce(Vector_2D force) {
@@ -374,135 +383,24 @@ public class Boid {
         
         return diffX*diffX + diffY*diffY;
     } 
-
-    public Vector_2D separation(Grid grid,double forceFactor){
-        int n_close_boids = 0;
-        Vector_2D average_flee = new Vector_2D(); // intiialize to an empty vector
-        
-        /* ArrayList<Boid> listBoids = boids.getlisteBoids(); */
-        ArrayList<Boid> list_potential_neighbors = grid.getNeighbors(this);
-        for (Boid otherboid : list_potential_neighbors){
-            /* if ((otherboid != this) && 
-            (distance_to(otherboid) < this.close_distance)){ */
-            // update n_close_boids
-            n_close_boids += 1;
-            Vector_2D from_me_to_you = this.getPosition().copy();
-            from_me_to_you.subtract(otherboid.getPosition());
-
-            // the closer boid is to other the more it is urging to flee away
-            double dist = this.distance_to(otherboid);
-
-            if (dist > 0) {
-                from_me_to_you.updateMagnitude(1.0 / dist);}
-            // update average_flee
-            average_flee.add(from_me_to_you);
-            
-        }
-        
-        if (n_close_boids >= 1){
-            // divide by the number of close boids to get the average flee
-            average_flee.divide(n_close_boids);
-            // the boid wants to flee as fast as possible in the direction of the average_velocity vector
-            average_flee.updateMagnitude(this.getSpeedlimit());
-            Vector_2D separ_force = this.getSteeringForce(average_flee);
-            separ_force.multiply(forceFactor);
-            separ_force.limit(this.getforceLimit());
-
-            // return separation force
-            return separ_force;
-        }
-        return new Vector_2D(0,0);// no close boids detected
-    }
-
-    public Vector_2D separation(Grid grid){
-       return separation(grid,1);
-    }
-
-
-    public Vector_2D cohesion(Grid grid,double forceFactor){
-        Vector_2D average_pos = new Vector_2D();
-        double sum_mass = 0;
-        /* ArrayList<Boid> listBoids = boids.getlisteBoids(); */
-        ArrayList<Boid> list_potential_neighbors = grid.getNeighbors(this);
-
-
-        for (Boid otherboid : list_potential_neighbors){
-            /* if ((otherboid != this) && 
-            (this.inSight(otherboid))){ */
-            if (this.inSight(otherboid)){
-                double m = otherboid.getMass();
-                sum_mass += m;
-
-                // Compute the weighted sum of positions
-                Vector_2D weighted_pos = otherboid.getPosition().copy();
-                weighted_pos.multiply(m);
-
-                // update average_pos
-                average_pos.add(weighted_pos);
-            }}
-        if (sum_mass > 0){
-            // divide by the sum of masses to get the average position (aka the center of inertia)
-            average_pos.divide(sum_mass);
-            Vector_2D desired = average_pos.copy();
-            Vector_2D inertia_seek = this.seek(desired, forceFactor);
-            return inertia_seek;
-        }
-        return new Vector_2D(0,0);// no close boids detected
-    }
-    public Vector_2D cohesion(Grid grid){
-        return cohesion(grid,1);
-       }
-
-
-
-    public Vector_2D alignment(Grid grid,double forceFactor){
-        int n_sight_boids = 0;
-        Vector_2D average_velocity = new Vector_2D();
-        ArrayList<Boid> list_potential_neighbors = grid.getNeighbors(this);
-
-        for (Boid otherboid : list_potential_neighbors){
-            /* if ((otherboid != this) && 
-            (this.inSight(otherboid))){
-                // update average_velocity */
-            if (this.inSight(otherboid)){
-                average_velocity.add(otherboid.getVelocity());
-                n_sight_boids++;
-            }   
-            
-        }
-
-        if (n_sight_boids >= 1){
-            // divide by number of close boids to get the average velocity
-            average_velocity.divide(n_sight_boids);
-
-            // the boid wants to flee as fast as possible in the direction of the average_flee vector
-            average_velocity.updateMagnitude(this.getSpeedlimit());
-            Vector_2D align_force = this.getSteeringForce(average_velocity);
-            align_force.multiply(forceFactor);
-            align_force.limit(this.getforceLimit());
-
-            /* return align_force; */
-            return align_force;
-        }
-        return new Vector_2D(0,0);// no close boids detected
-    }
-    public Vector_2D alignment(Grid grid){
-        return alignment(grid,1);
-       }
 ////////////////////////////////////////////// Group Behavior /////////////////////////////////////////////
-    public void submittoGroupBehavior(){
+    public void submittoGroupBehavior(HashMap<GridType, Grid> grids) {
         /* Apply all group behavior forces at once */
         /* Vector_2D separation = this.separation(grid_separation);
         Vector_2D alignement = this.alignment(grid_together);
         Vector_2D cohesion   = this.cohesion(grid_together);
-        Vector_2D wanderForce = this.wander();
-        this.applyForce(wanderForce);
+        
+        
         this.applyForce(separation);
         this.applyForce(alignement);
         this.applyForce(cohesion);*/
         for (Behavior behavior : behaviors) {
-            Vector_2D force = behavior.behave(this); // Assuming BehaviorOnGrids is not used here
+            Grid grid = grids.get(behavior.getGridType());
+            Vector_2D force = behavior.behave(this, grid); // Assuming BehaviorOnGrids is not used here
             this.applyForce(force);
         }
+        // all beings wander
+        Vector_2D wanderForce = this.wander(this.wander_factor);
+        this.applyForce(wanderForce);
     } 
 }

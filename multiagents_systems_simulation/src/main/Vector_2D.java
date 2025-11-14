@@ -126,4 +126,12 @@ public class Vector_2D {
     public String toString(){
         return "(" + Double.toString(this.x) + "," + Double.toString(this.y) + ")" ;
     }
+
+    public void setX(double x){
+        this.x = x;
+    }
+    public void setY(double y){
+        this.y = y;
+    }
+
 } 

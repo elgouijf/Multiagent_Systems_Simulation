@@ -3,6 +3,7 @@ import main.*;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 import gui.GUISimulator;
 
@@ -67,13 +68,23 @@ public class TestBoidsCohesion {
                 list.add(b);
             }
         }
+
+        // Create grids for behaviors (one grid per interaction distance) 
+        HashMap<GridType, Grid> grids = new HashMap<>();
         double separation_distance = list.get(0).getClose_distance();
         double neighbor_distance   = list.get(0).getNeighbor_distance();
+        Grid grid_separation = new Grid(width, height, separation_distance, GridType.SEPARATION);
+        Grid grid_together   = new Grid(width, height, neighbor_distance, GridType.TOGETHER);
+        grids.put(GridType.SEPARATION, grid_separation);
+        grids.put(GridType.TOGETHER, grid_together);
+        // Create Boids container
+        Boids boids = new Boids(list, grids); // grids are no longer needed
 
-        Grid grid_separation = new Grid(width, height, separation_distance, Grid.GridType.SEPARATION);
-        Grid grid_together   = new Grid(width, height, neighbor_distance, Grid.GridType.TOGETHER);
-
-        Boids boids = new Boids(list, grid_separation, grid_together);
+        for (Boid b : list) {
+            grids.get(GridType.SEPARATION).addBoid(b);
+            grids.get(GridType.TOGETHER).addBoid(b);
+            grids.get(GridType.TOGETHER).addBoid(b);
+        }
         Vector_2D target = new Vector_2D(width / 2.0, height / 2.0);
 
         // Création du simulateur

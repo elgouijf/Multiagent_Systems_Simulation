@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 @SuppressWarnings("unchecked") // To suppress generic array creation warning (ligne 18)
 public class Grid {
-    public enum GridType { SEPARATION, TOGETHER }
     private int screen_width;
     private int screen_height;
     private int n_cols;

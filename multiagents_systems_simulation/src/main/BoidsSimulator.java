@@ -3,6 +3,7 @@ import gui.Simulable;
 import gui.GUISimulator;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import gui.Oval;
 public class BoidsSimulator implements Simulable {
@@ -35,21 +36,26 @@ public class BoidsSimulator implements Simulable {
         this.width = gui.getWidth();
         this.height = gui.getHeight();
         ArrayList<Boid> listeBoids = boids.getlisteBoids();
+        HashMap<GridType,Grid> grids = boids.getGrids();
 
-        Grid grid_separation = boids.getGridSeparation();
-        Grid grid_together   = boids.getGridTogether();
 
         long start = System.nanoTime();
         for (Boid b : listeBoids) {
             
             /* b.wander(target,1); */
-            b.submittoGroupBehavior();
-            
+            b.submittoGroupBehavior(grids);
+
         }
 
         // Update all boids
-        for (Boid b : boids.getlisteBoids()) {
+        for (Boid b : listeBoids) {
             b.updatestate();
+            // Update grid (possible now that b is updated)
+            for (Behavior behavior : b.getBehaviors()) {
+                Grid grid = grids.get(behavior.getGridType());
+                 if (grid != null) {
+                    behavior.updateGrid(b, grid);}
+            }
             handleBorderBounce(b);
         }
         long end = System.nanoTime();
@@ -72,23 +78,28 @@ public class BoidsSimulator implements Simulable {
     /** Bounce on window borders */
     private void handleBorderBounce(Boid boid) {
         int r = boid.getSize();
-        double x = boid.getPosition().getX();
-        double y = boid.getPosition().getY();
+        Vector_2D pos = boid.getPosition();
+        Vector_2D vel = boid.getVelocity();
 
-        if (x < 0 || x + 2*r > width) {
-            Vector_2D v = new Vector_2D(-2*boid.getVelocity().getX(),0);
-            boid.getVelocity().add(v);
-            Vector_2D X = new Vector_2D(Math.max(0, Math.min(x, width - 2*r))-x,0);
-            boid.getPosition().add(X); // Faicil must write the comments 
+        // Bord gauche / droite
+        if (pos.getX() < 0) {
+            pos.add(new Vector_2D(-pos.getX(), 0)); // recaler à X=0
+            vel.setX(Math.abs(vel.getX())); // rebond vers la droite
+        } else if (pos.getX() + 2*r > width) {
+            pos.add(new Vector_2D(width - 2*r - pos.getX(), 0)); // recaler au bord droit
+            vel.setX(-Math.abs(vel.getX())); // rebond vers la gauche
         }
 
-        if (y < 0 || y + 2*r > height) {
-            Vector_2D v = new Vector_2D(0,-2*boid.getVelocity().getY());
-            boid.getVelocity().add(v);
-            Vector_2D Y = new Vector_2D(0,Math.max(0, Math.min(y, height - 2*r)));
-            boid.getPosition().add(Y);
+        // Bord haut / bas
+        if (pos.getY() < 0) {
+            pos.add(new Vector_2D(0, -pos.getY())); // recaler à Y=0
+            vel.setY(Math.abs(vel.getY())); // rebond vers le bas
+        } else if (pos.getY() + 2*r > height) {
+            pos.add(new Vector_2D(0, height - 2*r - pos.getY())); // recaler au bord bas
+            vel.setY(-Math.abs(vel.getY())); // rebond vers le haut
         }
     }
+
 
     
     public void reDisplay() {
@@ -132,8 +143,10 @@ public class BoidsSimulator implements Simulable {
 
            // Add to GUI
             gui.addGraphicalElement(triangle_boid); 
-            Oval oval = new Oval((int) target.getX(),(int) target.getY(),Color.GREEN,Color.GREEN,4,4);
-            gui.addGraphicalElement(oval);
+            
         }
+        // Draw target
+        Oval target_oval = new Oval((int) target.getX(),(int) target.getY(),Color.GREEN,Color.GREEN,4,4);
+        gui.addGraphicalElement(target_oval);
     }
 }

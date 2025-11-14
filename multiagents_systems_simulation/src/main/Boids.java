@@ -1,18 +1,17 @@
 package main;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Boids{
     private ArrayList<Boid> listBoids = new ArrayList<>();
-    private Grid grid_separation;
-    private Grid grid_together;
+    private HashMap<GridType,Grid> grids = new HashMap<>();
     private int size = 0;
     
 
-    public Boids(ArrayList<Boid> listBoids, Grid grid_separation, Grid grid_together){
+    public Boids(ArrayList<Boid> listBoids, HashMap<GridType,Grid> grids){
         this.listBoids = listBoids;
         this.size = listBoids.size();
-        this.grid_separation = grid_separation;
-        this.grid_together = grid_together;
+        this.grids = grids;
     }
 
     public void add_boid(Boid new_boid){
@@ -55,12 +54,8 @@ public class Boids{
         }
     }
 
-    public Grid getGridSeparation(){
-        return this.grid_separation;
-    }
-
-    public Grid getGridTogether(){
-        return this.grid_together;
+    public HashMap<GridType,Grid> getGrids(){
+        return this.grids;
     }
 
 

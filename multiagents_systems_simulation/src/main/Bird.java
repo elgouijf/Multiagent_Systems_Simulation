@@ -8,6 +8,7 @@ public class Bird extends Boid {
         // we always use the tuned version of Boid for a given species
         super(position, velocity, acceleration, speedlimit, forceLimit, wander_radius, path_radius,
               boid_size, color, compassColor, angleDistance, windowWidth, windowHeight);
+        this.wander_factor = 0.75;
         this.initializeBehaviors(windowWidth, windowHeight);}
         
 
