@@ -1,6 +1,14 @@
-package main;
+package main.BoidsSimulations;
+import main.Vector_2D;
+import main.PolygonGraphics;
+import main.EventManaging.EventManager;
+import main.EventManaging.EventBoids;
 import main.Behaviors.*;
 import main.Boids.*;
+import main.Grid;
+import main.GridType;
+
+
 import gui.Simulable;
 import gui.GUISimulator;
 import java.awt.Color;

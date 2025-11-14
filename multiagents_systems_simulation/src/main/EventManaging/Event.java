@@ -1,4 +1,4 @@
-package main;
+package main.EventManaging;
 /**
  * Classe abstraite représentant un événement dans le gestionnaire.
  * Chaque événement possède une date  à laquelle il doit être exécuté.

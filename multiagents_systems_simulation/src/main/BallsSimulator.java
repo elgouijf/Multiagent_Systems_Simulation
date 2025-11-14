@@ -1,4 +1,6 @@
 package main;
+import main.EventManaging.EventManager;
+import main.EventManaging.EventBalls;
 import gui.Simulable;
 import gui.GUISimulator;
 import java.awt.Point;

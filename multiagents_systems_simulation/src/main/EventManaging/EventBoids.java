@@ -1,5 +1,6 @@
-package main;
+package main.EventManaging;
 import main.Boids.*;
+import main.BoidsSimulations.BoidsSimulator;
 
 public class EventBoids extends Event {
     Boids boids;

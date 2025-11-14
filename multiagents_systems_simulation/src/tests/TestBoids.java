@@ -2,6 +2,8 @@ package tests;
 import main.*;
 import main.Boids.Boid;
 import main.Boids.Boids;
+import main.BoidsSimulations.*;
+
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;

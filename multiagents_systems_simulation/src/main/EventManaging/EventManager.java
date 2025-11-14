@@ -1,4 +1,4 @@
-package main;
+package main.EventManaging;
 import java.util.PriorityQueue;
 
 /**
