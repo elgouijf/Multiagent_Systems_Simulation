@@ -1,4 +1,4 @@
-package main;
+package main.Boidutils;
 import main.Boids.*;
 
 import java.util.ArrayList;

@@ -1,4 +1,5 @@
-package main;
+package main.BoidsSimulations;
+import main.Boidutils.*;
 import main.Boids.*;
 import java.awt.Color;
 import gui.Simulable;

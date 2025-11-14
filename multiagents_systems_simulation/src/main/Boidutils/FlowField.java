@@ -1,4 +1,4 @@
-package main;
+package main.Boidutils;
 
 public class FlowField{
     private int resolution;

@@ -1,4 +1,4 @@
-package main;
+package main.Boidutils;
 
 public class Vector_2D {
     private double x;  

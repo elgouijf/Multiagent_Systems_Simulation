@@ -2,7 +2,7 @@ package tests;
 import main.*;
 import main.Boids.*;
 import main.BoidsSimulations.*;
-
+import main.Boidutils.*;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;

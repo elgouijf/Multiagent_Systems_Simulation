@@ -1,4 +1,4 @@
-package main;
+package main.Boidutils;
 import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.Polygon;

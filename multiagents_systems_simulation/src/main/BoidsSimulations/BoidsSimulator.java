@@ -1,12 +1,9 @@
 package main.BoidsSimulations;
-import main.Vector_2D;
-import main.PolygonGraphics;
+import main.Boidutils.*;
 import main.EventManaging.EventManager;
 import main.EventManaging.EventBoids;
 import main.Behaviors.*;
 import main.Boids.*;
-import main.Grid;
-import main.GridType;
 
 
 import gui.Simulable;

@@ -3,6 +3,7 @@ import main.*;
 import main.Boids.Boid;
 import main.Boids.Boids;
 import main.BoidsSimulations.*;
+import main.Boidutils.*;
 
 import java.awt.Color;
 import java.util.ArrayList;
