@@ -1,4 +1,8 @@
-package main;
+package main.Behaviors;
+import main.Boid;
+import main.Vector_2D;
+import main.Grid;
+import main.GridType;
 
 public interface Behavior {
     public Vector_2D behave(Boid boid, Grid grid);

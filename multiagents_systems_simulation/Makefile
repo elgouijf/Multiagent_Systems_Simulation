@@ -1,5 +1,5 @@
 # Compilation
-SRC_FILES=$(wildcard src/main/*.java src/tests/*.java)
+SRC_FILES := $(shell find src -name "*.java")
 CLASSES=$(patsubst src/%.java,bin/%.class,$(SRC_FILES))
 
 all: bin classes
@@ -18,7 +18,7 @@ run: all
 
 # Lancer les tests
 test: all
-	java -cp bin:../lib/gui.jar tests.TestImmigration
+	java -cp bin:../lib/gui.jar tests.TestBirdsCohesion
 
 # Nettoyer les fichiers compilés
 clean:

@@ -1,4 +1,5 @@
 package main;
+import main.Behaviors.*;
 import gui.Simulable;
 import gui.GUISimulator;
 import java.awt.Color;

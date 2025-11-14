@@ -1,4 +1,5 @@
 package main;
+import main.Behaviors.*;
 import java.awt.Color;
 
 public class Bird extends Boid {

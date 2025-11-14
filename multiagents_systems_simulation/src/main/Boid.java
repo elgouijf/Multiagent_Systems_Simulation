@@ -1,6 +1,6 @@
 package main;
+import main.Behaviors.*;
 import java.awt.Color;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
