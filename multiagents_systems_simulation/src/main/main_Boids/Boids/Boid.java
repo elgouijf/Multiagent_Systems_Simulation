@@ -46,6 +46,9 @@ public class Boid {
     protected int cell_col_tog;
 
     protected ArrayList<Behavior> behaviors = new ArrayList<Behavior>();
+
+    protected String species = "Boid";   // valeur par défaut
+
     // Constructor
     public Boid(Vector_2D position, Vector_2D velocity, Vector_2D acceleration, double speedlimit, double forceLimit, double wander_radius, 
     double path_radius, int boid_size, Color color, Color compassColor, double angleDistance, int windowWidth, int windowHeight) { 
@@ -75,7 +78,9 @@ public class Boid {
         this.TuneDistances(windowWidth, windowHeight, boid_size);
 
         this.angleDistance = angleDistance;
-        
+        this.behaviors.add(new Separation(windowWidth, windowHeight, this.close_distance));
+        this.behaviors.add(new Alignment(windowWidth, windowHeight, this.neighbor_distance));
+        this.behaviors.add(new Cohesion(windowWidth, windowHeight, this.neighbor_distance));
     }
 
     public Boid(Vector_2D position, Vector_2D velocity, Vector_2D acceleration, double speedlimit, double forceLimit,
@@ -105,6 +110,10 @@ public class Boid {
 
 ////////////////////////////////////////////// Getters /////////////////////////////////////////////
     
+    public String getSpecies() {
+        return this.species;
+    }
+
     public Vector_2D getPosition() {
         return this.position;
     }

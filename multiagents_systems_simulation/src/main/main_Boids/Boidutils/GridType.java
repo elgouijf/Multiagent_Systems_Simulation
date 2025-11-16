@@ -2,5 +2,6 @@ package main.main_Boids.Boidutils;
 
 public enum GridType {
     SEPARATION, 
-    TOGETHER
+    TOGETHER,
+    PREDATOR_DETECTION
 }
