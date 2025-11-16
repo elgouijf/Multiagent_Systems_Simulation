@@ -1,4 +1,8 @@
 package main;
+<<<<<<< HEAD
+=======
+import java.awt.Color;
+>>>>>>> 32629e9d047148e8a238c5fc3387abf6973efd2d
 import java.util.*;
 
 public class Schelling {
