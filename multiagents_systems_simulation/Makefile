@@ -18,7 +18,7 @@ run: all
 
 # Lancer les tests
 test: all
-	java -cp bin:../lib/gui.jar tests.TestBirdsCohesion
+	java -cp bin:../lib/gui.jar tests.tests_on_boids.TestBirdsCohesion
 
 # Nettoyer les fichiers compilés
 clean:
