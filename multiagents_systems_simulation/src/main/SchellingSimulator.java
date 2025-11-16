@@ -1,9 +1,11 @@
+package main;
 import gui.GUISimulator;
 import gui.Oval;
 import gui.Simulable;
 import java.awt.Color;
 
 public class SchellingSimulator implements Simulable {
+
     private GUISimulator gui;
     private Schelling model;
     private int cellSize = 10;
@@ -12,67 +14,51 @@ public class SchellingSimulator implements Simulable {
         this.gui = gui;
         this.model = model;
 
-        // on dit à la GUI : "c'est moi le Simulable"
         gui.setSimulable(this);
-
-        // première fois qu'on affiche la grille
         draw();
     }
 
-    /** Dessine toute la grille du modèle dans la fenêtre */
+    private Color getColor(int id) {
+        switch(id) {
+            case 1: return Color.BLUE;
+            case 2: return Color.RED;
+            case 3: return Color.GREEN;
+            case 4: return Color.MAGENTA;
+            case 5: return Color.ORANGE;
+            default: return Color.GRAY;
+        }
+    }
+
     private void draw() {
-
-        // On efface tout ce qui était dessiné avant
         gui.reset();
-
-        // On récupère la grille du modèle
         int[][] grid = model.getGrid();
 
-        // On parcourt toute la grille
         for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[i].length; j++) {
+            for (int j = 0; j < grid.length; j++) {
 
-                int valeur = grid[i][j];
-
-                // Si la cellule n'est pas vide
-                if (valeur != 0) {
-
-                    // Couleur pour dessin :
-                    Color couleur;
-
-                    if (valeur == 1) {
-                        couleur = Color.BLUE;
-                    } else {
-                        couleur = Color.RED;
-                    }
-
-                    // On dessine un petit cercle
+                int val = grid[i][j];
+                if (val != 0) {
+                    Color c = getColor(val);
                     gui.addGraphicalElement(
-                        new Oval(
-                            j * cellSize,  // position horizontale
-                            i * cellSize,  // position verticale
-                            couleur,       // couleur du bord
-                            couleur,       // couleur du remplissage
-                            cellSize       // taille
-                        )
-                    );
+                        new Oval(j * cellSize, i * cellSize, c, c, cellSize));
                 }
             }
         }
     }
 
-    /** Avance d'une étape dans la simulation */
     @Override
     public void next() {
-        model.next(); // on met à jour la grille
-        draw();       // on redessine
+        model.next();
+        draw();
+
+        double seg = model.segregationLevel() * 100;
+        System.out.println("Ségrégation : " + (int)seg + "%");
     }
 
-    /** Redémarre la simulation */
     @Override
     public void restart() {
-        model.reInit(); // on remet la grille initiale
-        draw();         // on redessine
+        model.reInit();
+        draw();
+        System.out.println("Grille réinitialisée !");
     }
 }
-
