@@ -1,25 +1,33 @@
-# Compilation
+
+
 SRC_FILES := $(shell find src -name "*.java")
 CLASSES=$(patsubst src/%.java,bin/%.class,$(SRC_FILES))
 
 all: bin classes
 
-# Crée le dossier bin si nécessaire
 bin:
-	mkdir -p bin
+	@mkdir -p bin
 
-# Compile toutes les classes
 classes: bin
-	javac -d bin -cp ../lib/gui.jar $(SRC_FILES)
+	@echo ">>> Compilation en cours..."
+	@javac -d bin -cp ../lib/gui.jar $(SRC_FILES)
+	@echo ">>> Compilation terminée."
 
-# Lancer l'application principale
+
+
 run: all
-	java -cp bin:../lib/gui.jar main.App
+	@java -cp bin:../lib/gui.jar main.App
 
-# Lancer les tests
-test: all
-	java -cp bin:../lib/gui.jar tests.tests_on_boids.TestBirdsCohesion
 
-# Nettoyer les fichiers compilés
+
+
+
+test-%: all
+	@echo ">>> Exécution du test $* ..."
+	@java -cp bin:../lib/gui.jar tests.$*
+	@echo ">>> Test terminé."
+
+
 clean:
-	rm -rf bin
+	@rm -rf bin
+	@echo ">>> Dossier bin supprimé."
