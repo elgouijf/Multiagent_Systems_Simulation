@@ -1,25 +1,30 @@
-# Compilation
 SRC_FILES := $(shell find src -name "*.java")
 CLASSES=$(patsubst src/%.java,bin/%.class,$(SRC_FILES))
 
 all: bin classes
 
-# Crée le dossier bin si nécessaire
 bin:
-	mkdir -p bin
+	@mkdir -p bin
 
-# Compile toutes les classes
 classes: bin
-	javac -d bin -cp ../lib/gui.jar $(SRC_FILES)
+	@echo ">>> Compilation en cours..."
+	@javac -d bin -cp ../lib/gui.jar $(SRC_FILES)
+	@echo ">>> Compilation terminée."
 
-# Lancer l'application principale
 run: all
-	java -cp bin:../lib/gui.jar main.App
+	@java -cp bin:../lib/gui.jar main.App
 
-# Lancer les tests
-test: all
-	java -cp bin:../lib/gui.jar tests.TestBirdsCohesion
 
-# Nettoyer les fichiers compilés
+test-%: all
+	@echo ">>> Recherche du test $* ..."
+	@CLASS=$$(find src/tests -name "$*.java" | sed 's/src\///; s/\.java//' | tr '/' '.'); \
+	 if [ -z "$$CLASS" ]; then \
+	    echo ">>> ERREUR : Aucun test trouvé pour $*"; \
+	 else \
+	    echo ">>> Test détecté : $$CLASS"; \
+	    java -cp bin:../lib/gui.jar $$CLASS; \
+	 fi
+
 clean:
-	rm -rf bin
+	@rm -rf bin
+	@echo ">>> Dossier bin supprimé."
