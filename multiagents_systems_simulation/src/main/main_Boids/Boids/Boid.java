@@ -275,7 +275,7 @@ public class Boid {
         // Movement in a flowfield
         Vector_2D future_position = future_pos();
 
-        Vector_2D future_desired = field.get_vector(future_position);
+        Vector_2D future_desired = field.getVector(future_position);
         Vector_2D actual_steer = getSteeringForce(future_desired);
         actual_steer.limit(speedlimit);
         this.applyForce(actual_steer);
@@ -393,8 +393,14 @@ public class Boid {
         
         return diffX*diffX + diffY*diffY;
     } 
+
+    public void applyFlowField(FlowField field) {
+        Vector_2D wind = field.getVector(this.position);
+        this.applyForce(wind);
+}
+
 ////////////////////////////////////////////// Group Behavior /////////////////////////////////////////////
-    public void submittoGroupBehavior(HashMap<GridType, Grid> grids) {
+    public void submittoGroupBehavior(HashMap<GridType, Grid> grids, FlowField windField) {
         /* Apply all group behavior forces at once */
         /* Vector_2D separation = this.separation(grid_separation);
         Vector_2D alignement = this.alignment(grid_together);
@@ -412,5 +418,10 @@ public class Boid {
         // all beings wander
         Vector_2D wanderForce = this.wander(this.wander_factor);
         this.applyForce(wanderForce);
+         // appliquer le vent seulement s'il existe
+        if (windField != null) {
+            Vector_2D wind = windField.getVector(this.getPosition());
+            this.applyForce(wind);
+        }
     } 
 }

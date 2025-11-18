@@ -2,7 +2,6 @@ package main.main_Boids.BoidsSimulations;
 import main.main_Boids.Boidutils.*;
 import main.EventManaging.EventManager;
 import main.EventManaging.EventBoidsMultiple;
-import main.EventManaging.EventBoids;
 import main.main_Boids.Behaviors.*;
 import main.main_Boids.Boids.*;
 import main.main_Boids.Boids.Species.Eagle;
@@ -16,7 +15,7 @@ import gui.Oval;
 
 
 public class MultipleBoidsSimulator implements Simulable {
-
+    private FlowField windField = null; 
     private GUISimulator gui;
     private ArrayList<Boids> boidsLists; // plusieurs listes de boids
     private int width;
@@ -24,6 +23,17 @@ public class MultipleBoidsSimulator implements Simulable {
     private Vector_2D target;
     private EventManager manager;
 
+    public void setWindField(FlowField field) {
+        this.windField = field;
+    }
+
+    public void removeWindField() {
+        this.windField = null;
+    }
+
+    public FlowField getWindField() {
+        return windField;
+    }
     public MultipleBoidsSimulator(GUISimulator gui, ArrayList<Boids> boidsLists, Vector_2D target) {
         this.gui = gui;
         this.boidsLists = boidsLists;
@@ -61,7 +71,7 @@ public class MultipleBoidsSimulator implements Simulable {
             HashMap<GridType, Grid> grids = boids.getGrids();
 
             for (Boid b : listeBoids) {
-                b.submittoGroupBehavior(grids);
+                b.submittoGroupBehavior(grids, windField);
             }
 
             // Collecter les birds attrapés

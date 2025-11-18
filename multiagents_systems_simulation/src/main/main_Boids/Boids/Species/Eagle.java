@@ -28,7 +28,7 @@ public class Eagle extends Boid {
     }
 
     public void initializeBehaviors(int width, int height) {
-
+        this.behaviors.clear();
         // Eagles avoid bumping but slightly
         this.behaviors.add(new Separation(0.4, width, height, this.close_distance * 1.5));
 

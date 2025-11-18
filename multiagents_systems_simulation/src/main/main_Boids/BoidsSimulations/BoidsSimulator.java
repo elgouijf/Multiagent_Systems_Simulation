@@ -13,7 +13,7 @@ import java.util.HashMap;
 
 import gui.Oval;
 public class BoidsSimulator implements Simulable {
-
+    private FlowField windField = null;
     private GUISimulator gui;
     private Boids boids;
     private int width;
@@ -21,7 +21,17 @@ public class BoidsSimulator implements Simulable {
     private Vector_2D target;
     EventManager manager;
 
+    public void setWindField(FlowField field) {
+    this.windField = field;
+    }
 
+    public void removeWindField() {
+        this.windField = null;
+    }
+
+    public FlowField getWindField() {
+        return windField;
+    }
     public BoidsSimulator(GUISimulator gui, Boids boids,Vector_2D target) {
         this.gui = gui;
         this.boids = boids;
@@ -49,7 +59,7 @@ public class BoidsSimulator implements Simulable {
         for (Boid b : listeBoids) {
             
             /* b.wander(target,1); */
-            b.submittoGroupBehavior(grids);
+            b.submittoGroupBehavior(grids, windField);
 
         }
 
