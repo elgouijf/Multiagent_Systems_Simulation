@@ -24,5 +24,6 @@ public class Path{
     }
     public void clear(){
         tableauPoints.clear();
+        taille = 0;
     }
 }

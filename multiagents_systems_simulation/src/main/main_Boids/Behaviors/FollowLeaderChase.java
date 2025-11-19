@@ -23,6 +23,9 @@ public class FollowLeaderChase implements Behavior{
         Wolf wolf = (Wolf) b; // nécessaire afin de compiler
         double distanceChase = wolf.getSlowRadius();
         Boid prey = wolf.getPreyLeader();
+        if (prey == null) {
+            return new Vector_2D(); // do nothing this frame
+        }
         double distancetoPrey = wolf.distance_to(prey);
         if (distancetoPrey < distanceChase){
            Random rand = new Random();

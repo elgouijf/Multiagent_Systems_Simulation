@@ -1,7 +1,5 @@
 package main.main_Boids.Behaviors;
 import java.util.Random;
-
-import main.main_Boids.Behaviors.Behavior;
 import main.main_Boids.Boids.Boid;
 import main.main_Boids.Boidutils.Grid;
 import main.main_Boids.Boidutils.GridType;
@@ -10,19 +8,21 @@ import main.main_Boids.Boidutils.Vector_2D;
 
 public class FollowPath implements Behavior{
     private double forceFactor;
-    private double distanceArrival;
+    private double distancetoArrival;
     private int nPoints;
     
-    public FollowPath(double forceFactor,double distanceArrival,int nPoints){
+    public FollowPath(double forceFactor,double distancetoArrival,int nPoints){
         this.forceFactor = forceFactor;
-        this.distanceArrival = distanceArrival;
+        this.distancetoArrival = distancetoArrival; // distance to consider arrival at the end of the path (because we cant be exactly on the point)
         this.nPoints = nPoints;
     }
 
     @Override
     public Vector_2D behave(Boid b,Grid grid){
         updatePath(b,grid);
-        return b.followPath(forceFactor);
+        Vector_2D force = b.followPath(forceFactor);
+        System.out.println("FollowPath force: " + force);
+        return force;
     }
 
 
@@ -47,15 +47,17 @@ public class FollowPath implements Behavior{
           Vector_2D lastPoint = path.gettableauPoints().get(taille-1);
           Vector_2D pos = b.getPosition();
           double distance = pos.getdistance(lastPoint);
-          if (distance > distanceArrival){
+          if (distance > distancetoArrival){
             return false;
-          } else{
+          }
+          else{
             return true;
           }
         }else{
             return true;
         }
     }
+
     @Override
     public void updateGrid(Boid b, Grid grid) {
         grid.updateBoidCell(b);

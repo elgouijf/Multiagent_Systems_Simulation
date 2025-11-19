@@ -2,6 +2,8 @@ package main.main_Boids.Boids.Species;
 
 
 import java.awt.Color;
+import java.util.Random;
+
 import main.main_Boids.Behaviors.*;
 import main.main_Boids.Boids.Boid;
 import main.main_Boids.Boidutils.Path;
@@ -23,6 +25,13 @@ public class Deer extends Boid{
         this.wander_radius = 3;
         this.initializeBehaviors(windowWidth, windowHeight);
         this.path = new Path(path_radius);
+        Random rand = new Random();
+        for (int i = 0; i < 100; i++) {
+            double x = rand.nextDouble() * windowWidth;
+            double y = rand.nextDouble() * windowHeight;
+            this.path.add(new Vector_2D(x, y));
+        }
+
         this.predator = "Wolf";
                 }
 
@@ -30,12 +39,12 @@ public class Deer extends Boid{
         
         this.behaviors.clear();
         // they dont like being 
-        this.behaviors.add(new Separation(3, width, height, this.close_distance * 1.5));
+        this.behaviors.add(new Separation(1, width, height, this.close_distance * 1.5));
 
         // strongest – survival first
         this.behaviors.add(new FleeFromPredator(3.5,Math.pow(this.neighbor_distance,2)));
 
         // keeps migration direction
-        this.behaviors.add(new FollowPath(1.5,1.0,100));
+        this.behaviors.add(new FollowPath(2,100.0,100));
     }      
 }

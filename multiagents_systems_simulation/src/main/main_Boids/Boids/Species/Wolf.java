@@ -53,6 +53,7 @@ public class Wolf extends Boid{
             Wolf wolf = pack.get(i);
            ArrayList<Boid> neighbors = grid.getNeighbors(wolf);
            for (Boid other : neighbors){
+            if (other == null) continue; // Sometrimes neighbors cells can be empty
              if (other.getSpecies().equals(prey)){
                 double distance = wolf.distance_to(other);
                 if (distance < minDistance ){
