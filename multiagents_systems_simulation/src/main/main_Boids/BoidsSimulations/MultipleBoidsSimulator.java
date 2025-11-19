@@ -5,6 +5,7 @@ import main.EventManaging.EventBoidsMultiple;
 import main.main_Boids.Behaviors.*;
 import main.main_Boids.Boids.*;
 import main.main_Boids.Boids.Species.Eagle;
+import main.main_Boids.Boids.Species.Wolf;
 import gui.Simulable;
 import gui.GUISimulator;
 import java.awt.Color;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import gui.Oval;
-
+import gui.Rectangle;
 
 public class MultipleBoidsSimulator implements Simulable {
     private FlowField windField = null; 
@@ -69,8 +70,16 @@ public class MultipleBoidsSimulator implements Simulable {
         for (Boids boids : boidsLists) {
             ArrayList<Boid> listeBoids = boids.getlisteBoids();
             HashMap<GridType, Grid> grids = boids.getGrids();
-
+            
             for (Boid b : listeBoids) {
+                if (b instanceof Wolf ){
+                  Wolf wolf = (Wolf) b;
+                  boolean changethePrey = wolf.changePrey();
+                  if (changethePrey){
+                    Grid grid = grids.get(GridType.TOGETHER);
+                    wolf.updateLeader(grid);
+                  }
+                }
                 b.submittoGroupBehavior(grids, windField);
             }
 
@@ -164,7 +173,10 @@ public class MultipleBoidsSimulator implements Simulable {
                 double x = b.getPosition().getX();
                 double y = b.getPosition().getY();
                 int size = b.getSize();
-
+            if (b instanceof Wolf){
+               Rectangle rectangle = new Rectangle((int) x,(int) y,b.getColor(),b.getColor(),size);
+               gui.addGraphicalElement(rectangle);
+            } else{
                 double orientation = b.getVelocity().heading();
                 Vector_2D tip = new Vector_2D(2*size,0);
                 Vector_2D left = new Vector_2D(-size,size);
@@ -177,6 +189,7 @@ public class MultipleBoidsSimulator implements Simulable {
                 int[] ys = { (int)Math.round(tip.getY()), (int)Math.round(left.getY()), (int)Math.round(right.getY()) };
                 PolygonGraphics triangle = new PolygonGraphics(xs, ys, 3, b.getColor());
                 gui.addGraphicalElement(triangle);
+            }
             }
         }
 

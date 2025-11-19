@@ -1,10 +1,10 @@
 package main.main_Boids.Boids;
-import main.main_Boids.Boidutils.*;
-import main.main_Boids.Behaviors.*;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
+import main.main_Boids.Behaviors.*;
+import main.main_Boids.Boidutils.*;
 
 public class Boid {
     protected Vector_2D position_0;
@@ -47,7 +47,8 @@ public class Boid {
 
     protected ArrayList<Behavior> behaviors = new ArrayList<Behavior>();
 
-    protected String species = "Boid";   // valeur par défaut
+    protected String species = "Boid"; // valeur par défaut
+    protected Path path = null;   // valeur par défaut
 
     // Constructor
     public Boid(Vector_2D position, Vector_2D velocity, Vector_2D acceleration, double speedlimit, double forceLimit, double wander_radius, 
@@ -160,6 +161,9 @@ public class Boid {
 
     public double getPath_radius(){
         return this.path_radius;
+    }
+    public Path getPath(){
+        return path;
     }
 
     public double getSlowRadius(){
@@ -299,7 +303,7 @@ public class Boid {
         // Implement the wander movement without a forceFactor
         return wander(1);
     }
-    public void follow_path(Path path){
+    public Vector_2D follow_path(double forceFactor,Path path){
         int taille = path.getTaille();
         ArrayList<Vector_2D> tableauPoints = path.gettableauPoints();
         Vector_2D futurePosition = future_pos();
@@ -321,6 +325,7 @@ public class Boid {
             actualTarget = normalPoint;
           }
        }
+       return this.seek(actualTarget,forceFactor);
        
     }
 

@@ -15,6 +15,15 @@ public class Grid {
     private GridType type;
 
 
+    public int getScreenWidth(){
+        return screen_width;
+    }
+    public int getScreenHeight(){
+        return screen_height;
+    }
+
+
+
     public Grid(int screen_width, int screen_height,double cell_width, double cell_height, GridType type) {
         this.screen_width = screen_width;
         this.screen_height = screen_height;

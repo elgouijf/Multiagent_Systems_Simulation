@@ -22,4 +22,7 @@ public class Path{
     public ArrayList<Vector_2D> gettableauPoints(){
         return this.tableauPoints;
     }
+    public void clear(){
+        tableauPoints.clear();
+    }
 }
