@@ -39,6 +39,7 @@ public class FleeFromPredator implements Behavior {
 
         // Multiplier par le facteur de force
         fleeForce.multiply(forceFactor);
+        fleeForce.limit(b.getforceLimit());
         return fleeForce;
     }
 

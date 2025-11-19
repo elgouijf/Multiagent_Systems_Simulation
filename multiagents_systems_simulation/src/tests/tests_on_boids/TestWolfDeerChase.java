@@ -111,14 +111,6 @@ public class TestWolfDeerChase {
                 GridType.TOGETHER
         ));
 
-        for (Boid d : deerList) {
-            deerGrids.get(GridType.SEPARATION).addBoid(d);
-            deerGrids.get(GridType.TOGETHER).addBoid(d);
-        }
-
-        Boids deerHerd = new Boids(deerList, deerGrids);
-
-
         // ==========================================================
         // Wolves
         // ==========================================================
@@ -139,10 +131,27 @@ public class TestWolfDeerChase {
                 GridType.PREDATOR_DETECTION
         ));
 
+        // Adding Boids to their grids for efficient neighbor search
+        for (Boid d : deerList) {
+            // Add deer to its grids
+            deerGrids.get(GridType.SEPARATION).addBoid(d);
+            deerGrids.get(GridType.TOGETHER).addBoid(d);
+            // Add deer to wolf detection grid to be detected by wolves
+            wolfGrids.get(GridType.PREDATOR_DETECTION).addBoid(d);
+        }
+
+        Boids deerHerd = new Boids(deerList, deerGrids);
+
+
+
+
         for (Boid w : wolfList) {
+            // Add wolf to its grids
             wolfGrids.get(GridType.SEPARATION).addBoid(w);
             wolfGrids.get(GridType.TOGETHER).addBoid(w);
-            wolfGrids.get(GridType.PREDATOR_DETECTION).addBoid(w);
+            // Add wolf to deer neighbor grid to be detected by deer
+            deerGrids.get(GridType.TOGETHER).addBoid(w);
+            
         }
 
         Boids wolfPack = new Boids(wolfList, wolfGrids);

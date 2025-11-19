@@ -50,7 +50,10 @@ public class TestEagleChase {
         // === Eagles ===
         ArrayList<Boid> eaglesList = new ArrayList<>();
         int eagle_n = 3;
-        double eagleSpeedLimit = 12, eagleForceLimit = 4, eagleWanderRadius = 4, eaglePathRadius = 15;
+        double eagleSpeedLimit = 12;
+        double eagleForceLimit = 5;
+        double eagleWanderRadius = 4;
+        double eaglePathRadius = 15;
         int eagleRadius = 12;
         double eagleAngleWander = Math.PI / 8;
 
@@ -72,18 +75,23 @@ public class TestEagleChase {
         eagleGrids.put(GridType.TOGETHER, new Grid(width, height, eaglesList.get(0).getNeighbor_distance(), GridType.TOGETHER));
         eagleGrids.put(GridType.PREDATOR_DETECTION, new Grid(width, height, eaglesList.get(0).getPath_radius(), GridType.PREDATOR_DETECTION));
 
-        // Ajout aux grids
+        // Adding Boids to their grids for efficient neighbor search
         for (Boid b : birdsList) {
+            // Add bird to its grids
             birdGrids.get(GridType.SEPARATION).addBoid(b);
             birdGrids.get(GridType.TOGETHER).addBoid(b);
+            // Add bird to eagle detection grid to be detected by eagles
+            eagleGrids.get(GridType.PREDATOR_DETECTION).addBoid(b);
         }
         for (Boid e : eaglesList) {
+            // Add eagle to its grids
             eagleGrids.get(GridType.SEPARATION).addBoid(e);
             eagleGrids.get(GridType.TOGETHER).addBoid(e);
-            eagleGrids.get(GridType.PREDATOR_DETECTION).addBoid(e);
+            // Add eagle to brid neighbor grid to be detected by birds
+            birdGrids.get(GridType.TOGETHER).addBoid(e);
         }
 
-        // === Boids containers ===
+        // Boids containers
         Boids birds = new Boids(birdsList, birdGrids);
         Boids eagles = new Boids(eaglesList, eagleGrids);
 

@@ -22,7 +22,7 @@ public class Arrow implements GraphicalElement {
     public void paint(Graphics2D g) {
         g.setColor(color);
 
-        // Ligne principale
+        
         g.drawLine(x1, y1, x2, y2);
 
         // Calcul tête de flèche

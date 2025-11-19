@@ -33,6 +33,7 @@ public class BoidSimulator implements Simulable {
         this.reDisplay();
     }
     
+    
     @Override
     public void next() {
         // Update dimensions in case of window resize

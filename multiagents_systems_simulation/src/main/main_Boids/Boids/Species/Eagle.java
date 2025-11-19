@@ -24,6 +24,7 @@ public class Eagle extends Boid {
         // Eagles wander much less
         this.wander_factor = 0.25;
         this.prey = "Bird";
+        this.mass = 4.0;
 
         initializeBehaviors(windowWidth, windowHeight);
     }

@@ -134,4 +134,7 @@ public class Vector_2D {
         this.y = y;
     }
 
+    public boolean isZero(){
+        return this.x == 0 && this.y == 0;
+    }
 } 

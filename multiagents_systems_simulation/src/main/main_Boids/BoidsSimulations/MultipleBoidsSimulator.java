@@ -66,7 +66,7 @@ public class MultipleBoidsSimulator implements Simulable {
     }
 
     public void moveBoids() {
-        long start = System.nanoTime();
+    
 
         for (Boids boids : boidsLists) {
             ArrayList<Boid> listeBoids = boids.getlisteBoids();
@@ -77,14 +77,14 @@ public class MultipleBoidsSimulator implements Simulable {
                   Wolf wolf = (Wolf) b;
                   boolean changethePrey = wolf.changePrey();
                   if (changethePrey){
-                    Grid grid = grids.get(GridType.TOGETHER);
+                    Grid grid = grids.get(GridType.PREDATOR_DETECTION);
                     wolf.updateLeader(grid);
                   }
                 }
                 b.submittoGroupBehavior(grids, windField);
             }
 
-            // Collecter les birds attrapés
+        // Collect all prey Boids caught by Eagles
         ArrayList<Boid> toRemove = new ArrayList<>();
 
         for (Boids boids_ : boidsLists) {
@@ -121,13 +121,10 @@ public class MultipleBoidsSimulator implements Simulable {
                         behavior.updateGrid(b, grid);
                     }
                 }
-                handleBorderBounce(b);
+                handleBordersSteering(b);
             }
         }
 
-        long end = System.nanoTime();
-        double time_per_frame = (end - start) / 1e6; // ms
-        System.out.println("Frame time: " + time_per_frame + " ms");
         this.reDisplay();
     }
 
@@ -143,28 +140,38 @@ public class MultipleBoidsSimulator implements Simulable {
         this.reDisplay();
     }
 
-    /** Gestion des rebonds aux bords */
-    private void handleBorderBounce(Boid boid) {
-        int r = boid.getSize();
-        Vector_2D pos = boid.getPosition();
-        Vector_2D vel = boid.getVelocity();
+    private void handleBordersSteering(Boid b) {
+        int margin = 80;       // distance from border to start steering
+        double steerStrength = 0.5;
 
-        if (pos.getX() < 0) {
-            pos.setX(0);
-            vel.setX(Math.abs(vel.getX()));
-        } else if (pos.getX() + 2*r > width) {
-            pos.setX(width - 2*r);
-            vel.setX(-Math.abs(vel.getX()));
+        Vector_2D pos = b.getPosition();
+        Vector_2D vel = b.getVelocity();
+        Vector_2D steer = new Vector_2D();
+
+        // Left
+        if (pos.getX() < margin) {
+            steer.add(new Vector_2D(1, 0));
+        }
+        // Right
+        if (pos.getX() > width - margin) {
+            steer.add(new Vector_2D(-1, 0));
+        }
+        // Top
+        if (pos.getY() < margin) {
+            steer.add(new Vector_2D(0, 1));
+        }
+        // Bottom
+        if (pos.getY() > height - margin) {
+            steer.add(new Vector_2D(0, -1));
         }
 
-        if (pos.getY() < 0) {
-            pos.setY(0);
-            vel.setY(Math.abs(vel.getY()));
-        } else if (pos.getY() + 2*r > height) {
-            pos.setY(height - 2*r);
-            vel.setY(-Math.abs(vel.getY()));
+        if (!steer.isZero()) {
+            steer.normalize();
+            steer.multiply(steerStrength * b.getforceLimit());
+            b.getAcceleration().add(steer);
         }
     }
+
 
     public void reDisplay() {
         gui.reset();

@@ -47,6 +47,7 @@ public class Chase implements Behavior {
 
         Vector_2D steering = b.getSteeringForce(desired);
         steering.multiply(forceFactor);
+        steering.limit(b.getforceLimit());
         return steering;
     }
 

@@ -24,9 +24,9 @@ public class Bird extends Boid {
         // Add bird-specific behaviors
         this.behaviors.clear();
         this.behaviors.add(new Separation(1.5, windowWidth, windowHeight, this.close_distance)); // birds avoid crowding
-        this.behaviors.add(new Alignment(windowWidth, windowHeight, this.neighbor_distance)); // birds align with neighbors just fine
+        this.behaviors.add(new Alignment(1, windowWidth, windowHeight, this.neighbor_distance)); // birds align with neighbors just fine
         this.behaviors.add(new Cohesion(0.8, windowWidth, windowHeight, this.neighbor_distance)); // birds try to stay close to neighbors but not too much
-        this.behaviors.add(new FleeFromPredator(2, this.neighbor_distance * 2)); // birds flee from predators
+        this.behaviors.add(new FleeFromPredator(2, this.neighbor_distance)); // birds flee from predators
     }
     }
 
