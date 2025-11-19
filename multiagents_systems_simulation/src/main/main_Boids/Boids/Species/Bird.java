@@ -1,10 +1,12 @@
 package main.main_Boids.Boids.Species;
+import java.awt.Color;
+import main.main_Boids.Behaviors.*;
 import main.main_Boids.Boids.Boid;
 import main.main_Boids.Boidutils.*;
-import main.main_Boids.Behaviors.*;
-import java.awt.Color;
 
 public class Bird extends Boid {
+    private String predator;
+    
     public Bird(Vector_2D position, Vector_2D velocity, Vector_2D acceleration, double speedlimit, double forceLimit, 
                 double wander_radius, double path_radius, int boid_size, Color color, Color compassColor, 
                 double angleDistance, int windowWidth, int windowHeight) {
@@ -13,7 +15,9 @@ public class Bird extends Boid {
               boid_size, color, compassColor, angleDistance, windowWidth, windowHeight);
         this.wander_factor = 0.75;
         this.species = "Bird";
-        this.initializeBehaviors(windowWidth, windowHeight);}
+        this.initializeBehaviors(windowWidth, windowHeight);
+        this.predator = "Eagle";
+    }
         
 
     public void initializeBehaviors(int windowWidth, int windowHeight){

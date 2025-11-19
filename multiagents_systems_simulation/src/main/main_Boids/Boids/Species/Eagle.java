@@ -1,10 +1,10 @@
 package main.main_Boids.Boids.Species;
 
-import main.main_Boids.Boids.Boid;
-import main.main_Boids.Boidutils.*;
-import main.main_Boids.Behaviors.*;
 import java.awt.Color;
 import java.util.ArrayList;
+import main.main_Boids.Behaviors.*;
+import main.main_Boids.Boids.Boid;
+import main.main_Boids.Boidutils.*;
 
 public class Eagle extends Boid {
     private double killRadius;
@@ -23,6 +23,7 @@ public class Eagle extends Boid {
 
         // Eagles wander much less
         this.wander_factor = 0.25;
+        this.prey = "Bird";
 
         initializeBehaviors(windowWidth, windowHeight);
     }

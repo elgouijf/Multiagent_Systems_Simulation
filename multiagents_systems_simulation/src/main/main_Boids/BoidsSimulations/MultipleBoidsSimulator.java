@@ -4,6 +4,7 @@ import main.EventManaging.EventManager;
 import main.EventManaging.EventBoidsMultiple;
 import main.main_Boids.Behaviors.*;
 import main.main_Boids.Boids.*;
+import main.main_Boids.Boids.Species.Deer;
 import main.main_Boids.Boids.Species.Eagle;
 import main.main_Boids.Boids.Species.Wolf;
 import gui.Simulable;
@@ -173,7 +174,10 @@ public class MultipleBoidsSimulator implements Simulable {
                 double x = b.getPosition().getX();
                 double y = b.getPosition().getY();
                 int size = b.getSize();
-            if (b instanceof Wolf){
+            if (b instanceof Deer){
+               Rectangle rectangle = new Rectangle((int) x,(int) y,b.getColor(),b.getColor(),size);
+               gui.addGraphicalElement(rectangle);
+            }else if (b instanceof Wolf){
                Rectangle rectangle = new Rectangle((int) x,(int) y,b.getColor(),b.getColor(),size);
                gui.addGraphicalElement(rectangle);
             } else{

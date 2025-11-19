@@ -1,15 +1,12 @@
 package main.main_Boids.Behaviors;
 
+import java.util.ArrayList;
 import java.util.Random;
 import main.main_Boids.Boids.Boid;
 import main.main_Boids.Boids.Species.Wolf;
 import main.main_Boids.Boidutils.Grid;
 import main.main_Boids.Boidutils.GridType;
 import main.main_Boids.Boidutils.Vector_2D;
-import main.main_Boids.Boids.Species.Wolf;
-
-import java.util.ArrayList;
-import java.util.Random;
 
 
 
@@ -25,13 +22,14 @@ public class FollowLeaderChase implements Behavior{
     public Vector_2D behave(Boid b,Grid grid){
         Wolf wolf = (Wolf) b; // nécessaire afin de compiler
         double distanceChase = wolf.getSlowRadius();
-        Boid prey = wolf.getPrey();
+        Boid prey = wolf.getPreyLeader();
         double distancetoPrey = wolf.distance_to(prey);
         if (distancetoPrey < distanceChase){
            Random rand = new Random();
            double angle = rand.nextDouble()*Math.PI*2;
-           Vector_2D circlePrey = new Vector_2D(distance*Math.cos(angle),distance*Math.sin(angle));
-           circlePrey.add(prey);
+           Vector_2D posPrey = prey.getPosition();
+           Vector_2D circlePrey = new Vector_2D(distancetoPrey*Math.cos(angle),distancetoPrey*Math.sin(angle));
+           circlePrey.add(posPrey);
            return wolf.seek(circlePrey,forceFactor);
         }else{
             int indexLeader = wolf.getindexLeader();

@@ -1,10 +1,10 @@
 package main.main_Boids.Behaviors;
 
+import java.util.ArrayList;
 import main.main_Boids.Boids.Boid;
 import main.main_Boids.Boidutils.Grid;
 import main.main_Boids.Boidutils.GridType;
 import main.main_Boids.Boidutils.Vector_2D;
-import java.util.ArrayList;
 
 public class FleeFromPredator implements Behavior {
 
@@ -17,22 +17,21 @@ public class FleeFromPredator implements Behavior {
     }
 
     @Override
-    public Vector_2D behave(Boid bird, Grid grid) {
-        ArrayList<Boid> neighbors = grid.getNeighbors(bird);
+    public Vector_2D behave(Boid b, Grid grid) {
+        ArrayList<Boid> neighbors = grid.getNeighbors(b);
 
         Vector_2D fleeForce = new Vector_2D();
 
         for (Boid other : neighbors) {
             // Vérifie si c'est un prédateur (instance Eagle)
-            if (other instanceof main.main_Boids.Boids.Species.Eagle) {
-                double d = bird.distance_to(other);
-
+            if (other.getPrey().equals(b.getSpecies())) {
+                double d = b.distance_to(other);
                 if (d < detectionRadius) {
                     // Force opposée à la position du prédateur
                     Vector_2D away = other.getPosition().copy();
-                    away.subtract(bird.getPosition());
+                    away.subtract(b.getPosition());
                     away.multiply(-1); // direction opposée
-                    away.updateMagnitude(bird.getforceLimit()); // max force
+                    away.updateMagnitude(b.getforceLimit()); // max force
                     fleeForce.add(away);
                 }
             }

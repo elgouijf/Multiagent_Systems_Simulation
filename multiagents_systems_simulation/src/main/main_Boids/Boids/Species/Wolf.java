@@ -1,11 +1,10 @@
 package main.main_Boids.Boids.Species;
 
+import java.awt.Color;
+import java.util.ArrayList;
+import main.main_Boids.Behaviors.*;
 import main.main_Boids.Boids.Boid;
 import main.main_Boids.Boidutils.*;
-import main.main_Boids.Behaviors.*;
-import java.awt.Color;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 
 
 public class Wolf extends Boid{
@@ -27,10 +26,11 @@ public class Wolf extends Boid{
         pack.add(this);
         this.species = "Wolf";
         this.killRadius = 1.0 ;
+        this.prey = "Deer";
         initializeBehaviors(windowWidth, windowHeight);
                  }
     
-    @Override
+
     public void initializeBehaviors(int width, int height) {
         
         this.behaviors.clear();
@@ -57,17 +57,20 @@ public class Wolf extends Boid{
                 double distance = wolf.distance_to(other);
                 if (distance < minDistance ){
                     minDistance = distance;
-                    preyLeader = other;
-                    indexLeader = i;
+                    this.preyLeader = other;
+                    this.indexLeader = i;
                 }
              }
            }
         } 
     }
     public boolean changePrey(){
+        if (preyLeader == null){
+            return true;
+        }
         for (Wolf wolf : pack){
             double distancetoPrey = wolf.distance_to(preyLeader);
-            if (distancetoPrey > killRadius){
+            if (distancetoPrey > this.killRadius){
                 return false;
             }
         }
@@ -75,13 +78,13 @@ public class Wolf extends Boid{
     }
 
     public int getindexLeader(){
-        return indexLeader;
+        return this.indexLeader;
     }
-    public Boid getPrey(){
-        return preyLeader;
+    public Boid getPreyLeader(){
+        return this.preyLeader;
     }
     public ArrayList<Wolf> getPack(){
-        return pack;
+        return this.pack;
     }
 
 

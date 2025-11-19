@@ -31,6 +31,7 @@ public class Boid {
     // for simulations
     protected Color color;
     protected Color compassColor;
+    protected String prey = "Boid";
 
     // for separation behavior
     protected double close_distance;
@@ -170,6 +171,10 @@ public class Boid {
         return this.slowRadius;
     }
 
+    public String getPrey(){
+        return this.prey;
+    }
+
     public double getAngleDistance(){
         return this.angleDistance;
     }
@@ -303,9 +308,9 @@ public class Boid {
         // Implement the wander movement without a forceFactor
         return wander(1);
     }
-    public Vector_2D follow_path(double forceFactor,Path path){
-        int taille = path.getTaille();
-        ArrayList<Vector_2D> tableauPoints = path.gettableauPoints();
+    public Vector_2D followPath(double forceFactor){
+        int taille = this.path.getTaille();
+        ArrayList<Vector_2D> tableauPoints = this.path.gettableauPoints();
         Vector_2D futurePosition = future_pos();
         double smallestDistance = Double.POSITIVE_INFINITY;
         Vector_2D actualTarget = new Vector_2D();
