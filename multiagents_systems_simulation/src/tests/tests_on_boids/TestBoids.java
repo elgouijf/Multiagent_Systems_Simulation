@@ -41,20 +41,20 @@ public class TestBoids {
             
 
             Color color = bodyColors[i % bodyColors.length];
-            Color compass_color = compassColors[i % compassColors.length];
+            Color compassColor = compassColors[i % compassColors.length];
 
-            Boid b = new Boid(pos, vel, acc, speedLimit, forceLimit, wanderRadius, pathRadius, boidRadius, color, compass_color,Math.PI/12);
+            Boid b = new Boid(pos, vel, acc, speedLimit, forceLimit, wanderRadius, pathRadius, boidRadius, color, compassColor,Math.PI/12);
             /* b.setCloseDistance(100); */
             list.add(b);
         }
        // Create grids for behaviors (one grid per interaction distance) 
         HashMap<GridType, Grid> grids = new HashMap<>();
-        double separation_distance = list.get(0).getClose_distance();
-        double neighbor_distance   = list.get(0).getNeighbor_distance();
-        Grid grid_separation = new Grid(width, height, separation_distance, GridType.SEPARATION);
-        Grid grid_together   = new Grid(width, height, neighbor_distance, GridType.TOGETHER);
-        grids.put(GridType.SEPARATION, grid_separation);
-        grids.put(GridType.TOGETHER, grid_together);
+        double separationDistance = list.get(0).getCloseDistance();
+        double neighborDistance   = list.get(0).getNeighborDistance();
+        Grid gridSeparation = new Grid(width, height, separationDistance, GridType.SEPARATION);
+        Grid gridTogether   = new Grid(width, height, neighborDistance, GridType.TOGETHER);
+        grids.put(GridType.SEPARATION, gridSeparation);
+        grids.put(GridType.TOGETHER, gridTogether);
         // Create Boids container
         Boids boids = new Boids(list, grids); // grids are no longer needed
 
@@ -64,9 +64,9 @@ public class TestBoids {
             grids.get(GridType.TOGETHER).addBoid(b);
         }
         
-        Vector2D target = new Vector2D(50,50);
+   
         // Simulator for multiple boids
-        BoidsSimulator simulator = new BoidsSimulator(gui, boids,target);
+        BoidsSimulator simulator = new BoidsSimulator(gui, boids);
 
         gui.setSimulable(simulator);
     }

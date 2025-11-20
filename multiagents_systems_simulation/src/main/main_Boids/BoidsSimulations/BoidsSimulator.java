@@ -18,8 +18,7 @@ public class BoidsSimulator implements Simulable {
     protected Boids boids;
     protected int width;
     protected int height;
-    protected Vector2D target;
-    EventManager manager;
+    private EventManager manager;
 
     public void setWindField(FlowField field) {
     this.windField = field;
@@ -33,13 +32,12 @@ public class BoidsSimulator implements Simulable {
         // In case we want to add wind effects
         return windField;
     }
-    public BoidsSimulator(GUISimulator gui, Boids boids,Vector2D target) {
+    public BoidsSimulator(GUISimulator gui, Boids boids) {
         this.gui = gui;
         this.boids = boids;
 
         this.width = gui.getWidth();
         this.height = gui.getHeight();
-        this.target = target;
         this.manager = new EventManager();
         this.manager.addEvent(new EventBoids(0, this.boids, this, this.manager));
         this.reDisplay();
@@ -129,37 +127,34 @@ public class BoidsSimulator implements Simulable {
             // Get the velocity direction angle
             double orientation = b.getVelocity().heading();
             // Create a triangle shape for the boid relative to the center
-            Vector2D triangle_tip = new Vector2D(2*size, 0);
-            Vector2D left_wing = new Vector2D(-size, size);
-            Vector2D right_wing = new Vector2D(-size, -size);
+            Vector2D triangleTip = new Vector2D(2*size, 0);
+            Vector2D leftWing = new Vector2D(-size, size);
+            Vector2D rightWing = new Vector2D(-size, -size);
 
             // Rotate the triangle according to the orientation
-            triangle_tip.rotate(orientation);
-            left_wing.rotate(orientation);
-            right_wing.rotate(orientation);
+            triangleTip.rotate(orientation);
+            leftWing.rotate(orientation);
+            rightWing.rotate(orientation);
  
             // Translate the triangle to the boid's position
-            triangle_tip.add(new Vector2D(x , y));
-            left_wing.add(new Vector2D(x , y));
-            right_wing.add(new Vector2D(x , y));
+            triangleTip.add(new Vector2D(x , y));
+            leftWing.add(new Vector2D(x , y));
+            rightWing.add(new Vector2D(x , y));
 
             // Draw the triangle
-            int[] triangle_x = { (int)Math.round(triangle_tip.getX()), 
-             (int)Math.round(left_wing.getX()), 
-             (int)Math.round(right_wing.getX()) };
+            int[] triangleX = { (int)Math.round(triangleTip.getX()), 
+             (int)Math.round(leftWing.getX()), 
+             (int)Math.round(rightWing.getX()) };
 
-            int[] triangle_y = { (int)Math.round(triangle_tip.getY()), 
-             (int)Math.round(left_wing.getY()), 
-             (int)Math.round(right_wing.getY()) };
-            PolygonGraphics triangle_boid = new PolygonGraphics(triangle_x, triangle_y, 3, b.getColor());
+            int[] triangleY = { (int)Math.round(triangleTip.getY()), 
+             (int)Math.round(leftWing.getY()), 
+             (int)Math.round(rightWing.getY()) };
+            PolygonGraphics triangleBoid = new PolygonGraphics(triangleX, triangleY, 3, b.getColor());
 
            // Add to GUI
-            gui.addGraphicalElement(triangle_boid); 
+            gui.addGraphicalElement(triangleBoid); 
             
         }
-        // Draw target
-        Oval target_oval = new Oval((int) target.getX(),(int) target.getY(),Color.GREEN,Color.GREEN,4,4);
-        gui.addGraphicalElement(target_oval);
     }
 
     public GUISimulator getGui() { 

@@ -25,12 +25,12 @@ public class TestBoid {
         // Limites et masse
         double speedLimit = 30.0;
         double forceLimit = 2.0;
-        double wander_radius = 2;
+        double wanderRadius = 2;
         //double target_radius = 10;
-        double path_radius = 10;
-        int boid_radius = 9;
+        double pathRadius = 10;
+        int boidRadius = 9;
 
-        Boid boid = new Boid(position, velocity, acceleration, speedLimit, forceLimit,wander_radius,path_radius, boid_radius, Color.YELLOW, Color.BLACK, 0);
+        Boid boid = new Boid(position, velocity, acceleration, speedLimit, forceLimit,wanderRadius,pathRadius, boidRadius, Color.YELLOW, Color.BLACK, 0);
 
         // Direction vers laquelle il veut aller (target)
         Vector2D target = new Vector2D(45, 45);

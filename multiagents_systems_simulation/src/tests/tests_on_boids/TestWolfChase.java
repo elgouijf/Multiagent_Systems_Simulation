@@ -12,7 +12,7 @@ import java.util.Random;
 
 import gui.GUISimulator;
 
-public class TestWolfDeerChase {
+public class TestWolfChase {
     public static void main(String[] args) {
         
         int width  = (args.length > 0) ? Integer.parseInt(args[0]) : 1200;
@@ -26,7 +26,7 @@ public class TestWolfDeerChase {
         // ==========================================================
         ArrayList<Boid> deerList = new ArrayList<>();
 
-        int deer_n = 40;
+        int deerN = 40;
         double deerSpeedLimit  = 5.5;
         double deerForceLimit  = 0.2;
         double deerWanderRad   = 3.0;
@@ -34,7 +34,7 @@ public class TestWolfDeerChase {
         int deerSize = 6;
         double deerAngle       = Math.PI/8;
 
-        for (int i = 0; i < deer_n; i++) {
+        for (int i = 0; i < deerN; i++) {
 
             Vector2D pos = new Vector2D(
                 width * 0.2 + rand.nextGaussian() * 100,
@@ -64,7 +64,7 @@ public class TestWolfDeerChase {
         // ==========================================================
         ArrayList<Boid> wolfList = new ArrayList<>();
 
-        int wolf_n = 40;
+        int wolfN = 40;
         double wolfSpeedLimit = 7.5;
         double wolfForceLimit = 0.4;
         double wolfWanderRad  = 4.5;
@@ -72,7 +72,7 @@ public class TestWolfDeerChase {
         int wolfSize = 10;
         double wolfAngle      = Math.PI/6;
 
-        for (int i = 0; i < wolf_n; i++) {
+        for (int i = 0; i < wolfN; i++) {
 
             Vector2D pos = new Vector2D(
                 width * 0.7 + rand.nextGaussian() * 120,
@@ -102,12 +102,12 @@ public class TestWolfDeerChase {
         // ==========================================================
         HashMap<GridType, Grid> deerGrids = new HashMap<>();
         deerGrids.put(GridType.SEPARATION, new Grid(width, height,
-                deerList.get(0).getClose_distance(),
+                deerList.get(0).getCloseDistance(),
                 GridType.SEPARATION
         ));
 
         deerGrids.put(GridType.TOGETHER, new Grid(width, height,
-                deerList.get(0).getNeighbor_distance(),
+                deerList.get(0).getNeighborDistance(),
                 GridType.TOGETHER
         ));
 
@@ -116,18 +116,18 @@ public class TestWolfDeerChase {
         // ==========================================================
         HashMap<GridType, Grid> wolfGrids = new HashMap<>();
         wolfGrids.put(GridType.SEPARATION, new Grid(width, height,
-                wolfList.get(0).getClose_distance(),
+                wolfList.get(0).getCloseDistance(),
                 GridType.SEPARATION
         ));
 
         wolfGrids.put(GridType.TOGETHER, new Grid(width, height,
-                wolfList.get(0).getNeighbor_distance(),
+                wolfList.get(0).getNeighborDistance(),
                 GridType.TOGETHER
         ));
 
         // Detection grid allows wolf to find deer
         wolfGrids.put(GridType.PREDATOR_DETECTION, new Grid(width, height,
-                wolfList.get(0).getPath_radius(),
+                wolfList.get(0).getpathRadius(),
                 GridType.PREDATOR_DETECTION
         ));
 
@@ -163,9 +163,8 @@ public class TestWolfDeerChase {
         allGroups.add(deerHerd);
         allGroups.add(wolfPack);
 
-        Vector2D target = new Vector2D(width/2.0, height/2.0);
 
-        MultipleBoidsSimulator sim = new MultipleBoidsSimulator(gui, allGroups, target);
+        MultipleBoidsSimulator sim = new MultipleBoidsSimulator(gui, allGroups);
         gui.setSimulable(sim);
     }
 }

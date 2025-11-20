@@ -12,7 +12,7 @@ public class BoidSimulator implements Simulable {
     private GUISimulator guis;
     private Boid boid;
     private Color color;
-    private Color compass_color;
+    private Color compassColor;
     private int width;
     private int height;
     private Vector2D target;
@@ -21,13 +21,13 @@ public class BoidSimulator implements Simulable {
 
 
     // Constructor
-    public BoidSimulator(GUISimulator guis, Boid boid, Color color, Color compass_color, Vector2D target){ 
+    public BoidSimulator(GUISimulator guis, Boid boid, Color color, Color compassColor, Vector2D target){ 
         this.guis = guis;
         this.boid = boid;
         this.width = guis.getWidth();
         this.height = guis.getHeight();
         this.color = color;
-        this.compass_color = compass_color;
+        this.compassColor = compassColor;
         this.target = target;
         //this.target_radius = target_radius;
         this.reDisplay();
@@ -78,11 +78,11 @@ public class BoidSimulator implements Simulable {
         double y = boid.getPosition().getY();
         double vx = boid.getVelocity().getX();
         double vy = boid.getVelocity().getY();
-        int boid_radius = boid.getSize();
-        double x_off = x + vx;
-        double y_off = y + vy;
-        guis.addGraphicalElement(new gui.Oval((int)x, (int)y, color, color, boid_radius));
-        guis.addGraphicalElement(new gui.Oval((int)x_off, (int)y_off, compass_color, compass_color, (int)(boid_radius/3)));
+        int boidRadius = boid.getSize();
+        double xOff = x + vx;
+        double yOff = y + vy;
+        guis.addGraphicalElement(new gui.Oval((int)x, (int)y, color, color, boidRadius));
+        guis.addGraphicalElement(new gui.Oval((int)xOff, (int)yOff, compassColor, compassColor, (int)(boidRadius/3)));
         Oval oval = new Oval((int) target.getX(),(int) target.getY(),Color.GREEN,Color.GREEN,4,4);
         guis.addGraphicalElement(oval);
     }

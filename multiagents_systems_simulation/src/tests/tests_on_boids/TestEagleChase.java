@@ -27,7 +27,7 @@ public class TestEagleChase {
             new Vector2D(250, 250), new Vector2D(250, 750)
         };
 
-        int cluster_n = 50;
+        int clusterN = 50;
         double clusterSize = 200;
         double birdSpeedLimit = 8, birdForceLimit = 3, birdWanderRadius = 2, birdPathRadius = 10;
         int birdRadius = 6;
@@ -37,10 +37,10 @@ public class TestEagleChase {
             // For each cluster
             Vector2D center = clusterCenters[c];
             Color bodyColor = clusterColors[c];
-            for (int i = 0; i < cluster_n; i++) {
-                double radius_x = rand.nextDouble() * clusterSize;
-                double radius_y = rand.nextDouble() * clusterSize;
-                Vector2D pos = new Vector2D(center.getX() + radius_x, center.getY() + radius_y);
+            for (int i = 0; i < clusterN; i++) {
+                double radiusX = rand.nextDouble() * clusterSize;
+                double radiusY = rand.nextDouble() * clusterSize;
+                Vector2D pos = new Vector2D(center.getX() + radiusX, center.getY() + radiusY);
                 Vector2D vel = new Vector2D(rand.nextDouble()*4 - 2, rand.nextDouble()*4 - 2);
                 Vector2D acc = new Vector2D(0, 0);
                 birdsList.add(new Bird(pos, vel, acc, birdSpeedLimit, birdForceLimit, birdWanderRadius,
@@ -50,7 +50,7 @@ public class TestEagleChase {
 
         // === Eagles ===
         ArrayList<Boid> eaglesList = new ArrayList<>();
-        int eagle_n = 3;
+        int eagleN = 3;
         double eagleSpeedLimit = 12;
         double eagleForceLimit = 5;
         double eagleWanderRadius = 4;
@@ -58,7 +58,7 @@ public class TestEagleChase {
         int eagleRadius = 12;
         double eagleAngleWander = Math.PI / 8;
 
-        for (int i = 0; i < eagle_n; i++) {
+        for (int i = 0; i < eagleN; i++) {
             Vector2D pos = new Vector2D(rand.nextDouble()*width, rand.nextDouble()*height);
             Vector2D vel = new Vector2D(rand.nextDouble()*6 - 3, rand.nextDouble()*6 - 3);
             Vector2D acc = new Vector2D(0, 0);
@@ -68,13 +68,13 @@ public class TestEagleChase {
 
         // === Grids ===
         HashMap<GridType, Grid> birdGrids = new HashMap<>();
-        birdGrids.put(GridType.SEPARATION, new Grid(width, height, birdsList.get(0).getClose_distance(), GridType.SEPARATION));
-        birdGrids.put(GridType.TOGETHER, new Grid(width, height, birdsList.get(0).getNeighbor_distance(), GridType.TOGETHER));
+        birdGrids.put(GridType.SEPARATION, new Grid(width, height, birdsList.get(0).getCloseDistance(), GridType.SEPARATION));
+        birdGrids.put(GridType.TOGETHER, new Grid(width, height, birdsList.get(0).getNeighborDistance(), GridType.TOGETHER));
 
         HashMap<GridType, Grid> eagleGrids = new HashMap<>();
-        eagleGrids.put(GridType.SEPARATION, new Grid(width, height, eaglesList.get(0).getClose_distance(), GridType.SEPARATION));
-        eagleGrids.put(GridType.TOGETHER, new Grid(width, height, eaglesList.get(0).getNeighbor_distance(), GridType.TOGETHER));
-        eagleGrids.put(GridType.PREDATOR_DETECTION, new Grid(width, height, eaglesList.get(0).getPath_radius(), GridType.PREDATOR_DETECTION));
+        eagleGrids.put(GridType.SEPARATION, new Grid(width, height, eaglesList.get(0).getCloseDistance(), GridType.SEPARATION));
+        eagleGrids.put(GridType.TOGETHER, new Grid(width, height, eaglesList.get(0).getNeighborDistance(), GridType.TOGETHER));
+        eagleGrids.put(GridType.PREDATOR_DETECTION, new Grid(width, height, eaglesList.get(0).getpathRadius(), GridType.PREDATOR_DETECTION));
 
         // Adding Boids to their grids for efficient neighbor search
         for (Boid b : birdsList) {
@@ -96,15 +96,13 @@ public class TestEagleChase {
         Boids birds = new Boids(birdsList, birdGrids);
         Boids eagles = new Boids(eaglesList, eagleGrids);
 
-        // === Target ===
-        Vector2D target = new Vector2D(width / 2.0, height / 2.0);
 
         // Création d'une liste de conteneurs de Boids
         ArrayList<Boids> boidsContainers = new ArrayList<>();
         boidsContainers.add(birds);
         boidsContainers.add(eagles);
         // === Simulator multiple ===
-        MultipleBoidsSimulator simulator = new MultipleBoidsSimulator(gui, boidsContainers, target);
+        MultipleBoidsSimulator simulator = new MultipleBoidsSimulator(gui, boidsContainers);
         
 
         gui.setSimulable(simulator);

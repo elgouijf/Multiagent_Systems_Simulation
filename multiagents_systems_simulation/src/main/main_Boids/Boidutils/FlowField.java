@@ -8,7 +8,7 @@ public class FlowField {
     private final Vector2D[][] field;
 
 
-    public FlowField(int resolution, int width, int height, Vector2D[][] field_array) {
+    public FlowField(int resolution, int width, int height, Vector2D[][] fieldArray) {
         /* Generates a flow field that can have an affect on boids (wind, water stream etc..) */
         this.resolution = resolution;
         this.lignes = height / resolution;
@@ -18,7 +18,7 @@ public class FlowField {
 
         for (int i = 0; i < lignes; i++) {
             for (int j = 0; j < colonnes; j++) {
-                Vector2D v = field_array[i][j];
+                Vector2D v = fieldArray[i][j];
                 this.field[i][j] = new Vector2D(v.getX(), v.getY());
             }
         }

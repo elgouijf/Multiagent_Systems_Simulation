@@ -1,19 +1,19 @@
 package main.main_Boids.Behaviors;
 
+import java.util.ArrayList;
 import main.main_Boids.Boids.Boid;
 import main.main_Boids.Boidutils.Grid;
 import main.main_Boids.Boidutils.GridType;
 import main.main_Boids.Boidutils.Vector2D;
-import java.util.ArrayList;
 
-public class Chase implements Behavior {
+public class Chase extends Behavior {
 
-    private double forceFactor;      // how strong the chase is
+   // how strong the chase is
     private double detectionRadius;  // how far the eagle sees prey
 
     public Chase(double forceFactor, double detectionRadius) {
 
-        this.forceFactor = forceFactor;
+        super(forceFactor);
         this.detectionRadius = detectionRadius;
     }
 
@@ -28,7 +28,7 @@ public class Chase implements Behavior {
         for (Boid other : neighbors) {
 
             if (other.getSpecies().equals("Birds")) {   // is prey
-                double d = b.distance_to(other);
+                double d = b.distanceTo(other);
 
                 if (d < minDist && d < detectionRadius) { // within detection radius
                     // the goal is to find the closest prey
@@ -51,11 +51,6 @@ public class Chase implements Behavior {
         steering.multiply(forceFactor);
         steering.limit(b.getforceLimit()); // limit to max force
         return steering;
-    }
-
-    @Override
-    public void updateGrid(Boid b, Grid grid) {
-        grid.updateBoidCell(b);
     }
 
     @Override

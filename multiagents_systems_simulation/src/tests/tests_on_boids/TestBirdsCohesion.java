@@ -22,7 +22,7 @@ public class TestBirdsCohesion {
 
         // Colors for clusters of birds
         Color[] clusterColors = { Color.YELLOW, Color.CYAN, Color.MAGENTA, Color.ORANGE };
-        int cluster_n = 200; // number of birds per cluster
+        int clusterN = 200; // number of birds per cluster
         double clusterSize = 200; // max distance from cluster center
 
         Vector2D[] clusterCenters = {
@@ -45,10 +45,10 @@ public class TestBirdsCohesion {
             Vector2D center = clusterCenters[c];
             Color bodyColor = clusterColors[c];
 
-            for (int i = 0; i < cluster_n; i++) {
-                double radius_x = rand.nextDouble() * clusterSize;
-                double radius_y = rand.nextDouble() * clusterSize;
-                Vector2D pos = new Vector2D(center.getX() + radius_x, center.getY() + radius_y);
+            for (int i = 0; i < clusterN; i++) {
+                double radiusX = rand.nextDouble() * clusterSize;
+                double radiusY = rand.nextDouble() * clusterSize;
+                Vector2D pos = new Vector2D(center.getX() + radiusX, center.getY() + radiusY);
 
                 Vector2D vel = new Vector2D(rand.nextDouble()*4 - 2, rand.nextDouble()*4 - 2);
                 Vector2D acc = new Vector2D(0, 0);
@@ -60,12 +60,12 @@ public class TestBirdsCohesion {
 
         // Create grids for behaviors (one grid per interaction distance) 
         HashMap<GridType, Grid> grids = new HashMap<>();
-        double separation_distance = list.get(0).getClose_distance();
-        double neighbor_distance   = list.get(0).getNeighbor_distance();
-        Grid grid_separation = new Grid(width, height, separation_distance, GridType.SEPARATION);
-        Grid grid_together   = new Grid(width, height, neighbor_distance, GridType.TOGETHER);
-        grids.put(GridType.SEPARATION, grid_separation);
-        grids.put(GridType.TOGETHER, grid_together);
+        double seprationDistance = list.get(0).getCloseDistance();
+        double neighborDistance   = list.get(0).getNeighborDistance();
+        Grid gridSeparation = new Grid(width, height, seprationDistance, GridType.SEPARATION);
+        Grid gridTogether   = new Grid(width, height, neighborDistance, GridType.TOGETHER);
+        grids.put(GridType.SEPARATION, gridSeparation);
+        grids.put(GridType.TOGETHER, gridTogether);
         // Create Boids container
         Boids birds = new Boids(list, grids); // grids are no longer needed
 
@@ -75,11 +75,9 @@ public class TestBirdsCohesion {
             grids.get(GridType.TOGETHER).addBoid(b);
         }
 
-        // Target (can be used for wandering, seeking, etc.)
-        Vector2D target = new Vector2D(width / 2.0, height / 2.0);
 
         // Create the simulator
-        BoidsSimulator simulator = new BoidsSimulator(gui, birds, target);
+        BoidsSimulator simulator = new BoidsSimulator(gui, birds);
         gui.setSimulable(simulator);
     }
 }

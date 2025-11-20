@@ -21,8 +21,8 @@ public class BoidsSimulatorWithWind extends BoidsSimulator {
     private double scale = 0.1;
     private boolean showWind = true;
 
-    public BoidsSimulatorWithWind(GUISimulator gui, Boids boids, Vector2D target) {
-        super(gui, boids, target);  // Use parent constructor
+    public BoidsSimulatorWithWind(GUISimulator gui, Boids boids) {
+        super(gui, boids);  // Use parent constructor
     }
 
     public void setWindField(FlowField field) {

@@ -6,15 +6,14 @@ import main.main_Boids.Boidutils.GridType;
 import main.main_Boids.Boidutils.Path;
 import main.main_Boids.Boidutils.Vector2D;
 
-public class FollowPath implements Behavior{
+public class FollowPath extends  Behavior{
   /* This behavior tries to simulate miration behavior by constructing a path from West to 
   East that Deers are supposed to follow*/
-    private double forceFactor;
     private double distancetoArrival;
     private int nPoints;
     
     public FollowPath(double forceFactor,double distancetoArrival,int nPoints){
-        this.forceFactor = forceFactor;
+        super(forceFactor);
         this.distancetoArrival = distancetoArrival; // distance to consider arrival at the end of the path (because we cant be exactly on the point)
         this.nPoints = nPoints;
     }

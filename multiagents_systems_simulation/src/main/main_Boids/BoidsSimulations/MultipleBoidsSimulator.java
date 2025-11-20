@@ -25,7 +25,6 @@ public class MultipleBoidsSimulator implements Simulable {
     private ArrayList<Boids> boidsLists; // plusieurs listes de boids
     private int width;
     private int height;
-    private Vector2D target;
     private EventManager manager;
 
     public void setWindField(FlowField field) {
@@ -39,20 +38,18 @@ public class MultipleBoidsSimulator implements Simulable {
     public FlowField getWindField() {
         return windField;
     }
-    public MultipleBoidsSimulator(GUISimulator gui, ArrayList<Boids> boidsLists, Vector2D target) {
+    public MultipleBoidsSimulator(GUISimulator gui, ArrayList<Boids> boidsLists) {
         this.gui = gui;
         this.boidsLists = boidsLists;
         this.width = gui.getWidth();
         this.height = gui.getHeight();
-        this.target = target;
         this.manager = new EventManager();
         this.manager.addEvent(new EventBoidsMultiple(0, this, this.manager));
         this.reDisplay();
     }
 
-    public MultipleBoidsSimulator(GUISimulator gui, Vector2D target) {
+    public MultipleBoidsSimulator(GUISimulator gui) {
         this.gui = gui;
-        this.target = target;
         this.width = gui.getWidth();
         this.height = gui.getHeight();
         this.boidsLists = new ArrayList<>(); // empty list of boids containers
@@ -90,13 +87,13 @@ public class MultipleBoidsSimulator implements Simulable {
         // Collect all prey Boids caught by Eagles
         ArrayList<Boid> toRemove = new ArrayList<>();
 
-        for (Boids boids_ : boidsLists) {
-            for (Boid b : boids_.getlisteBoids()) {
+        for (Boids boids2 : boidsLists) {
+            for (Boid b : boids2.getlisteBoids()) {
 
                 if (b instanceof Eagle) {
 
                     for (Boids preyGroup : boidsLists) {
-                        if (preyGroup == boids_) continue;  // skip its own species
+                        if (preyGroup == boids2) continue;  // skip its own species
 
                         // Only chase birds
                         if (!preyGroup.getlisteBoids().isEmpty() &&
@@ -219,9 +216,5 @@ public class MultipleBoidsSimulator implements Simulable {
             }
             }
         }
-
-        // Draw target, doen't serve much but it's here
-        Oval target_oval = new Oval((int)target.getX(), (int)target.getY(), Color.GREEN, Color.GREEN, 4, 4);
-        gui.addGraphicalElement(target_oval);
     }
 }

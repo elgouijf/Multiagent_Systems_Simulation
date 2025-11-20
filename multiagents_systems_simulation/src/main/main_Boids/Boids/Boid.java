@@ -7,9 +7,9 @@ import main.main_Boids.Behaviors.*;
 import main.main_Boids.Boidutils.*;
 
 public class Boid {
-    protected Vector2D position_0;
-    protected Vector2D velocity_0;
-    protected Vector2D acceleration_0;
+    protected Vector2D position0;
+    protected Vector2D velocity0;
+    protected Vector2D acceleration0;
     protected Vector2D position;
     protected Vector2D velocity;
     protected Vector2D acceleration;
@@ -20,12 +20,12 @@ public class Boid {
     with unrealistic speed or just be crushed if we're being realistic*/
     protected double forceLimit;
     protected double mass = 1;
-    protected int boid_size; // the radius if it is represented by a circle and 1/2 its hight if it's a triangle
+    protected int boidSize; // the radius if it is represented by a circle and 1/2 its hight if it's a triangle
 
-    protected double angle_wander = 0.1;
-    protected double wander_radius;
-    protected double wander_factor;
-    protected double path_radius;
+    protected double angleWander = 0.1;
+    protected double wanderRadius;
+    protected double wanderFactor;
+    protected double pathRadius;
     protected double slowRadius;
     protected double angleDistance;
     // for simulations
@@ -34,17 +34,17 @@ public class Boid {
     protected String prey = "Boid";
 
     // for separation behavior
-    protected double close_distance;
+    protected double closeDistance;
     // for align behavior
-    protected double neighbor_distance;
+    protected double neighborDistance;
 
     // For the grid used in separation behavior
-    protected int cell_row_sep;
-    protected int cell_col_sep;
+    protected int cellRowSep;
+    protected int cellColSep;
 
     // For the grid used in cohesion/alignment (together)
-    protected int cell_row_tog;
-    protected int cell_col_tog;
+    protected int cellRowTog;
+    protected int cellColTog;
 
     protected ArrayList<Behavior> behaviors = new ArrayList<Behavior>();
 
@@ -52,45 +52,45 @@ public class Boid {
     protected Path path = null;   // valeur par défaut
 
     // Constructor
-    public Boid(Vector2D position, Vector2D velocity, Vector2D acceleration, double speedlimit, double forceLimit, double wander_radius, 
-    double path_radius, int boid_size, Color color, Color compassColor, double angleDistance, int windowWidth, int windowHeight) { 
+    public Boid(Vector2D position, Vector2D velocity, Vector2D acceleration, double speedlimit, double forceLimit, double wanderRadius, 
+    double pathRadius, int boidSize, Color color, Color compassColor, double angleDistance, int windowWidth, int windowHeight) { 
         /* 
         This function is the constructor of the Balls class
         */
         this.position = new Vector2D(position.getX(), position.getY());
         this.velocity = new Vector2D(velocity.getX(), velocity.getY());
         this.acceleration = new Vector2D(acceleration.getX(), acceleration.getY());
-        this.boid_size = boid_size;
+        this.boidSize = boidSize;
 
         this.speedlimit = speedlimit;
         this.forceLimit = forceLimit;
         
         // We need to keep track of the initial positions of the balls for reseting, so we create copies of the input vectors
-        this.position_0 = new Vector2D(position.getX(), position.getY());
-        this.velocity_0 = new Vector2D(velocity.getX(), velocity.getY());
-        this.acceleration_0 = new Vector2D(acceleration.getX(), acceleration.getY());
-        this.wander_radius = wander_radius;
-        this.path_radius = path_radius;
+        this.position0 = new Vector2D(position.getX(), position.getY());
+        this.velocity0 = new Vector2D(velocity.getX(), velocity.getY());
+        this.acceleration0 = new Vector2D(acceleration.getX(), acceleration.getY());
+        this.wanderRadius = wanderRadius;
+        this.pathRadius = pathRadius;
         this.slowRadius = 1.5*Math.pow(speedlimit,2)/(2*forceLimit);
 
         this.color = color;
         this.compassColor = compassColor;
 
-        this.close_distance = this.boid_size * 10; // Separation distance based on boid size
-        this.TuneDistances(windowWidth, windowHeight, boid_size);
+        this.closeDistance = this.boidSize * 10; // Separation distance based on boid size
+        this.TuneDistances(windowWidth, windowHeight, boidSize);
 
         this.angleDistance = angleDistance;
-        this.behaviors.add(new Separation(windowWidth, windowHeight, this.close_distance));
-        this.behaviors.add(new Alignment(windowWidth, windowHeight, this.neighbor_distance));
-        this.behaviors.add(new Cohesion(windowWidth, windowHeight, this.neighbor_distance));
+        this.behaviors.add(new Separation(windowWidth, windowHeight, this.closeDistance));
+        this.behaviors.add(new Alignment(windowWidth, windowHeight, this.neighborDistance));
+        this.behaviors.add(new Cohesion(windowWidth, windowHeight, this.neighborDistance));
     }
 
     public Boid(Vector2D position, Vector2D velocity, Vector2D acceleration, double speedlimit, double forceLimit,
-      double wander_radius, double path_radius, int boid_size, Color color, Color compassColor, double angleDistance) {
-        this(position, velocity, acceleration, speedlimit, forceLimit, wander_radius, path_radius, boid_size, color, compassColor,
+      double wanderRadius, double pathRadius, int boidSize, Color color, Color compassColor, double angleDistance) {
+        this(position, velocity, acceleration, speedlimit, forceLimit, wanderRadius, pathRadius, boidSize, color, compassColor,
          angleDistance, 0,0);
-        this.close_distance = 6*this.boid_size;
-        this.neighbor_distance = 6*this.boid_size + 40;
+        this.closeDistance = 6*this.boidSize;
+        this.neighborDistance = 6*this.boidSize + 40;
         
      }
 
@@ -98,16 +98,16 @@ public class Boid {
         double diag = Math.sqrt(windowWidth*windowWidth + windowHeight*windowHeight);
 
         // Tunable constants
-        double k_s = 10.0;     // size contribution for separation
-        double k_d = 0.01;    // window contribution for separation
-        double k_s2 = 6.0;    // size contribution for sight
-        double k_d2 = 0.04;   // window contribution for sight
+        double kS = 10.0;     // size contribution for separation
+        double kD = 0.01;    // window contribution for separation
+        double kS2 = 6.0;    // size contribution for sight
+        double kD2 = 0.04;   // window contribution for sight
 
-        this.close_distance = boidSize * k_s + diag * k_d; 
-        this.neighbor_distance = boidSize * k_s2 + diag * k_d2;
+        this.closeDistance = boidSize * kS + diag * kD; 
+        this.neighborDistance = boidSize * kS2 + diag * kD2;
 
-        /* System.out.println("close_distance = " + this.close_distance +
-                        ", neighbor_distance = " + this.neighbor_distance); */
+        /* System.out.println("closeDistance = " + this.closeDistance +
+                        ", neighborDistance = " + this.neighborDistance); */
     }
 
 ////////////////////////////////////////////// Getters /////////////////////////////////////////////
@@ -137,7 +137,7 @@ public class Boid {
     }
 
     public int getSize(){
-        return this.boid_size;
+        return this.boidSize;
     }
 
     public Color getColor() {
@@ -148,20 +148,20 @@ public class Boid {
     return compassColor;
     }
 
-    public double getNeighbor_distance(){
-        return this.neighbor_distance;
+    public double getNeighborDistance(){
+        return this.neighborDistance;
     }
 
-    public double getClose_distance(){
-        return this.close_distance;
+    public double getCloseDistance(){
+        return this.closeDistance;
     }
 
-    public double getWander_radius(){
-        return this.wander_radius;
+    public double getwanderRadius(){
+        return this.wanderRadius;
     }
 
-    public double getPath_radius(){
-        return this.path_radius;
+    public double getpathRadius(){
+        return this.pathRadius;
     }
     public Path getPath(){
         return path;
@@ -184,22 +184,22 @@ public class Boid {
     }
 
     public void setCellSeparation(int row, int col) {
-    this.cell_row_sep = row;
-    this.cell_col_sep = col;
+    this.cellRowSep = row;
+    this.cellColSep = col;
     }
     public int getCellRowSeparation() { 
-        return this.cell_row_sep; }
+        return this.cellRowSep; }
     public int getCellColSeparation() { 
-        return this.cell_col_sep; }
+        return this.cellColSep; }
 
     public void setCellTogether(int row, int col) {
-        this.cell_row_tog = row;
-        this.cell_col_tog = col;
+        this.cellRowTog = row;
+        this.cellColTog = col;
     }
     public int getCellRowTogether() { 
-        return this.cell_row_tog; }
+        return this.cellRowTog; }
     public int getCellColTogether() { 
-        return this.cell_col_tog; }
+        return this.cellColTog; }
 
     public ArrayList<Behavior> getBehaviors(){
         return this.behaviors;
@@ -228,11 +228,11 @@ public class Boid {
 
     public boolean inSight(Boid other){
         // Implements the innsight vision ;
-        double distance = this.distance_to_optimized(other);
+        double distance = this.distanceToOptimized(other);
         Vector2D AB = other.position.copy();
         AB.subtract(this.position);
         double angle = AB.heading2();
-        if (distance > this.neighbor_distance*this.neighbor_distance){
+        if (distance > this.neighborDistance*this.neighborDistance){
             return false;
         }else if (Math.PI - Math.abs(angle) < angleDistance/2) {
             return false;
@@ -241,13 +241,13 @@ public class Boid {
         }
     }
     
-    public Vector2D target_path(Vector2D start,Vector2D end){
+    public Vector2D targetPath(Vector2D start,Vector2D end){
         // Make the boid follow the segement [start,end]
-         Vector2D future_pos = future_pos();
-         Vector2D normal_point = future_pos.getNormalPoint(start,end);
-         double distance = normal_point.getdistance(future_pos);
-         if (distance > path_radius){
-            return normal_point;
+         Vector2D futurePos = futurePos();
+         Vector2D normalPoint = futurePos.getNormalPoint(start,end);
+         double distance = normalPoint.getdistance(futurePos);
+         if (distance > pathRadius){
+            return normalPoint;
          }else{
             return end;
          }
@@ -256,13 +256,13 @@ public class Boid {
     
     public Vector2D getDesiredDirection(Vector2D target) {
         // Calculate the desired direction towards a target position with a target_raduis
-        target = target_path(this.position_0,target);
+        target = targetPath(this.position0,target);
         Vector2D desired = new Vector2D(target.getX() , target.getY() );
         desired.subtract(this.position);
         double distance = this.position.getdistance(target);
         if (distance < this.slowRadius){
             desired.updateMagnitude(this.speedlimit*distance/this.slowRadius);
-            //wander_radius *= Math.pow((distance/this.slowRadius),2); // Lowering the circle
+            //wanderRadius *= Math.pow((distance/this.slowRadius),2); // Lowering the circle
                                                                    // raduis when we are near
                                                                    // the target
 
@@ -274,7 +274,7 @@ public class Boid {
     
     public Vector2D getDesiredDirection2(Vector2D target) {
         // Calculate the desired direction towards a target position without a target_radius
-        target = target_path(this.position_0,target);
+        target = targetPath(this.position0,target);
         Vector2D desired = new Vector2D(target.getX() , target.getY() );
         desired.subtract(this.position);
         return desired;
@@ -282,25 +282,25 @@ public class Boid {
     
     public void FlowMov(FlowField field){
         // Movement in a flowfield
-        Vector2D future_position = future_pos();
+        Vector2D futurePosition = futurePos();
 
-        Vector2D future_desired = field.getVector(future_position);
-        Vector2D actual_steer = getSteeringForce(future_desired);
-        actual_steer.limit(speedlimit);
-        this.applyForce(actual_steer);
+        Vector2D futureDesired = field.getVector(futurePosition);
+        Vector2D actualSteer = getSteeringForce(futureDesired);
+        actualSteer.limit(speedlimit);
+        this.applyForce(actualSteer);
     }
 
     public Vector2D wander(double forceFactor){
         // Implement the wander movement
-        Vector2D future_position = future_pos();
+        Vector2D futurePosition = futurePos();
         
         Random rand = new Random();
-        double angle = rand.nextDouble()*Math.PI + angle_wander;
-        Vector2D green_point = new Vector2D(wander_radius*Math.cos(angle),wander_radius*Math.sin(angle));
-        future_position.add(green_point);
+        double angle = rand.nextDouble()*Math.PI + angleWander;
+        Vector2D greenPoint = new Vector2D(wanderRadius*Math.cos(angle),wanderRadius*Math.sin(angle));
+        futurePosition.add(greenPoint);
         
-        Vector2D desired_wander = getDesiredDirection(future_position);
-        Vector2D steerWander = getSteeringForce(desired_wander);
+        Vector2D desiredWander = getDesiredDirection(futurePosition);
+        Vector2D steerWander = getSteeringForce(desiredWander);
         steerWander.limit(forceLimit);
       return steerWander;
     }
@@ -311,7 +311,7 @@ public class Boid {
     public Vector2D followPath(double forceFactor){
         int size = this.path.getsize();
         ArrayList<Vector2D> tableauPoints = this.path.gettableauPoints();
-        Vector2D futurePosition = future_pos();
+        Vector2D futurePosition = futurePos();
         double smallestDistance = Double.POSITIVE_INFINITY;
         Vector2D actualTarget = new Vector2D();
        for (int i = 0;i<size-1;i++){
@@ -334,14 +334,14 @@ public class Boid {
        
     }
 
-    public Vector2D future_pos_steer(Vector2D steer){
-        // Calculate the future position with a steering force
+    public Vector2D futurePosSteer(Vector2D steer){
+        // Calculate the future position if a steering force was applied to the Boid
         steer.limit(forceLimit);
-        Vector2D future_position = new Vector2D(0,0);
-        future_position.add(steer,this.velocity);
-        future_position.limit(speedlimit);
-        future_position.add(this.position);
-        return future_position ;
+        Vector2D futurePosition = new Vector2D(0,0);
+        futurePosition.add(steer,this.velocity);
+        futurePosition.limit(speedlimit);
+        futurePosition.add(this.position);
+        return futurePosition ;
     }
 
     public Vector2D seek(Vector2D target, double factor) {
@@ -359,11 +359,11 @@ public class Boid {
     }
 
     
-    public Vector2D future_pos(){
+    public Vector2D futurePos(){
         // Calculating thbe future position with the current velocity
-        Vector2D future_position = new Vector2D();
-        future_position.add(this.velocity,this.position);
-        return future_position;   
+        Vector2D futurePosition = new Vector2D();
+        futurePosition.add(this.velocity,this.position);
+        return futurePosition;   
     }
 
 
@@ -380,26 +380,26 @@ public class Boid {
     }
     
     public void reInit() {
-        this.position = new Vector2D(this.position_0.getX(),this.position_0.getY());
-        this.velocity = new Vector2D(this.velocity_0.getX(),this.velocity_0.getY());
-        this.acceleration = new Vector2D(this.acceleration_0.getX(),this.acceleration_0.getY());
+        this.position = new Vector2D(this.position0.getX(),this.position0.getY());
+        this.velocity = new Vector2D(this.velocity0.getX(),this.velocity0.getY());
+        this.acceleration = new Vector2D(this.acceleration0.getX(),this.acceleration0.getY());
     }
-    public double distance_to(Boid other){     
+    public double distanceTo(Boid other){     
         Vector2D X = this.position;
         Vector2D Y = other.position;
         
         return X.getdistance(Y);
     }
 
-     public double distance_to_optimized(Boid other){
+     public double distanceToOptimized(Boid other){
         // Optimized version without square root
-        double x_this = this.position.getX();
-        double y_this = this.position.getY();
-        double x_other = other.position.getX();
-        double y_other = other.position.getY();
+        double xThis = this.position.getX();
+        double yThis = this.position.getY();
+        double xOther = other.position.getX();
+        double yOther = other.position.getY();
 
-        double diffX = x_this - x_other;
-        double diffY = y_this - y_other;
+        double diffX = xThis - xOther;
+        double diffY = yThis - yOther;
         
         return diffX*diffX + diffY*diffY;
     } 
@@ -411,22 +411,14 @@ public class Boid {
 
 ////////////////////////////////////////////// Group Behavior /////////////////////////////////////////////
     public void submittoGroupBehavior(HashMap<GridType, Grid> grids, FlowField windField) {
-        /* Apply all group behavior forces at once */
-        /* Vector2D separation = this.separation(grid_separation);
-        Vector2D alignement = this.alignment(grid_together);
-        Vector2D cohesion   = this.cohesion(grid_together);
-        
-        
-        this.applyForce(separation);
-        this.applyForce(alignement);
-        this.applyForce(cohesion);*/
+
         for (Behavior behavior : behaviors) {
             Grid grid = grids.get(behavior.getGridType());
             Vector2D force = behavior.behave(this, grid); // Assuming BehaviorOnGrids is not used here
             this.applyForce(force);
         }
         // all beings wander
-        Vector2D wanderForce = this.wander(this.wander_factor);
+        Vector2D wanderForce = this.wander(this.wanderFactor);
         this.applyForce(wanderForce);
          // appliquer le vent seulement s'il existe
         if (windField != null) {
@@ -434,6 +426,5 @@ public class Boid {
 
         this.applyForce(wind);
         }
-        
     } 
 }

@@ -6,13 +6,13 @@ import main.main_Boids.Boidutils.Grid;
 import main.main_Boids.Boidutils.GridType;
 import main.main_Boids.Boidutils.Vector2D;
 
-public class FleeFromPredator implements Behavior {
+public class FleeFromPredator extends  Behavior {
 
-    private double forceFactor;      // Fleeing force multiplier
+                                      // Fleeing force multiplier
     private double detectionRadius;  // How far the boid can detect predators
 
     public FleeFromPredator(double forceFactor, double detectionRadius) {
-        this.forceFactor = forceFactor;
+        super(forceFactor);
         this.detectionRadius = detectionRadius;
     }
 
@@ -25,7 +25,7 @@ public class FleeFromPredator implements Behavior {
         for (Boid other : neighbors) {
             // Check if the other boid is a predator of this boid (Eagle for Birds, etc.)
             if (other.getPrey().equals(b.getSpecies())) {
-                double d = b.distance_to(other);
+                double d = b.distanceTo(other);
                 if (d < detectionRadius) {
                     // Flee from the predator
                     Vector2D away = other.getPosition().copy();
@@ -42,14 +42,8 @@ public class FleeFromPredator implements Behavior {
         fleeForce.limit(b.getforceLimit()); 
         return fleeForce;
     }
-
-    @Override
-    public void updateGrid(Boid b, Grid grid) {
-        grid.updateBoidCell(b);
-    }
-
     @Override
     public GridType getGridType() {
-        return GridType.TOGETHER; // use TOGETHER to use neighbor_distance, only flee from close predators
+        return GridType.TOGETHER; // use TOGETHER to use neighborDistance, only flee from close predators
     }
 }

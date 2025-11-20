@@ -104,18 +104,18 @@ public class Vector2D {
         b.normalize();
         b.updateMagnitude(a.dot(b));
         
-        Vector2D normal_point = new Vector2D(start.x+b.x, start.y+b.y);
+        Vector2D normalPoint = new Vector2D(start.x+b.x, start.y+b.y);
         
-        return normal_point;
+        return normalPoint;
     }
 
     public void rotate(double angle){
-        double[][] Rotation_matrix = {{Math.cos(angle), -Math.sin(angle)},
+        double[][] rotatationMatrix = {{Math.cos(angle), -Math.sin(angle)},
                                       {Math.sin(angle), Math.cos(angle)}};
-        double x_old = this.x;
-        double y_old = this.y;
-        this.x = Rotation_matrix[0][0]* x_old + Rotation_matrix[0][1]* y_old;
-        this.y = Rotation_matrix[1][0]* x_old + Rotation_matrix[1][1]* y_old;
+        double xOld = this.x;
+        double yOld = this.y;
+        this.x = rotatationMatrix[0][0]* xOld + rotatationMatrix[0][1]* yOld;
+        this.y = rotatationMatrix[1][0]* xOld + rotatationMatrix[1][1]* yOld;
     }
 
     // getters

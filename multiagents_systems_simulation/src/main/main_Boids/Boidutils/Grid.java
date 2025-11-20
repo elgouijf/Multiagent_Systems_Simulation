@@ -5,52 +5,52 @@ import java.util.ArrayList;
 
 @SuppressWarnings("unchecked") // To suppress generic array creation warning (ligne 18)
 public class Grid {
-    private int screen_width;
-    private int screen_height;
-    private int n_cols;
-    private int n_rows;
-    private double cell_width;
-    private double cell_height;
-    private ArrayList<Boid>[][] grid_cells;
+    private int screenWidth;
+    private int screenHeight;
+    private int nCols;
+    private int nRows;
+    private double cellWidth;
+    private double cellHeight;
+    private ArrayList<Boid>[][] gridCells;
     private GridType type;
 
 
     public int getScreenWidth(){
-        return screen_width;
+        return screenWidth;
     }
     public int getScreenHeight(){
-        return screen_height;
+        return screenHeight;
     }
 
 
 
-    public Grid(int screen_width, int screen_height,double cell_width, double cell_height, GridType type) {
-        this.screen_width = screen_width;
-        this.screen_height = screen_height;
-        this.n_cols = (int)Math.ceil((double)screen_width / cell_width);
-        this.n_rows = (int)Math.ceil((double)screen_height / cell_height);
-        this.cell_width = cell_width;
-        this.cell_height = cell_height;
-        this.grid_cells = new ArrayList[n_cols][n_rows];
+    public Grid(int screenWidth, int screenHeight,double cellWidth, double cellHeight, GridType type) {
+        this.screenWidth = screenWidth;
+        this.screenHeight = screenHeight;
+        this.nCols = (int)Math.ceil((double)screenWidth / cellWidth);
+        this.nRows = (int)Math.ceil((double)screenHeight / cellHeight);
+        this.cellWidth = cellWidth;
+        this.cellHeight = cellHeight;
+        this.gridCells = new ArrayList[nCols][nRows];
         this.type = type;
-        for (int i = 0; i < n_cols; i++) {
-            for (int j = 0; j < n_rows; j++) {
-                this.grid_cells[i][j] = new ArrayList<Boid>();
+        for (int i = 0; i < nCols; i++) {
+            for (int j = 0; j < nRows; j++) {
+                this.gridCells[i][j] = new ArrayList<Boid>();
             }
         }
     }
 
-    public Grid(int screen_width, int screen_height, double cell_size, GridType type) {
+    public Grid(int screenWidth, int screenHeight, double cellSize, GridType type) {
         // Uniform cell size
-        this(screen_width, screen_height, cell_size, cell_size, type);
+        this(screenWidth, screenHeight, cellSize, cellSize, type);
     }
 
     public void addBoid(Boid b){
         double x = b.getPosition().getX();
         double y = b.getPosition().getY();
-        int column = Math.min(n_cols - 1, Math.max(0, (int)Math.floor(x / this.cell_width))); // ensure within bounds : boids could get out of screen, and maybe be become negative
-        int row = Math.min(n_rows - 1, Math.max(0, (int)Math.floor(y / this.cell_height)));
-        this.grid_cells[column][row].add(b);
+        int column = Math.min(nCols - 1, Math.max(0, (int)Math.floor(x / this.cellWidth))); // ensure within bounds : boids could get out of screen, and maybe be become negative
+        int row = Math.min(nRows - 1, Math.max(0, (int)Math.floor(y / this.cellHeight)));
+        this.gridCells[column][row].add(b);
         // Set the cell info in the boid
         if (this.type == GridType.SEPARATION)
             b.setCellSeparation(row, column);
@@ -61,9 +61,9 @@ public class Grid {
     public void removeBoid(Boid b){
         double x = b.getPosition().getX();
         double y = b.getPosition().getY();
-        int column = Math.min(n_cols - 1, Math.max(0, (int)Math.floor(x / this.cell_width)));
-        int row = Math.min(n_rows - 1, Math.max(0, (int)Math.floor(y / this.cell_height)));
-        this.grid_cells[column][row].remove(b);
+        int column = Math.min(nCols - 1, Math.max(0, (int)Math.floor(x / this.cellWidth)));
+        int row = Math.min(nRows - 1, Math.max(0, (int)Math.floor(y / this.cellHeight)));
+        this.gridCells[column][row].remove(b);
     }
 
     public void addBoidsGroup(Boids boids){
@@ -74,9 +74,9 @@ public class Grid {
     }
 
     public void clearGrid(){
-        for (int i = 0; i < n_cols; i++) {
-            for (int j = 0; j < n_rows; j++) {
-                this.grid_cells[i][j].clear();
+        for (int i = 0; i < nCols; i++) {
+            for (int j = 0; j < nRows; j++) {
+                this.gridCells[i][j].clear();
             }
         }
     }
@@ -85,18 +85,18 @@ public class Grid {
         // Get the cell of the boid
         double x = b.getPosition().getX();
         double y = b.getPosition().getY();
-        int column = (int)Math.floor(x/this.cell_width);
-        int row = (int)Math.floor(y/this.cell_height);
+        int column = (int)Math.floor(x/this.cellWidth);
+        int row = (int)Math.floor(y/this.cellHeight);
         ArrayList<Boid> neighbors = new ArrayList<Boid>();
         // Get the indexes of the neighboring cells (including the cell itself)
-        int top_left_col = Math.max(0, column - 1);
-        int top_left_row = Math.max(0, row - 1);
-        int bottom_right_col = Math.min(this.n_cols - 1, column + 1);
-        int bottom_right_row = Math.min(this.n_rows - 1, row + 1);
+        int topLeftCol = Math.max(0, column - 1);
+        int topLeftRow = Math.max(0, row - 1);
+        int bottomRightCol = Math.min(this.nCols - 1, column + 1);
+        int bottomRightRow = Math.min(this.nRows - 1, row + 1);
         // Iterate through the neighboring cells and collect boids
-        for (int i = top_left_col; i <= bottom_right_col; i++) {
-            for (int j = top_left_row; j <= bottom_right_row; j++) {
-                neighbors.addAll(this.grid_cells[i][j]);
+        for (int i = topLeftCol; i <= bottomRightCol; i++) {
+            for (int j = topLeftRow; j <= bottomRightRow; j++) {
+                neighbors.addAll(this.gridCells[i][j]);
             }
             }
         // Remove the boid itself from the list
@@ -108,27 +108,27 @@ public class Grid {
         //new cell 
         double x = b.getPosition().getX();
         double y = b.getPosition().getY();
-        int newCol = Math.min(n_cols - 1, Math.max(0, (int)Math.floor(x / cell_width)));
-        int newRow = Math.min(n_rows - 1, Math.max(0, (int)Math.floor(y / cell_height)));
+        int newCol = Math.min(nCols - 1, Math.max(0, (int)Math.floor(x / cellWidth)));
+        int newRow = Math.min(nRows - 1, Math.max(0, (int)Math.floor(y / cellHeight)));
 
         // old cell
-        int old_column;
-        int old_row;
+        int oldColumn;
+        int oldRow;
         if (this.type == GridType.SEPARATION) {
-            old_column = b.getCellColSeparation();
-            old_row = b.getCellRowSeparation();
+            oldColumn = b.getCellColSeparation();
+            oldRow = b.getCellRowSeparation();
         } else {
-            old_column = b.getCellColTogether();
-            old_row = b.getCellRowTogether();
+            oldColumn = b.getCellColTogether();
+            oldRow = b.getCellRowTogether();
         }
 
         // If boid changed cell, move it to the new one
-        if (old_column != newCol || old_row != newRow) {
+        if (oldColumn != newCol || oldRow != newRow) {
             // Safety checks
-            if (old_column >= 0 && old_column < n_cols && old_row >= 0 && old_row < n_rows) {
-                this.grid_cells[old_column][old_row].remove(b);
+            if (oldColumn >= 0 && oldColumn < nCols && oldRow >= 0 && oldRow < nRows) {
+                this.gridCells[oldColumn][oldRow].remove(b);
             }
-            this.grid_cells[newCol][newRow].add(b);
+            this.gridCells[newCol][newRow].add(b);
 
             // Update the boid’s recorded cell
             if (this.type == GridType.SEPARATION) {

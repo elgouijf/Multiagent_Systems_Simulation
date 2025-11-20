@@ -17,11 +17,11 @@ public class Wolf extends Boid{
     private static Boid preyLeader;
     
     public Wolf(Vector2D position, Vector2D velocity, Vector2D acceleration,
-                 double speedLimit, double forceLimit, double wander_radius, double path_radius,
-                 int boid_size, Color color, Color compassColor, double angleDistance,
+                 double speedLimit, double forceLimit, double wanderRadius, double pathRadius,
+                 int boidSize, Color color, Color compassColor, double angleDistance,
                  int windowWidth, int windowHeight){
         super(position, velocity, acceleration, speedLimit, forceLimit,
-                wander_radius, path_radius, boid_size,
+                wanderRadius, pathRadius, boidSize,
                 color, compassColor, angleDistance, windowWidth, windowHeight);
         
         pack.add(this);
@@ -36,13 +36,13 @@ public class Wolf extends Boid{
         
         this.behaviors.clear();
         // they tolerate being close in a pack
-        this.behaviors.add(new Separation(0.15, width, height, this.close_distance * 1.5));
+        this.behaviors.add(new Separation(0.15, width, height, this.closeDistance * 1.5));
 
         // they run in a common direction during chase
-        this.behaviors.add(new Alignment(1.2,width, height, this.neighbor_distance));
+        this.behaviors.add(new Alignment(1.2,width, height, this.neighborDistance));
 
         // they stay together but not too tight
-        this.behaviors.add(new Cohesion(0.8, width, height, this.neighbor_distance * 1.2));
+        this.behaviors.add(new Cohesion(0.8, width, height, this.neighborDistance * 1.2));
 
         // Predation → strongest
         this.behaviors.add(new FollowLeaderChase(3));
@@ -56,7 +56,7 @@ public class Wolf extends Boid{
            for (Boid other : neighbors){
             if (other == null) continue; // Sometimes neighbors cells can be empty
              if (other.getSpecies().equals(prey)){ // only consider prey 
-                double distance = wolf.distance_to(other);
+                double distance = wolf.distanceTo(other);
                 if (distance < minDistance ){
                     minDistance = distance;
                     this.preyLeader = other;
@@ -71,7 +71,7 @@ public class Wolf extends Boid{
             return true;
         }
         for (Wolf wolf : pack){
-            double distancetoPrey = wolf.distance_to(preyLeader);
+            double distancetoPrey = wolf.distanceTo(preyLeader);
             if (distancetoPrey > this.killRadius){
                 return false;
             }

@@ -10,12 +10,11 @@ import main.main_Boids.Boidutils.Vector2D;
 
 
 
-public class FollowLeaderChase implements Behavior{
+public class FollowLeaderChase extends  Behavior{
    
-    private double forceFactor;
 
     public FollowLeaderChase(double forceFactor){
-        this.forceFactor = forceFactor;
+        super(forceFactor);
     }    
 
     @Override
@@ -27,7 +26,7 @@ public class FollowLeaderChase implements Behavior{
             return new Vector2D(); // do nothing this frame
         }
         // if we are close enough to the prey, chase it directly
-        double distancetoPrey = wolf.distance_to(prey);
+        double distancetoPrey = wolf.distanceTo(prey);
         if (distancetoPrey < distanceChase){
            Random rand = new Random();
            // pick a random point on a circle around the prey, the goal is to not go directly on the prey but circle around it
@@ -46,11 +45,6 @@ public class FollowLeaderChase implements Behavior{
         }
     }
     
-    @Override
-    public void updateGrid(Boid b, Grid grid) {
-        grid.updateBoidCell(b);
-    }
-
     @Override
     public GridType getGridType() {
         return GridType.TOGETHER;
