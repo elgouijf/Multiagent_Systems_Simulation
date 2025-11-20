@@ -180,6 +180,125 @@ Les boids sont divisés en sous-composants :
   - `PolygonGraphics` pour le rendu des agents
 - **BoidsSimulations**
 
+# Tests Boids
+
+## Test d’un Boid
+
+Ce test vérifie le fonctionnement du `BoidSimulator`, utilisant les
+comportements *seek* et *wander*. Le simulateur reçoit un
+`Vector_2D target` fixe sur l’écran que le Boid suit.
+
+**Comment exécuter :**
+
+    make test-TestBoid
+
+## Test de Boids
+
+Ce test utilise le `BoidsSimulator` avec les comportements :
+
+- Alignement,
+
+- Séparation,
+
+- Cohésion.
+
+Les positions initiales sont générées aléatoirement.
+
+**Comment exécuter :**
+
+    make test-TestBoids
+
+## Test Alignement / Séparation / Cohésion
+
+Chaque comportement est testé séparément.
+
+**Comment exécuter :**
+
+    make test-TestBoidsAlignement
+    make test-TestBoidsSeparation
+    make test-TestBoidsCohesion
+
+## Test de BoidWind
+
+Ce test reprend le `BoidSimulator` mais ajoute un **vent** modélisé par
+une grille de vecteurs. L’affichage peut être activé en passant `true`
+lors du lancement.
+
+Une classe `FlowField` a été créée et la méthode `FlowMov` implémentée
+pour gérer le mouvement dans le vent.
+
+**Comment exécuter :**
+
+    make test-TestBoidWithWind
+
+## TestEagleChase
+
+Deux classes filles de `Boid` ont été ajoutées : `Eagle` et `Bird`.
+
+- `Bird` fuit lorsqu’il détecte un `Eagle` à une distance
+  `detectionRadius`.
+
+- L’Eagle détecte et poursuit les Birds dans ce rayon.
+
+- Si la distance devient inférieure à `killRadius`, l’oiseau est
+  considéré comme mangé et retiré de la simulation.
+
+La classe `Eagle` implémente `hunt`, enregistre et supprimame les Birds
+capturés. Le test utilise un `MultipleBoidsSimulator` gérant plusieurs
+groupes simultanément.
+
+**Comment exécuter :**
+
+    make test-TestEagleChase
+
+## TestBirdCohesion
+
+Teste la **Cohesion** des Birds
+
+**Comment exécuter :**
+
+    make test-TestBirdCohesion
+
+## TestBirdWithWind
+
+Test le comportement des **Birds** mais avec cette fois du vent comme dans **TestBoidWithWind**
+
+**Comment exécuter :**
+
+    make test-TestBoiWithWind
+
+## TestWolfDeerChase
+
+Deux autres classes filles de `Boid` ont été créées : `Wolf` et `Deer`.
+
+### Comportement des Wolves
+
+- Ils suivent un leader, choisi comme celui le plus proche d’une proie
+  (`Deer`).
+
+- Si aucun Wolf ne détecte de proie, un leader est choisi aléatoirement.
+
+- Si la distance devient inférieure à `slowRadius`, ils encerclent.
+
+- Sous `killRadius`, la proie est considérée morte et un nouveau leader
+  est choisi.
+
+- Le leader est mis à jour à chaque `next`.
+
+### Comportement des Deer
+
+- Le Deer est solitaire et migrateur.
+
+- Retrait de Cohesion et Alignement.
+
+- Utilisation de `FleeFromPredator` et `FollowPath`.
+
+- Le chemin est régénéré si la distance au dernier point devient
+  inférieure à `distancetoArrival`.
+
+**Comment exécuter :**
+
+    make test-TestWolfDeerChase
 #### Gestion du temps : EventManager
 
 Les boids sont mis à jour par un gestionnaire d’événements discrets, imposé par le sujet.
