@@ -7,10 +7,10 @@ import gui.Simulable;
 import java.awt.Color;
 
 public class ImmigrationSimulator implements Simulable  {
-    int h , w , n ; /* height and width of the grid */
-    ConwayAndImmigration conway ; /* the conway instance itself */
-    int pix ; /* size of each cell in pixels */
-    GUISimulator guiS ; /* the GUI simulator */
+    int h , w , n ; /* longueur , largeur , nombre d'états */
+    ConwayAndImmigration conway ; /* l'instance de Conway elle-même */
+    int pix ; /* taille de chaque cellule en pixels */
+    GUISimulator guiS ; /* le simulateur GUI */
 
     public ImmigrationSimulator ( int height , int width , int n, int[][] grid , int pixelsize, GUISimulator guiS ){
         this.n = n ;

@@ -1,9 +1,9 @@
 package main.Automate.ConwayAndImmigration;
 
 public class ConwayAndImmigration {
-    private int h , w , n ; /* height and width of the grid */
-    private int[][] curgrid ; /* the current grid itself */
-    private int[][] initgrid ; /* the intial grid  */
+    private int h , w , n ; /* longueur , largeur , number of states */
+    private int[][] curgrid ; /* la grid courante */
+    private int[][] initgrid ; /* la grid initiale  */
 
     public ConwayAndImmigration(int height , int width , int n, int[][] initg ){
     this.h = height ; 
@@ -19,12 +19,12 @@ public class ConwayAndImmigration {
     }
 }
 
-    public int[] n_neighbors  (int x , int y ){ /* returns the number of alive neighbors of cell (x,y) */
+    public int[] n_neighbors  (int x , int y ){ /* renvoie le nombre de voisins pour chaque etat */
         int count[] = new int[n]  ; 
         
         for ( int i = -1 ; i<= 1 ; i++ ){
             for ( int j =-1 ; j<=1 ; j++ ){
-                if ( j==0 && i==0 ) continue ; // ignore the cell itself
+                if ( j==0 && i==0 ) continue ; // on ne compte pas la cellule elle meme
                 int k = curgrid[(x+i +h)%h][(y+j +w)%w];
                 count[k] +=1;
             }
@@ -33,7 +33,7 @@ public class ConwayAndImmigration {
         return count ;
     }
 
-    public void update_grid (){
+    public void update_grid (){ // met a jour la grille selon les regles de conway ou de l'immigration
         int[][] newgrid = new int[h][w] ;
         for ( int i = 0 ; i < h ; i++ ){
             for ( int j = 0 ; j < w ; j++ ){
@@ -42,12 +42,12 @@ public class ConwayAndImmigration {
                     if ( curgrid[i][j]==1 ){
                         if ( ng[1] == 2 || ng[1] == 3 ) newgrid[i][j] = 1 ;
                         else newgrid[i][j] = 0 ;
-                    } else { // cell is dead
+                    } else { // la cellule est morte
                         if ( ng[1] == 3 ) newgrid[i][j] = 1 ;
                         else newgrid[i][j] = 0 ;
                     }
                 }
-                else {
+                else { // cas de l'immigration
                     int k = curgrid[i][j];
                     int next = (k + 1) % n;
                     if (ng[next] >= 3) newgrid[i][j] = next;

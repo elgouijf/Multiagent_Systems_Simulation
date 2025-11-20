@@ -6,10 +6,10 @@ import gui.Simulable;
 import java.awt.Color;
 
 public class ConwaySimulator implements Simulable  {
-    int h , w ; /* height and width of the grid */
-    ConwayAndImmigration conway ; /* the conway instance itself */
-    int pix ; /* size of each cell in pixels */
-    GUISimulator guiS ; /* the GUI simulator */
+    int h , w ; // longueur et largeur de la grille
+    ConwayAndImmigration conway ; /* l'instance de Conway elle-même */
+    int pix ; /* taille de chaque cellule en pixels */
+    GUISimulator guiS ; /* le simulateur GUI */
 
     public ConwaySimulator ( int height , int width , int[][] grid , int pixelsize, GUISimulator guiS ){
         this.h = height ; 
@@ -25,7 +25,7 @@ public class ConwaySimulator implements Simulable  {
         int[][] grid = this.conway.getgrid() ;
         for ( int i = 0 ; i < h ; i++ ){
             for ( int j = 0 ; j < w ; j++ ){
-                if ( grid[i][j]==1 ){ // cell is alive
+                if ( grid[i][j]==1 ){ // la cellule est vivante
                     this.guiS.addGraphicalElement( new Rectangle(i * pix + pix / 2, j * pix + pix / 2, Color.decode("#1f77b4"), Color.decode("#1f77b4"), pix) );
                 }
                 else {
