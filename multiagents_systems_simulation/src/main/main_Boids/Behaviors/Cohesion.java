@@ -12,12 +12,13 @@ public class Cohesion implements Behavior {
     }
 
     public Cohesion(int width, int height, double Cohesion_distance){
+        // default factor
         this.forceFactor = 1.0;
     }
 
     @Override
-    public Vector_2D behave(Boid b, Grid grid){
-        Vector_2D average_pos = new Vector_2D();
+    public Vector2D behave(Boid b, Grid grid){
+        Vector2D average_pos = new Vector2D();
         double sum_mass = 0;
         /* ArrayList<Boid> listBoids = boids.getlisteBoids(); */
         ArrayList<Boid> list_potential_neighbors = grid.getNeighbors(b);
@@ -31,7 +32,7 @@ public class Cohesion implements Behavior {
                 sum_mass += m;
 
                 // Compute the weighted sum of positions
-                Vector_2D weighted_pos = otherboid.getPosition().copy();
+                Vector2D weighted_pos = otherboid.getPosition().copy();
                 weighted_pos.multiply(m);
 
                 // update average_pos
@@ -40,11 +41,11 @@ public class Cohesion implements Behavior {
         if (sum_mass > 0){
             // divide by the sum of masses to get the average position (aka the center of inertia)
             average_pos.divide(sum_mass);
-            Vector_2D desired = average_pos.copy();
-            Vector_2D inertia_seek = b.seek(desired, forceFactor);
+            Vector2D desired = average_pos.copy();
+            Vector2D inertia_seek = b.seek(desired, forceFactor);
             return inertia_seek;
         }
-        return new Vector_2D(0,0);// no close boids detected
+        return new Vector2D(0,0);// no close boids detected
     }
     @Override
     public void updateGrid(Boid b, Grid grid){

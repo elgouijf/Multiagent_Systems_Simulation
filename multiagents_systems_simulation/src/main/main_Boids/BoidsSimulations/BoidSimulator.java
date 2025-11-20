@@ -15,13 +15,13 @@ public class BoidSimulator implements Simulable {
     private Color compass_color;
     private int width;
     private int height;
-    private Vector_2D target;
+    private Vector2D target;
     //private double target_radius;
     int radius = 7;
 
 
     // Constructor
-    public BoidSimulator(GUISimulator guis, Boid boid, Color color, Color compass_color, Vector_2D target){ 
+    public BoidSimulator(GUISimulator guis, Boid boid, Color color, Color compass_color, Vector2D target){ 
         this.guis = guis;
         this.boid = boid;
         this.width = guis.getWidth();
@@ -40,27 +40,27 @@ public class BoidSimulator implements Simulable {
         this.width = guis.getWidth();
         this.height = guis.getHeight();
 
-        Vector_2D wanderForce = this.boid.wander();
-        Vector_2D steer = this.boid.seek(target);
+        Vector2D wanderForce = this.boid.wander();
+        Vector2D steer = this.boid.seek(target);
         this.boid.applyForce(wanderForce);
         this.boid.applyForce(steer);
         this.boid.updatestate();
         // Bounce horizontally
         if (boid.getPosition().getX() < 0 || boid.getPosition().getX() + 2*radius > width) {
-            Vector_2D v = new Vector_2D(-2*boid.getVelocity().getX(),0);
+            Vector2D v = new Vector2D(-2*boid.getVelocity().getX(),0);
             boid.getVelocity().add(v);
-            Vector_2D pos = boid.getPosition();
+            Vector2D pos = boid.getPosition();
             double x = Math.max(0, Math.min(pos.getX(), width - 2*radius)) - pos.getX();
-            Vector_2D X = new Vector_2D(x,0);
+            Vector2D X = new Vector2D(x,0);
             pos.add(X);  // Faical must write the comments 
         }
         // Bounce vertically
         if (boid.getPosition().getY() < 0 || boid.getPosition().getY() + 2*radius > height) {
-            Vector_2D v = new Vector_2D(0,-2*boid.getVelocity().getY());
+            Vector2D v = new Vector2D(0,-2*boid.getVelocity().getY());
             boid.getVelocity().add(v);
-            Vector_2D pos = boid.getPosition();
+            Vector2D pos = boid.getPosition();
             double y = Math.max(0, Math.min(pos.getY(), height - 2*radius)) - pos.getY();
-            Vector_2D Y = new Vector_2D(0,y);
+            Vector2D Y = new Vector2D(0,y);
             pos.add(Y);  // Faical must write the comments 
         }
         this.reDisplay();

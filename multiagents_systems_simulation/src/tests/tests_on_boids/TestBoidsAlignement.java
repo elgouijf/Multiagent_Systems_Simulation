@@ -35,28 +35,28 @@ public class TestBoidsAlignement {
         int boidRadius = 6;
 
         // Creating 4 clusters
-        Vector_2D[] clusterCenters = {
-            new Vector_2D(750, 750), // bottom right
-            new Vector_2D(750, 250), // top right
-            new Vector_2D(250, 250), // top left
-            new Vector_2D(250, 750), // bottom left
+        Vector2D[] clusterCenters = {
+            new Vector2D(750, 750), // bottom right
+            new Vector2D(750, 250), // top right
+            new Vector2D(250, 250), // top left
+            new Vector2D(250, 750), // bottom left
         };
 
         for (int c = 0; c < 4; c++) {
-            Vector_2D center = clusterCenters[c];
+            Vector2D center = clusterCenters[c];
             Color bodyColor = clusterColors[c];
 
             for (int i = 0; i < cluster_n; i++) {
                 double radius_x = rand.nextDouble() * clusterSize; // distance from center between 0 and clusterSize
                 double radius_y = rand.nextDouble() * clusterSize; // distance from center between 0 and clusterSize
-                Vector_2D pos = new Vector_2D(
+                Vector2D pos = new Vector2D(
                     center.getX() + radius_x,
                     center.getY() + radius_y
                 );
 
-                Vector_2D vel = new Vector_2D(rand.nextDouble()*4 - 2, rand.nextDouble()*4 - 2); // small random velocity
+                Vector2D vel = new Vector2D(rand.nextDouble()*4 - 2, rand.nextDouble()*4 - 2); // small random velocity
 
-                Vector_2D acc = new Vector_2D(0, 0);
+                Vector2D acc = new Vector2D(0, 0);
 
                
 
@@ -81,7 +81,7 @@ public class TestBoidsAlignement {
             grids.get(GridType.TOGETHER).addBoid(b);
             grids.get(GridType.TOGETHER).addBoid(b);
         }
-        Vector_2D target = new Vector_2D(width / 2.0, height / 2.0);
+        Vector2D target = new Vector2D(width / 2.0, height / 2.0);
 
         // Création du simulateur
         BoidsSimulator simulator = new BoidsSimulator(gui, boids, target);

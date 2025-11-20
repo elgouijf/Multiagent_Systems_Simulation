@@ -2,28 +2,28 @@ package  main.main_Boids.Boidutils;
 import java.util.ArrayList;
 
 public class Path{
-    private int taille = 0;
-    private ArrayList<Vector_2D> tableauPoints = new ArrayList<>();
+    private int size = 0;
+    private ArrayList<Vector2D> tableauPoints = new ArrayList<>();
     private double pathRadius;
 
     public Path(double pathRadius){
         this.pathRadius = pathRadius;
     }
-    public void add(Vector_2D p){
+    public void add(Vector2D p){
        tableauPoints.add(p);
-       taille++;
+       size++;
     }
-    public int getTaille(){
-        return this.taille;
+    public int getsize(){
+        return this.size;
     }
     public double getPathRadius(){
         return this.pathRadius;
     }
-    public ArrayList<Vector_2D> gettableauPoints(){
+    public ArrayList<Vector2D> gettableauPoints(){
         return this.tableauPoints;
     }
     public void clear(){
         tableauPoints.clear();
-        taille = 0;
+        size = 0;
     }
 }

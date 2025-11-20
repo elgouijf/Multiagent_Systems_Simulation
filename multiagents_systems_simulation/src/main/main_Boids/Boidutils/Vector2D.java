@@ -1,28 +1,28 @@
 package main.main_Boids.Boidutils;
 
-public class Vector_2D {
+public class Vector2D {
     private double x;  
     private double y;
 
-    public Vector_2D(double x, double y) {
+    public Vector2D(double x, double y) {
         // Constructor for a vector with given x and y components
         this.x = x;
         this.y = y;
     }
 
-    public Vector_2D(){
+    public Vector2D(){
         // Constructor for a zero vector, it is the default setting in java if this.x and this.y are not specified, but to be explicit:
         this.x = 0;
         this.y = 0;
     }
-    public Vector_2D copy(){
-        return new Vector_2D(this.x,this.y);
+    public Vector2D copy(){
+        return new Vector2D(this.x,this.y);
     }
     public double getMagnitude() {
         return Math.sqrt(x*x + y*y);
     }
-    public double getdistance(Vector_2D other){
-        Vector_2D X = new Vector_2D(this.x - other.x, this.y - other.y);
+    public double getdistance(Vector2D other){
+        Vector2D X = new Vector2D(this.x - other.x, this.y - other.y);
         return X.getMagnitude();
     }
 
@@ -44,22 +44,22 @@ public class Vector_2D {
         this.x *= magnitude;
         this.y *= magnitude;
     }
-    public void add(Vector_2D v1, Vector_2D v2){
+    public void add(Vector2D v1, Vector2D v2){
         this.x = v1.x + v2.x;
         this.y = v1.y + v2.y;
     }
 
-    public void add(Vector_2D other) {
+    public void add(Vector2D other) {
         this.x += other.x;
         this.y += other.y;
     }
 
-    public void subtract(Vector_2D other) {
+    public void subtract(Vector2D other) {
         this.x -= other.x;
         this.y -= other.y;
     }
 
-    public void subtract2New(Vector_2D v1, Vector_2D v2){
+    public void subtract2New(Vector2D v1, Vector2D v2){
         this.x = v2.x - v1.x;
         this.y = v2.y - v1.y;
     }
@@ -90,21 +90,21 @@ public class Vector_2D {
     public double heading2() {
         return Math.atan2(this.x, this.y) ;
     }
-    public double dot(Vector_2D other){
+    public double dot(Vector2D other){
         return this.x*other.x+this.y*other.y;
     }
 
-    public Vector_2D getNormalPoint(Vector_2D start, Vector_2D end){
+    public Vector2D getNormalPoint(Vector2D start, Vector2D end){
         // Return the normal projection of self on the segment [start, end]
-        Vector_2D a = new Vector_2D(this.x,this.y );
+        Vector2D a = new Vector2D(this.x,this.y );
         a.subtract(start);
-        Vector_2D b = new Vector_2D(end.x,end.y);
+        Vector2D b = new Vector2D(end.x,end.y);
         
         b.subtract(start);
         b.normalize();
         b.updateMagnitude(a.dot(b));
         
-        Vector_2D normal_point = new Vector_2D(start.x+b.x, start.y+b.y);
+        Vector2D normal_point = new Vector2D(start.x+b.x, start.y+b.y);
         
         return normal_point;
     }

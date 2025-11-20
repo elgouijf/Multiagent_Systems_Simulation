@@ -22,9 +22,9 @@ public class TestEagleChase {
         // === Birds ===
         ArrayList<Boid> birdsList = new ArrayList<>();
         Color[] clusterColors = { Color.YELLOW, Color.CYAN, Color.MAGENTA, Color.ORANGE };
-        Vector_2D[] clusterCenters = {
-            new Vector_2D(750, 750), new Vector_2D(750, 250),
-            new Vector_2D(250, 250), new Vector_2D(250, 750)
+        Vector2D[] clusterCenters = {
+            new Vector2D(750, 750), new Vector2D(750, 250),
+            new Vector2D(250, 250), new Vector2D(250, 750)
         };
 
         int cluster_n = 50;
@@ -34,14 +34,15 @@ public class TestEagleChase {
         double birdAngleWander = Math.PI / 12;
 
         for (int c = 0; c < 4; c++) {
-            Vector_2D center = clusterCenters[c];
+            // For each cluster
+            Vector2D center = clusterCenters[c];
             Color bodyColor = clusterColors[c];
             for (int i = 0; i < cluster_n; i++) {
                 double radius_x = rand.nextDouble() * clusterSize;
                 double radius_y = rand.nextDouble() * clusterSize;
-                Vector_2D pos = new Vector_2D(center.getX() + radius_x, center.getY() + radius_y);
-                Vector_2D vel = new Vector_2D(rand.nextDouble()*4 - 2, rand.nextDouble()*4 - 2);
-                Vector_2D acc = new Vector_2D(0, 0);
+                Vector2D pos = new Vector2D(center.getX() + radius_x, center.getY() + radius_y);
+                Vector2D vel = new Vector2D(rand.nextDouble()*4 - 2, rand.nextDouble()*4 - 2);
+                Vector2D acc = new Vector2D(0, 0);
                 birdsList.add(new Bird(pos, vel, acc, birdSpeedLimit, birdForceLimit, birdWanderRadius,
                         birdPathRadius, birdRadius, bodyColor, Color.WHITE, birdAngleWander, width, height));
             }
@@ -58,9 +59,9 @@ public class TestEagleChase {
         double eagleAngleWander = Math.PI / 8;
 
         for (int i = 0; i < eagle_n; i++) {
-            Vector_2D pos = new Vector_2D(rand.nextDouble()*width, rand.nextDouble()*height);
-            Vector_2D vel = new Vector_2D(rand.nextDouble()*6 - 3, rand.nextDouble()*6 - 3);
-            Vector_2D acc = new Vector_2D(0, 0);
+            Vector2D pos = new Vector2D(rand.nextDouble()*width, rand.nextDouble()*height);
+            Vector2D vel = new Vector2D(rand.nextDouble()*6 - 3, rand.nextDouble()*6 - 3);
+            Vector2D acc = new Vector2D(0, 0);
             eaglesList.add(new Eagle(pos, vel, acc, eagleSpeedLimit, eagleForceLimit, eagleWanderRadius,
                     eaglePathRadius, eagleRadius, Color.RED, Color.WHITE, eagleAngleWander, width, height));
         }
@@ -96,7 +97,7 @@ public class TestEagleChase {
         Boids eagles = new Boids(eaglesList, eagleGrids);
 
         // === Target ===
-        Vector_2D target = new Vector_2D(width / 2.0, height / 2.0);
+        Vector2D target = new Vector2D(width / 2.0, height / 2.0);
 
         // Création d'une liste de conteneurs de Boids
         ArrayList<Boids> boidsContainers = new ArrayList<>();

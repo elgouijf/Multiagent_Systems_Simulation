@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Boids{
+    // List of boids in the simulation (usually it is constructed in Tests)
     private ArrayList<Boid> listBoids = new ArrayList<>();
+    // The different grids used for spatial partitioning based on behavior types (please check Boid.submitBehavior method to understand how it works)
     private HashMap<GridType,Grid> grids = new HashMap<>();
     private int size = 0;
     

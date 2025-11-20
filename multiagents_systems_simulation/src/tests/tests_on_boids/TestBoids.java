@@ -34,9 +34,9 @@ public class TestBoids {
 
 
         for (int i = 0; i < n; i++) {
-            Vector_2D pos = new Vector_2D(Math.random()*width, Math.random()*height);
-            Vector_2D vel = new Vector_2D(Math.random()*4 - 2, Math.random()*4 - 2); // small random velocity 
-            Vector_2D acc = new Vector_2D(0,0);
+            Vector2D pos = new Vector2D(Math.random()*width, Math.random()*height);
+            Vector2D vel = new Vector2D(Math.random()*4 - 2, Math.random()*4 - 2); // small random velocity 
+            Vector2D acc = new Vector2D(0,0);
 
             
 
@@ -64,7 +64,7 @@ public class TestBoids {
             grids.get(GridType.TOGETHER).addBoid(b);
         }
         
-        Vector_2D target = new Vector_2D(50,50);
+        Vector2D target = new Vector2D(50,50);
         // Simulator for multiple boids
         BoidsSimulator simulator = new BoidsSimulator(gui, boids,target);
 

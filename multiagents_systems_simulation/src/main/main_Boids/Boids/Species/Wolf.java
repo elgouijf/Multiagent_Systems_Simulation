@@ -8,14 +8,15 @@ import main.main_Boids.Boidutils.*;
 
 
 public class Wolf extends Boid{
-
+    /* I am a father, a son, a serial killer (please don't take it seriously it just a reference i had the urge to put in a comment),
+    But more importantly Wolf is not a solo predator, it seeks its prey in circles by following a given leader (which is the closest to the prey) */
     private double killRadius;
     private static ArrayList<Wolf> pack = new ArrayList<>();
     private static int indexLeader;
     private String prey;
     private static Boid preyLeader;
     
-    public Wolf(Vector_2D position, Vector_2D velocity, Vector_2D acceleration,
+    public Wolf(Vector2D position, Vector2D velocity, Vector2D acceleration,
                  double speedLimit, double forceLimit, double wander_radius, double path_radius,
                  int boid_size, Color color, Color compassColor, double angleDistance,
                  int windowWidth, int windowHeight){
@@ -53,8 +54,8 @@ public class Wolf extends Boid{
             Wolf wolf = pack.get(i);
            ArrayList<Boid> neighbors = grid.getNeighbors(wolf);
            for (Boid other : neighbors){
-            if (other == null) continue; // Sometrimes neighbors cells can be empty
-             if (other.getSpecies().equals(prey)){
+            if (other == null) continue; // Sometimes neighbors cells can be empty
+             if (other.getSpecies().equals(prey)){ // only consider prey 
                 double distance = wolf.distance_to(other);
                 if (distance < minDistance ){
                     minDistance = distance;

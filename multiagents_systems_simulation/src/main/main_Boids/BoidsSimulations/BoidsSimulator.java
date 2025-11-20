@@ -13,12 +13,12 @@ import java.util.HashMap;
 
 import gui.Oval;
 public class BoidsSimulator implements Simulable {
-    private FlowField windField = null;
-    private GUISimulator gui;
-    private Boids boids;
-    private int width;
-    private int height;
-    private Vector_2D target;
+    protected FlowField windField;
+    protected GUISimulator gui;
+    protected Boids boids;
+    protected int width;
+    protected int height;
+    protected Vector2D target;
     EventManager manager;
 
     public void setWindField(FlowField field) {
@@ -30,9 +30,10 @@ public class BoidsSimulator implements Simulable {
     }
 
     public FlowField getWindField() {
+        // In case we want to add wind effects
         return windField;
     }
-    public BoidsSimulator(GUISimulator gui, Boids boids,Vector_2D target) {
+    public BoidsSimulator(GUISimulator gui, Boids boids,Vector2D target) {
         this.gui = gui;
         this.boids = boids;
 
@@ -54,8 +55,6 @@ public class BoidsSimulator implements Simulable {
         ArrayList<Boid> listeBoids = boids.getlisteBoids();
         HashMap<GridType,Grid> grids = boids.getGrids();
 
-
-        long start = System.nanoTime();
         for (Boid b : listeBoids) {
             
             /* b.wander(target,1); */
@@ -74,9 +73,6 @@ public class BoidsSimulator implements Simulable {
             }
             handleBorderBounce(b);
         }
-        long end = System.nanoTime();
-        double time_per_frame = (end - start) / 1e6; // milliseconds
-        System.out.println("Frame time: " + time_per_frame + " ms");
         this.reDisplay();
     }
 
@@ -94,24 +90,24 @@ public class BoidsSimulator implements Simulable {
     /** Bounce on window borders */
     private void handleBorderBounce(Boid boid) {
         int r = boid.getSize();
-        Vector_2D pos = boid.getPosition();
-        Vector_2D vel = boid.getVelocity();
+        Vector2D pos = boid.getPosition();
+        Vector2D vel = boid.getVelocity();
 
         // Bord gauche / droite
         if (pos.getX() < 0) {
-            pos.add(new Vector_2D(-pos.getX(), 0)); // recaler à X=0
+            pos.add(new Vector2D(-pos.getX(), 0)); // recaler à X=0
             vel.setX(Math.abs(vel.getX())); // rebond vers la droite
         } else if (pos.getX() + 2*r > width) {
-            pos.add(new Vector_2D(width - 2*r - pos.getX(), 0)); // recaler au bord droit
+            pos.add(new Vector2D(width - 2*r - pos.getX(), 0)); // recaler au bord droit
             vel.setX(-Math.abs(vel.getX())); // rebond vers la gauche
         }
 
         // Bord haut / bas
         if (pos.getY() < 0) {
-            pos.add(new Vector_2D(0, -pos.getY())); // recaler à Y=0
+            pos.add(new Vector2D(0, -pos.getY())); // recaler à Y=0
             vel.setY(Math.abs(vel.getY())); // rebond vers le bas
         } else if (pos.getY() + 2*r > height) {
-            pos.add(new Vector_2D(0, height - 2*r - pos.getY())); // recaler au bord bas
+            pos.add(new Vector2D(0, height - 2*r - pos.getY())); // recaler au bord bas
             vel.setY(-Math.abs(vel.getY())); // rebond vers le haut
         }
     }
@@ -133,9 +129,9 @@ public class BoidsSimulator implements Simulable {
             // Get the velocity direction angle
             double orientation = b.getVelocity().heading();
             // Create a triangle shape for the boid relative to the center
-            Vector_2D triangle_tip = new Vector_2D(2*size, 0);
-            Vector_2D left_wing = new Vector_2D(-size, size);
-            Vector_2D right_wing = new Vector_2D(-size, -size);
+            Vector2D triangle_tip = new Vector2D(2*size, 0);
+            Vector2D left_wing = new Vector2D(-size, size);
+            Vector2D right_wing = new Vector2D(-size, -size);
 
             // Rotate the triangle according to the orientation
             triangle_tip.rotate(orientation);
@@ -143,9 +139,9 @@ public class BoidsSimulator implements Simulable {
             right_wing.rotate(orientation);
  
             // Translate the triangle to the boid's position
-            triangle_tip.add(new Vector_2D(x , y));
-            left_wing.add(new Vector_2D(x , y));
-            right_wing.add(new Vector_2D(x , y));
+            triangle_tip.add(new Vector2D(x , y));
+            left_wing.add(new Vector2D(x , y));
+            right_wing.add(new Vector2D(x , y));
 
             // Draw the triangle
             int[] triangle_x = { (int)Math.round(triangle_tip.getX()), 
@@ -165,4 +161,12 @@ public class BoidsSimulator implements Simulable {
         Oval target_oval = new Oval((int) target.getX(),(int) target.getY(),Color.GREEN,Color.GREEN,4,4);
         gui.addGraphicalElement(target_oval);
     }
+
+    public GUISimulator getGui() { 
+        return this.gui; }
+    public int getWidth()        { 
+        return this.width; }
+    public int getHeight()       { 
+        return this.height; }
+
 }

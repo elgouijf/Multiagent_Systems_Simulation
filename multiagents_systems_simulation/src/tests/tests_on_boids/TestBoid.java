@@ -1,7 +1,7 @@
 package tests.tests_on_boids;
 import main.main_Boids.BoidsSimulations.*;
 import main.main_Boids.Boids.Boid;
-import main.main_Boids.Boidutils.Vector_2D;
+import main.main_Boids.Boidutils.Vector2D;
 
 import java.awt.Color;
 import gui.GUISimulator;
@@ -14,13 +14,13 @@ public class TestBoid {
         GUISimulator gui = new GUISimulator(width, height, Color.BLACK);
 
         // Position initiale
-        Vector_2D position = new Vector_2D(width / 2.0, height / 2.0);
+        Vector2D position = new Vector2D(width / 2.0, height / 2.0);
 
         // Vitesse initiale = 0
-        Vector_2D velocity = new Vector_2D(0, 0);
+        Vector2D velocity = new Vector2D(0, 0);
 
         // Accélération initiale = 0
-        Vector_2D acceleration = new Vector_2D(0, 0);
+        Vector2D acceleration = new Vector2D(0, 0);
 
         // Limites et masse
         double speedLimit = 30.0;
@@ -33,7 +33,7 @@ public class TestBoid {
         Boid boid = new Boid(position, velocity, acceleration, speedLimit, forceLimit,wander_radius,path_radius, boid_radius, Color.YELLOW, Color.BLACK, 0);
 
         // Direction vers laquelle il veut aller (target)
-        Vector_2D target = new Vector_2D(45, 45);
+        Vector2D target = new Vector2D(45, 45);
 
         // Création du simulateur pour un seul boid
         BoidSimulator simulator = new BoidSimulator(gui, boid, boid.getColor(), boid.getCompassColor(), target);

@@ -4,9 +4,11 @@ import main.main_Boids.Boids.Boid;
 import main.main_Boids.Boidutils.Grid;
 import main.main_Boids.Boidutils.GridType;
 import main.main_Boids.Boidutils.Path;
-import main.main_Boids.Boidutils.Vector_2D;
+import main.main_Boids.Boidutils.Vector2D;
 
 public class FollowPath implements Behavior{
+  /* This behavior tries to simulate miration behavior by constructing a path from West to 
+  East that Deers are supposed to follow*/
     private double forceFactor;
     private double distancetoArrival;
     private int nPoints;
@@ -18,23 +20,24 @@ public class FollowPath implements Behavior{
     }
 
     @Override
-    public Vector_2D behave(Boid b,Grid grid){
+    public Vector2D behave(Boid b,Grid grid){
         updatePath(b,grid);
-        Vector_2D force = b.followPath(forceFactor);
+        Vector2D force = b.followPath(forceFactor);
         System.out.println("FollowPath force: " + force);
         return force;
     }
 
 
     public void updatePath(Boid b,Grid grid){
+        // If the boid has arrived at the end of the path, generate a new random path
         Path path = b.getPath();
-        if (arrivedEnd(b)){
+        if (arrivedEnd(b)){ // generate a new random path in case of arrival or empty path
           path.clear();
           Random rand = new Random();
           for (int i = 0; i < nPoints; i++) {
               double x = rand.nextDouble() * grid.getScreenWidth();
               double y = rand.nextDouble() * grid.getScreenHeight();
-              path.add(new Vector_2D(x, y));
+              path.add(new Vector2D(x, y));
             }
         }
     }
@@ -42,10 +45,10 @@ public class FollowPath implements Behavior{
     public boolean arrivedEnd(Boid b){
       // If the boid arrives at the end of the path we 
         Path path = b.getPath();
-        int taille = path.getTaille();
-        if (taille > 0){
-          Vector_2D lastPoint = path.gettableauPoints().get(taille-1);
-          Vector_2D pos = b.getPosition();
+        int size = path.getsize();
+        if ( size > 0){
+          Vector2D lastPoint = path.gettableauPoints().get(size-1);
+          Vector2D pos = b.getPosition();
           double distance = pos.getdistance(lastPoint);
           if (distance > distancetoArrival){
             return false;

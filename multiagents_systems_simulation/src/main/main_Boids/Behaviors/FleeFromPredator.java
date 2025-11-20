@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import main.main_Boids.Boids.Boid;
 import main.main_Boids.Boidutils.Grid;
 import main.main_Boids.Boidutils.GridType;
-import main.main_Boids.Boidutils.Vector_2D;
+import main.main_Boids.Boidutils.Vector2D;
 
 public class FleeFromPredator implements Behavior {
 
-    private double forceFactor;      // intensité de la fuite
-    private double detectionRadius;  // distance à laquelle l'oiseau détecte un prédateur
+    private double forceFactor;      // Fleeing force multiplier
+    private double detectionRadius;  // How far the boid can detect predators
 
     public FleeFromPredator(double forceFactor, double detectionRadius) {
         this.forceFactor = forceFactor;
@@ -17,29 +17,29 @@ public class FleeFromPredator implements Behavior {
     }
 
     @Override
-    public Vector_2D behave(Boid b, Grid grid) {
+    public Vector2D behave(Boid b, Grid grid) {
         ArrayList<Boid> neighbors = grid.getNeighbors(b);
 
-        Vector_2D fleeForce = new Vector_2D();
+        Vector2D fleeForce = new Vector2D();
 
         for (Boid other : neighbors) {
-            // Vérifie si c'est un prédateur (instance Eagle)
+            // Check if the other boid is a predator of this boid (Eagle for Birds, etc.)
             if (other.getPrey().equals(b.getSpecies())) {
                 double d = b.distance_to(other);
                 if (d < detectionRadius) {
-                    // Force opposée à la position du prédateur
-                    Vector_2D away = other.getPosition().copy();
+                    // Flee from the predator
+                    Vector2D away = other.getPosition().copy();
                     away.subtract(b.getPosition());
-                    away.multiply(-1); // direction opposée
+                    away.multiply(-1); // opposite direction of the predator
                     away.updateMagnitude(b.getforceLimit()); // max force
                     fleeForce.add(away);
                 }
             }
         }
 
-        // Multiplier par le facteur de force
+        // Multiply by force factor and limit to max force
         fleeForce.multiply(forceFactor);
-        fleeForce.limit(b.getforceLimit());
+        fleeForce.limit(b.getforceLimit()); 
         return fleeForce;
     }
 
@@ -50,6 +50,6 @@ public class FleeFromPredator implements Behavior {
 
     @Override
     public GridType getGridType() {
-        return GridType.TOGETHER; // utilise neighbor_distance
+        return GridType.TOGETHER; // use TOGETHER to use neighbor_distance, only flee from close predators
     }
 }

@@ -1,9 +1,8 @@
 package main.main_Boids.Boidutils;
 
-// Ce fichier a était initialement pris de https://mrl.nyu.edu/~perlin/noise/
-// et modifiée pour convenir au projet.
-// car si non il faut télécharger une librairie externe juste pour du bruit de Perlin, et on ne peut pas tout faire nous même.
-
+/*This file was originally taken from https://mrl.nyu.edu/~perlin/noise/
+and modified to suit the project.
+Otherwise, we would need to download an external library just for Perlin noise, and we can't do everything ourselves. */
 public final class ImprovedNoise {
     private static final int[] p = new int[512];
     private static final int[] permutation = {

@@ -4,14 +4,15 @@ import gui.GUISimulator;
 import java.awt.Color;
 
 public class FlowFieldDraw {
+    /* Draws FlowField */
 
     public static void draw(GUISimulator gui, FlowField field) {
         int res = field.getResolution();
-        Vector_2D[][] grid = field.getFieldArray();
+        Vector2D[][] grid = field.getFieldArray();
 
         for (int row = 0; row < field.getRows(); row++) {
             for (int col = 0; col < field.getColumns(); col++) {
-                Vector_2D v = grid[row][col];
+                Vector2D v = grid[row][col];
 
                 int x1 = col * res + res / 2;
                 int y1 = row * res + res / 2;

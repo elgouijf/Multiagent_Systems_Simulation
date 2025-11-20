@@ -13,13 +13,14 @@ public class Alignment implements Behavior {
     }
 
     public Alignment(int width, int height, double Alignment_distance){
+        // default factor
         this.forceFactor = 1.0;
     }
 
     @Override
-    public Vector_2D behave(Boid b, Grid grid){
+    public Vector2D behave(Boid b, Grid grid){
         int n_sight_boids = 0;
-        Vector_2D average_velocity = new Vector_2D();
+        Vector2D average_velocity = new Vector2D();
         ArrayList<Boid> list_potential_neighbors = grid.getNeighbors(b);
 
         for (Boid otherboid : list_potential_neighbors){
@@ -39,14 +40,14 @@ public class Alignment implements Behavior {
 
             // the boid wants to flee as fast as possible in the direction of the average_flee vector
             average_velocity.updateMagnitude(b.getSpeedlimit());
-            Vector_2D align_force = b.getSteeringForce(average_velocity);
+            Vector2D align_force = b.getSteeringForce(average_velocity);
             align_force.multiply(forceFactor);
             align_force.limit(b.getforceLimit());
 
             /* return align_force; */
             return align_force;
         }
-        return new Vector_2D(0,0);// no close boids detected
+        return new Vector2D(0,0);// no close boids detected
     }
     @Override
     public void updateGrid(Boid b, Grid grid){
@@ -55,6 +56,7 @@ public class Alignment implements Behavior {
     
     @Override
     public GridType getGridType(){
+        // use TOGETHER to use neighbor_distance
         return GridType.TOGETHER;
     }
 }

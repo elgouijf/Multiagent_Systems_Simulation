@@ -15,9 +15,9 @@ public class Separation implements Behavior {
     }
 
     @Override
-    public Vector_2D behave(Boid b, Grid grid){
+    public Vector2D behave(Boid b, Grid grid){
         int n_close_boids = 0;
-        Vector_2D average_flee = new Vector_2D(); // intiialize to an empty vector
+        Vector2D average_flee = new Vector2D(); // intiialize to an empty vector
         
         /* ArrayList<Boid> listBoids = boids.getlisteBoids(); */
         ArrayList<Boid> list_potential_neighbors = grid.getNeighbors(b);
@@ -26,7 +26,7 @@ public class Separation implements Behavior {
             (distance_to(otherboid) < this.close_distance)){ */
             // update n_close_boids
             n_close_boids += 1;
-            Vector_2D from_me_to_you = b.getPosition().copy();
+            Vector2D from_me_to_you = b.getPosition().copy();
             from_me_to_you.subtract(otherboid.getPosition());
 
             // the closer boid is to other the more it is urging to flee away
@@ -44,14 +44,14 @@ public class Separation implements Behavior {
             average_flee.divide(n_close_boids);
             // the boid wants to flee as fast as possible in the direction of the average_velocity vector
             average_flee.updateMagnitude(b.getSpeedlimit());
-            Vector_2D separ_force = b.getSteeringForce(average_flee);
+            Vector2D separ_force = b.getSteeringForce(average_flee);
             separ_force.multiply(forceFactor);
             separ_force.limit(b.getforceLimit());
 
             // return Alignment force
             return separ_force;
         }
-        return new Vector_2D(0,0);// no close boids detected
+        return new Vector2D(0,0);// no close boids detected
     }
 
     @Override

@@ -14,7 +14,7 @@ import gui.GUISimulator;
 
 public class TestWolfDeerChase {
     public static void main(String[] args) {
-
+        
         int width  = (args.length > 0) ? Integer.parseInt(args[0]) : 1200;
         int height = (args.length > 1) ? Integer.parseInt(args[1]) : 800;
 
@@ -36,15 +36,15 @@ public class TestWolfDeerChase {
 
         for (int i = 0; i < deer_n; i++) {
 
-            Vector_2D pos = new Vector_2D(
+            Vector2D pos = new Vector2D(
                 width * 0.2 + rand.nextGaussian() * 100,
                 height * 0.5 + rand.nextGaussian() * 100
             );
-            Vector_2D vel = new Vector_2D(
+            Vector2D vel = new Vector2D(
                 rand.nextDouble()*2 - 1,
                 rand.nextDouble()*2 - 1
             );
-            Vector_2D acc = new Vector_2D(0, 0);
+            Vector2D acc = new Vector2D(0, 0);
 
             deerList.add(new Deer(
                 pos, vel, acc,
@@ -52,7 +52,7 @@ public class TestWolfDeerChase {
                 deerWanderRad, deerPathRad,
                 deerSize,
                 new Color(180,140,80),      // body color
-                Color.WHITE,                // compass color
+                Color.WHITE,                // compass color (only if it is presented through ovals)
                 deerAngle,
                 width, height
             ));
@@ -74,15 +74,15 @@ public class TestWolfDeerChase {
 
         for (int i = 0; i < wolf_n; i++) {
 
-            Vector_2D pos = new Vector_2D(
+            Vector2D pos = new Vector2D(
                 width * 0.7 + rand.nextGaussian() * 120,
                 height * 0.5 + rand.nextGaussian() * 120
             );
-            Vector_2D vel = new Vector_2D(
+            Vector2D vel = new Vector2D(
                 rand.nextDouble()*3 - 1.5,
                 rand.nextDouble()*3 - 1.5
             );
-            Vector_2D acc = new Vector_2D(0, 0);
+            Vector2D acc = new Vector2D(0, 0);
 
             wolfList.add(new Wolf(
                 pos, vel, acc,
@@ -163,7 +163,7 @@ public class TestWolfDeerChase {
         allGroups.add(deerHerd);
         allGroups.add(wolfPack);
 
-        Vector_2D target = new Vector_2D(width/2.0, height/2.0);
+        Vector2D target = new Vector2D(width/2.0, height/2.0);
 
         MultipleBoidsSimulator sim = new MultipleBoidsSimulator(gui, allGroups, target);
         gui.setSimulable(sim);

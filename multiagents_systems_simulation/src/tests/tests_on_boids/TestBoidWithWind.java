@@ -1,7 +1,7 @@
 package tests.tests_on_boids;
 
 import main.main_Boids.Boids.Boid;
-import main.main_Boids.Boidutils.Vector_2D;
+import main.main_Boids.Boidutils.Vector2D;
 import main.main_Boids.BoidsSimulations.BoidSimulatorWithWind;
 import gui.GUISimulator;
 
@@ -20,14 +20,14 @@ public class TestBoidWithWind {
         GUISimulator gui = new GUISimulator(1000, 1000, Color.BLACK);
 
         // Create boid
-        Vector_2D position = new Vector_2D(500, 500);
-        Vector_2D velocity = new Vector_2D(0, 0);
-        Vector_2D acceleration = new Vector_2D(0, 0);
+        Vector2D position = new Vector2D(500, 500);
+        Vector2D velocity = new Vector2D(0, 0);
+        Vector2D acceleration = new Vector2D(0, 0);
 
         Boid boid = new Boid(position, velocity, acceleration, 30.0, 2.0, 2.0, 10.0, 9, Color.YELLOW, Color.BLACK, 0);
 
         // Target
-        Vector_2D target = new Vector_2D(450, 450);
+        Vector2D target = new Vector2D(450, 450);
 
         // Create simulator
         BoidSimulatorWithWind simulator = new BoidSimulatorWithWind(gui, boid, target);

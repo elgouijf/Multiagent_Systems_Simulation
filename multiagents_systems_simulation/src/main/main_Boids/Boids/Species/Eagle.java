@@ -9,7 +9,7 @@ import main.main_Boids.Boidutils.*;
 public class Eagle extends Boid {
     private double killRadius;
 
-    public Eagle(Vector_2D position, Vector_2D velocity, Vector_2D acceleration,
+    public Eagle(Vector2D position, Vector2D velocity, Vector2D acceleration,
                  double speedLimit, double forceLimit, double wander_radius, double path_radius,
                  int boid_size, Color color, Color compassColor, double angleDistance,
                  int windowWidth, int windowHeight) {

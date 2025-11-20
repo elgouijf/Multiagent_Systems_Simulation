@@ -25,7 +25,7 @@ public class Arrow implements GraphicalElement {
         
         g.drawLine(x1, y1, x2, y2);
 
-        // Calcul tête de flèche
+        // Compute the arrow tip
         double angle = Math.atan2(y2 - y1, x2 - x1);
 
         int x3 = (int)(x2 - headSize * Math.cos(angle - Math.PI / 6));
@@ -34,7 +34,7 @@ public class Arrow implements GraphicalElement {
         int x4 = (int)(x2 - headSize * Math.cos(angle + Math.PI / 6));
         int y4 = (int)(y2 - headSize * Math.sin(angle + Math.PI / 6));
 
-        // Deux lignes de la tête
+        // two lines for the tip
         g.drawLine(x2, y2, x3, y3);
         g.drawLine(x2, y2, x4, y4);
     }

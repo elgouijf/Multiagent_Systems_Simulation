@@ -4,6 +4,7 @@ import main.EventManaging.EventManager;
 import main.EventManaging.EventBoidsMultiple;
 import main.main_Boids.Behaviors.*;
 import main.main_Boids.Boids.*;
+import main.main_Boids.Boids.Species.Bird;
 import main.main_Boids.Boids.Species.Deer;
 import main.main_Boids.Boids.Species.Eagle;
 import main.main_Boids.Boids.Species.Wolf;
@@ -17,12 +18,14 @@ import gui.Oval;
 import gui.Rectangle;
 
 public class MultipleBoidsSimulator implements Simulable {
+    /*The ultimate Simulator, allows for multiple species to coexist(if being eaten counts as 
+    coexisting of course) in the same environment */
     private FlowField windField = null; 
     private GUISimulator gui;
     private ArrayList<Boids> boidsLists; // plusieurs listes de boids
     private int width;
     private int height;
-    private Vector_2D target;
+    private Vector2D target;
     private EventManager manager;
 
     public void setWindField(FlowField field) {
@@ -36,7 +39,7 @@ public class MultipleBoidsSimulator implements Simulable {
     public FlowField getWindField() {
         return windField;
     }
-    public MultipleBoidsSimulator(GUISimulator gui, ArrayList<Boids> boidsLists, Vector_2D target) {
+    public MultipleBoidsSimulator(GUISimulator gui, ArrayList<Boids> boidsLists, Vector2D target) {
         this.gui = gui;
         this.boidsLists = boidsLists;
         this.width = gui.getWidth();
@@ -47,12 +50,12 @@ public class MultipleBoidsSimulator implements Simulable {
         this.reDisplay();
     }
 
-    public MultipleBoidsSimulator(GUISimulator gui, Vector_2D target) {
+    public MultipleBoidsSimulator(GUISimulator gui, Vector2D target) {
         this.gui = gui;
         this.target = target;
         this.width = gui.getWidth();
         this.height = gui.getHeight();
-        this.boidsLists = new ArrayList<>(); // liste vide pour commencer
+        this.boidsLists = new ArrayList<>(); // empty list of boids containers
         this.manager = new EventManager();
     }
 
@@ -73,8 +76,8 @@ public class MultipleBoidsSimulator implements Simulable {
             HashMap<GridType, Grid> grids = boids.getGrids();
             
             for (Boid b : listeBoids) {
-                if (b instanceof Wolf ){
-                  Wolf wolf = (Wolf) b;
+                if (b instanceof Wolf ){  // check instance for specific behavior
+                  Wolf wolf = (Wolf) b; // Upcast to access Wolf-specific methods
                   boolean changethePrey = wolf.changePrey();
                   if (changethePrey){
                     Grid grid = grids.get(GridType.PREDATOR_DETECTION);
@@ -89,16 +92,25 @@ public class MultipleBoidsSimulator implements Simulable {
 
         for (Boids boids_ : boidsLists) {
             for (Boid b : boids_.getlisteBoids()) {
+
                 if (b instanceof Eagle) {
-                    // Eagle chasse dans les autres boids lists
+
                     for (Boids preyGroup : boidsLists) {
-                        if (preyGroup == boids_) continue; // pas ses propres congénères
-                        ArrayList<Boid> caught = ((Eagle)b).hunt(preyGroup.getlisteBoids());
-                        toRemove.addAll(caught);
+                        if (preyGroup == boids_) continue;  // skip its own species
+
+                        // Only chase birds
+                        if (!preyGroup.getlisteBoids().isEmpty() &&
+                            preyGroup.getlisteBoids().get(0) instanceof Bird) {
+
+                            ArrayList<Boid> caught = ((Eagle)b).hunt(preyGroup.getlisteBoids());
+                            toRemove.addAll(caught);
+                        }
                     }
                 }
+
             }
         }
+
 
         // Supprimer les birds attrapés des listes et grids
         for (Boid prey : toRemove) {
@@ -141,28 +153,31 @@ public class MultipleBoidsSimulator implements Simulable {
     }
 
     private void handleBordersSteering(Boid b) {
+        /* handle border steering, boids steer away when they get close to the border,
+        Here we don't use Border Bounce as (through pure experimentation) forces like chase 
+        and fleefrompredator become too great that when combined with bounce give a weird behavior*/
         int margin = 80;       // distance from border to start steering
         double steerStrength = 0.5;
 
-        Vector_2D pos = b.getPosition();
-        Vector_2D vel = b.getVelocity();
-        Vector_2D steer = new Vector_2D();
+        Vector2D pos = b.getPosition();
+        Vector2D vel = b.getVelocity();
+        Vector2D steer = new Vector2D();
 
         // Left
         if (pos.getX() < margin) {
-            steer.add(new Vector_2D(1, 0));
+            steer.add(new Vector2D(1, 0));
         }
         // Right
         if (pos.getX() > width - margin) {
-            steer.add(new Vector_2D(-1, 0));
+            steer.add(new Vector2D(-1, 0));
         }
         // Top
         if (pos.getY() < margin) {
-            steer.add(new Vector_2D(0, 1));
+            steer.add(new Vector2D(0, 1));
         }
         // Bottom
         if (pos.getY() > height - margin) {
-            steer.add(new Vector_2D(0, -1));
+            steer.add(new Vector2D(0, -1));
         }
 
         if (!steer.isZero()) {
@@ -181,30 +196,31 @@ public class MultipleBoidsSimulator implements Simulable {
                 double x = b.getPosition().getX();
                 double y = b.getPosition().getY();
                 int size = b.getSize();
-            if (b instanceof Deer){
+            if (b instanceof Deer){ // Draw Deer as rectangles
                Rectangle rectangle = new Rectangle((int) x,(int) y,b.getColor(),b.getColor(),size);
                gui.addGraphicalElement(rectangle);
-            }else if (b instanceof Wolf){
+            }else if (b instanceof Wolf){ // Draw Wolf as rectangles
                Rectangle rectangle = new Rectangle((int) x,(int) y,b.getColor(),b.getColor(),size);
                gui.addGraphicalElement(rectangle);
             } else{
                 double orientation = b.getVelocity().heading();
-                Vector_2D tip = new Vector_2D(2*size,0);
-                Vector_2D left = new Vector_2D(-size,size);
-                Vector_2D right = new Vector_2D(-size,-size);
+                Vector2D tip = new Vector2D(2*size,0);
+                Vector2D left = new Vector2D(-size,size);
+                Vector2D right = new Vector2D(-size,-size);
 
                 tip.rotate(orientation); left.rotate(orientation); right.rotate(orientation);
-                tip.add(new Vector_2D(x,y)); left.add(new Vector_2D(x,y)); right.add(new Vector_2D(x,y));
+                tip.add(new Vector2D(x,y)); left.add(new Vector2D(x,y)); right.add(new Vector2D(x,y));
 
                 int[] xs = { (int)Math.round(tip.getX()), (int)Math.round(left.getX()), (int)Math.round(right.getX()) };
                 int[] ys = { (int)Math.round(tip.getY()), (int)Math.round(left.getY()), (int)Math.round(right.getY()) };
+                // Draw the triangle for eagles and birds
                 PolygonGraphics triangle = new PolygonGraphics(xs, ys, 3, b.getColor());
                 gui.addGraphicalElement(triangle);
             }
             }
         }
 
-        // Draw target
+        // Draw target, doen't serve much but it's here
         Oval target_oval = new Oval((int)target.getX(), (int)target.getY(), Color.GREEN, Color.GREEN, 4, 4);
         gui.addGraphicalElement(target_oval);
     }

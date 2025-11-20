@@ -8,10 +8,17 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
-import gui.GUISimulator;
+import java.util.Scanner;
 
-public class TestBirdsCohesion {
+import gui.GUISimulator;
+public class TestBirdsCohesionWithWind {
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Ask the user if they want to display the wind
+        System.out.print("Display wind? (true/false): ");
+        boolean showWind = scanner.nextBoolean();
+
         int width  = (args.length > 0) ? Integer.parseInt(args[0]) : 1000;
         int height = (args.length > 1) ? Integer.parseInt(args[1]) : 1000;
 
@@ -22,7 +29,7 @@ public class TestBirdsCohesion {
 
         // Colors for clusters of birds
         Color[] clusterColors = { Color.YELLOW, Color.CYAN, Color.MAGENTA, Color.ORANGE };
-        int cluster_n = 200; // number of birds per cluster
+        int cluster_n = 50; // number of birds per cluster
         double clusterSize = 200; // max distance from cluster center
 
         Vector2D[] clusterCenters = {
@@ -79,7 +86,11 @@ public class TestBirdsCohesion {
         Vector2D target = new Vector2D(width / 2.0, height / 2.0);
 
         // Create the simulator
-        BoidsSimulator simulator = new BoidsSimulator(gui, birds, target);
+        BoidsSimulatorWithWind simulator = new BoidsSimulatorWithWind(gui, birds, target);
+
+        simulator.setShowWind(showWind); // apply user choice
+
         gui.setSimulable(simulator);
     }
 }
+    

@@ -10,7 +10,7 @@ public class FlowFieldGenerator {
         int rows = height / resolution;
         int cols = width / resolution;
 
-        Vector_2D[][] field = new Vector_2D[rows][cols];
+        Vector2D[][] field = new Vector2D[rows][cols];
 
 
         for (int row = 0; row < rows; row++) {
@@ -22,7 +22,7 @@ public class FlowFieldGenerator {
                 // Angle of wind direction from Perlin noise
                 double angle = Perlin.noise(nx, ny, time) * Math.PI * 2.0;
 
-                Vector_2D v = new Vector_2D(Math.cos(angle), Math.sin(angle));
+                Vector2D v = new Vector2D(Math.cos(angle), Math.sin(angle));
                 v.multiply(strength);
                 field[row][col] = v;
             }

@@ -7,14 +7,14 @@ import java.util.Random;
 import main.main_Boids.Behaviors.*;
 import main.main_Boids.Boids.Boid;
 import main.main_Boids.Boidutils.Path;
-import main.main_Boids.Boidutils.Vector_2D;
+import main.main_Boids.Boidutils.Vector2D;
 
 public class Deer extends Boid{
 
     private String predator;
 
 
-    public Deer(Vector_2D position, Vector_2D velocity, Vector_2D acceleration, double speedlimit, double forceLimit, 
+    public Deer(Vector2D position, Vector2D velocity, Vector2D acceleration, double speedlimit, double forceLimit, 
                 double wander_radius, double path_radius, int boid_size, Color color, Color compassColor, 
                 double angleDistance, int windowWidth, int windowHeight){
         super(position, velocity, acceleration, speedlimit, forceLimit, wander_radius, path_radius,
@@ -25,14 +25,15 @@ public class Deer extends Boid{
         this.wander_radius = 3;
         this.initializeBehaviors(windowWidth, windowHeight);
         this.path = new Path(path_radius);
+        // Initialize a random path
         Random rand = new Random();
         for (int i = 0; i < 100; i++) {
             double x = rand.nextDouble() * windowWidth;
             double y = rand.nextDouble() * windowHeight;
-            this.path.add(new Vector_2D(x, y));
+            this.path.add(new Vector2D(x, y));
         }
 
-        this.predator = "Wolf";
+        this.predator = "Wolf"; // Wolves are the predators of Deers
                 }
 
     public void initializeBehaviors(int width, int height) {
