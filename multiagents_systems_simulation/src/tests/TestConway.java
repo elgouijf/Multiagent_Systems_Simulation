@@ -1,5 +1,5 @@
 package tests;
-import main.*;
+import main.Automate.ConwayAndImmigration.*;
 
 
 import java.awt.Color;

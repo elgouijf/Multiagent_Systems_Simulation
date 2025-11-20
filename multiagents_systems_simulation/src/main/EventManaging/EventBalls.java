@@ -1,6 +1,6 @@
 package main.EventManaging;
-import main.Balls;
-import main.BallsSimulator;
+import main.Balls.Balls;
+import main.Balls.BallsSimulator;
 
 
 public class EventBalls extends Event{

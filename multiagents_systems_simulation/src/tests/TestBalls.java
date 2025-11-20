@@ -1,5 +1,6 @@
 package tests;
-import main.*;
+import main.Balls.Balls;
+import main.Balls.BallsSimulator;
 
 import java.awt.Point;
 import java.util.ArrayList;

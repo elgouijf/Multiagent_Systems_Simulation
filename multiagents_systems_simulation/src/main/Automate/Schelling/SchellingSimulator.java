@@ -1,4 +1,4 @@
-package main;
+package main.Automate.Schelling;
 import gui.GUISimulator;
 import gui.Oval;
 import gui.Simulable;

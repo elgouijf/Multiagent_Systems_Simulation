@@ -1,4 +1,4 @@
-package main;
+package main.Automate.ConwayAndImmigration;
 
 public class ConwayAndImmigration {
     private int h , w , n ; /* height and width of the grid */

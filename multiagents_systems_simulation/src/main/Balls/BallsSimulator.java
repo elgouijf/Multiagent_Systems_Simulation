@@ -1,4 +1,4 @@
-package main;
+package main.Balls;
 import main.EventManaging.EventManager;
 import main.EventManaging.EventBalls;
 import gui.Simulable;

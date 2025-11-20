@@ -1,4 +1,4 @@
-package main;
+package main.Automate.ConwayAndImmigration;
 import gui.GUISimulator;
 import gui.Rectangle;
 import gui.Simulable;

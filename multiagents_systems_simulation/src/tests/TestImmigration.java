@@ -1,7 +1,7 @@
 package tests;
 
 import gui.GUISimulator;
-import main.ImmigrationSimulator;
+import main.Automate.ConwayAndImmigration.*;;
 
 public class TestImmigration {
     public static void main(String[] args) {

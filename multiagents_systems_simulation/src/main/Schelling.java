@@ -1,5 +1,4 @@
-package main.Automate.Schelling;
-// import java.awt.Color;
+package main;
 import java.util.*;
 
 public class Schelling {

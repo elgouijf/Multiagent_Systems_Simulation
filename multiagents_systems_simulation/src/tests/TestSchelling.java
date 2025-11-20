@@ -1,5 +1,5 @@
 package tests;
-import main.*;
+import main.Automate.Schelling.*;
 import java.awt.Color;
 import java.util.Scanner;
 import gui.GUISimulator;
