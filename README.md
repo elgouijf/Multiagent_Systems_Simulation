@@ -208,14 +208,13 @@ Les positions initiales sont générées aléatoirement.
 
     make test-TestBoids
 
-## Test Alignement / Séparation / Cohésion
+## Test Alignement / Séparation 
 
 Chaque comportement est testé séparément.
 
 **Comment exécuter :**
 
     make test-TestBoidsAlignement
-    make test-TestBoidsSeparation
     make test-TestBoidsCohesion
 
 ## Test de BoidWind
@@ -259,15 +258,15 @@ Teste la **Cohesion** des Birds
 
     make test-TestBirdCohesion
 
-## TestBirdWithWind
+## TestBirdCohesionWithWind
 
 Test le comportement des **Birds** mais avec cette fois du vent comme dans **TestBoidWithWind**
 
 **Comment exécuter :**
 
-    make test-TestBoiWithWind
+    make test-TestBirdCohesionWithWind
 
-## TestWolfDeerChase
+## TestWolfChase
 
 Deux autres classes filles de `Boid` ont été créées : `Wolf` et `Deer`.
 
@@ -298,7 +297,7 @@ Deux autres classes filles de `Boid` ont été créées : `Wolf` et `Deer`.
 
 **Comment exécuter :**
 
-    make test-TestWolfDeerChase
+    make test-TestWolfChase
 #### Gestion du temps : EventManager
 
 Les boids sont mis à jour par un gestionnaire d’événements discrets, imposé par le sujet.
