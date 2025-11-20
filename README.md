@@ -11,7 +11,7 @@ L’application s’appuie sur :
 - la librairie graphique fournie `lib/gui.jar` (classe `GUISimulator`, interface `Simulable`),
 - un **Makefile** pour compiler / exécuter facilement,
 - une architecture orientée objet (séparation modèle / vue / contrôleur, héritage, collections, etc.).
-
+**Remarque ** : Afin de tester Invader il faut revenir au repertoire de base 
 ---
 
 ## Arborescence du projet
