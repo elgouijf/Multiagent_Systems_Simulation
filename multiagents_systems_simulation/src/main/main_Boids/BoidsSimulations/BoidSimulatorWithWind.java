@@ -22,6 +22,7 @@ public class BoidSimulatorWithWind implements Simulable {
         this.gui = gui;
         this.boid = boid;
         this.target = target;
+        this.reDisplay();
     }
 
     @Override

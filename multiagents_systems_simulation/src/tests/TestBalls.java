@@ -10,7 +10,7 @@ import gui.GUISimulator;
 
 public class TestBalls {
     public static void main(String[] args) {
-        int n_points = (args.length > 0) ? Integer.parseInt(args[0]) : 8;
+        int n_points = (args.length > 0) ? Integer.parseInt(args[0]) : 20;
         int width    = (args.length > 1) ? Integer.parseInt(args[1]) : 500;
         int height   = (args.length > 2) ? Integer.parseInt(args[2]) : 500;
 

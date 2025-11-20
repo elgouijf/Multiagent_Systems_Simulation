@@ -24,7 +24,7 @@ public class ImmigrationSimulator implements Simulable  {
     
     public void reDisplay() {
     this.guiS.reset();
-    int[][] grid = this.conway.getgrid();
+    int[][] grid = this.conway.getGrid();
 
     for (int i = 0; i < h; i++) {
         for (int j = 0; j < w; j++) {
@@ -51,7 +51,7 @@ public class ImmigrationSimulator implements Simulable  {
 
     @Override
     public void next (){
-        this.conway.update_grid() ;
+        this.conway.updateGrid() ;
         this.reDisplay() ;
     }
     @Override
