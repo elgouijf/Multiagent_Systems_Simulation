@@ -1,4 +1,4 @@
-package tests;
+package tests.tests_on_automates;
 import main.Automate.ConwayAndImmigration.*;
 
 
@@ -18,7 +18,7 @@ public class TestConway {
     s[1][1] = s[1][2] = s[2][1] = s[3][2] = s[4][4] =1;
     GUISimulator guiS = new GUISimulator (width*pix , height*pix , Color.WHITE ) ;
     ConwaySimulator conwaySim = new ConwaySimulator ( height , width , s , pix , guiS ) ;
-    guiS.setSimulable (conwaySim) ;
+    guiS.setSimulable (conwaySim) ; 
 
 }
 }

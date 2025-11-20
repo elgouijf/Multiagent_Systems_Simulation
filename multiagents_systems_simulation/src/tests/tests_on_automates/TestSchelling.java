@@ -1,4 +1,4 @@
-package tests;
+package tests.tests_on_automates;
 import main.Automate.Schelling.*;
 import java.awt.Color;
 import java.util.Scanner;
