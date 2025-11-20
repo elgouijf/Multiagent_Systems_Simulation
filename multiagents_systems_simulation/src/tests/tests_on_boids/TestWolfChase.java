@@ -14,7 +14,7 @@ import gui.GUISimulator;
 
 public class TestWolfChase {
     public static void main(String[] args) {
-        
+
         int width  = (args.length > 0) ? Integer.parseInt(args[0]) : 1200;
         int height = (args.length > 1) ? Integer.parseInt(args[1]) : 800;
 
@@ -22,10 +22,9 @@ public class TestWolfChase {
         Random rand = new Random();
 
         // ==========================================================
-        // DEER HERD (40)
+        // DEER HERD
         // ==========================================================
-        ArrayList<Boid> deerList = new ArrayList<>();
-
+        ArrayList<Deer> deerList = new ArrayList<>();
         int deerN = 40;
         double deerSpeedLimit  = 5.5;
         double deerForceLimit  = 0.2;
@@ -35,15 +34,11 @@ public class TestWolfChase {
         double deerAngle       = Math.PI/8;
 
         for (int i = 0; i < deerN; i++) {
-
             Vector2D pos = new Vector2D(
                 width * 0.2 + rand.nextGaussian() * 100,
                 height * 0.5 + rand.nextGaussian() * 100
             );
-            Vector2D vel = new Vector2D(
-                rand.nextDouble()*2 - 1,
-                rand.nextDouble()*2 - 1
-            );
+            Vector2D vel = new Vector2D(rand.nextDouble()*2 - 1, rand.nextDouble()*2 - 1);
             Vector2D acc = new Vector2D(0, 0);
 
             deerList.add(new Deer(
@@ -51,20 +46,18 @@ public class TestWolfChase {
                 deerSpeedLimit, deerForceLimit,
                 deerWanderRad, deerPathRad,
                 deerSize,
-                new Color(180,140,80),      // body color
-                Color.WHITE,                // compass color (only if it is presented through ovals)
+                new Color(180,140,80), // body color
+                Color.WHITE,           // compass color
                 deerAngle,
                 width, height
             ));
         }
 
-
         // ==========================================================
-        // WOLF PACK (40)
+        // WOLF PACK
         // ==========================================================
-        ArrayList<Boid> wolfList = new ArrayList<>();
-
-        int wolfN = 40;
+        ArrayList<Wolf> wolfList = new ArrayList<>();
+        int wolfN = 40; // requirmet n_wolves > 5
         double wolfSpeedLimit = 7.5;
         double wolfForceLimit = 0.4;
         double wolfWanderRad  = 4.5;
@@ -73,15 +66,11 @@ public class TestWolfChase {
         double wolfAngle      = Math.PI/6;
 
         for (int i = 0; i < wolfN; i++) {
-
             Vector2D pos = new Vector2D(
                 width * 0.7 + rand.nextGaussian() * 120,
                 height * 0.5 + rand.nextGaussian() * 120
             );
-            Vector2D vel = new Vector2D(
-                rand.nextDouble()*3 - 1.5,
-                rand.nextDouble()*3 - 1.5
-            );
+            Vector2D vel = new Vector2D(rand.nextDouble()*3 - 1.5, rand.nextDouble()*3 - 1.5);
             Vector2D acc = new Vector2D(0, 0);
 
             wolfList.add(new Wolf(
@@ -96,73 +85,44 @@ public class TestWolfChase {
             ));
         }
 
-
         // ==========================================================
-        // GRIDS for Deer
+        // GRIDS
         // ==========================================================
         HashMap<GridType, Grid> deerGrids = new HashMap<>();
-        deerGrids.put(GridType.SEPARATION, new Grid(width, height,
-                deerList.get(0).getCloseDistance(),
-                GridType.SEPARATION
-        ));
+        deerGrids.put(GridType.SEPARATION, new Grid(width, height, deerList.get(0).getCloseDistance(), GridType.SEPARATION));
+        deerGrids.put(GridType.TOGETHER,   new Grid(width, height, deerList.get(0).getNeighborDistance(), GridType.TOGETHER));
 
-        deerGrids.put(GridType.TOGETHER, new Grid(width, height,
-                deerList.get(0).getNeighborDistance(),
-                GridType.TOGETHER
-        ));
-
-        // ==========================================================
-        // Wolves
-        // ==========================================================
         HashMap<GridType, Grid> wolfGrids = new HashMap<>();
-        wolfGrids.put(GridType.SEPARATION, new Grid(width, height,
-                wolfList.get(0).getCloseDistance(),
-                GridType.SEPARATION
-        ));
+        wolfGrids.put(GridType.SEPARATION, new Grid(width, height, wolfList.get(0).getCloseDistance(), GridType.SEPARATION));
+        wolfGrids.put(GridType.TOGETHER,   new Grid(width, height, wolfList.get(0).getNeighborDistance(), GridType.TOGETHER));
+        wolfGrids.put(GridType.PREDATOR_DETECTION, new Grid(width, height, wolfList.get(0).getpathRadius(), GridType.PREDATOR_DETECTION));
 
-        wolfGrids.put(GridType.TOGETHER, new Grid(width, height,
-                wolfList.get(0).getNeighborDistance(),
-                GridType.TOGETHER
-        ));
-
-        // Detection grid allows wolf to find deer
-        wolfGrids.put(GridType.PREDATOR_DETECTION, new Grid(width, height,
-                wolfList.get(0).getpathRadius(),
-                GridType.PREDATOR_DETECTION
-        ));
-
-        // Adding Boids to their grids for efficient neighbor search
-        for (Boid d : deerList) {
-            // Add deer to its grids
+        // Adding Deer to their grids and to wolf detection
+        for (Deer d : deerList) {
             deerGrids.get(GridType.SEPARATION).addBoid(d);
             deerGrids.get(GridType.TOGETHER).addBoid(d);
-            // Add deer to wolf detection grid to be detected by wolves
             wolfGrids.get(GridType.PREDATOR_DETECTION).addBoid(d);
         }
 
-        Boids deerHerd = new Boids(deerList, deerGrids);
-
-
-
-
-        for (Boid w : wolfList) {
-            // Add wolf to its grids
+        // Adding Wolves to their grids and to deer TOGETHER
+        for (Wolf w : wolfList) {
             wolfGrids.get(GridType.SEPARATION).addBoid(w);
             wolfGrids.get(GridType.TOGETHER).addBoid(w);
-            // Add wolf to deer neighbor grid to be detected by deer
             deerGrids.get(GridType.TOGETHER).addBoid(w);
-            
         }
 
-        Boids wolfPack = new Boids(wolfList, wolfGrids);
-
-
+        Boids deerHerd = new Boids(new ArrayList<>(deerList), deerGrids);
+        if (wolfN < 5){
+            throw new IllegalArgumentException("Number of wolves must be bigger than 5");}
         
-        // Run the SIMULATOR
+        Boids wolfPack = new Boids(new ArrayList<>(wolfList), wolfGrids);
+
+        // ==========================================================
+        // SIMULATOR
+        // ==========================================================
         ArrayList<Boids> allGroups = new ArrayList<>();
         allGroups.add(deerHerd);
         allGroups.add(wolfPack);
-
 
         MultipleBoidsSimulator sim = new MultipleBoidsSimulator(gui, allGroups);
         gui.setSimulable(sim);

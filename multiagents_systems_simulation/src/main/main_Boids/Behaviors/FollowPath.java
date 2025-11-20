@@ -22,7 +22,7 @@ public class FollowPath extends  Behavior{
     public Vector2D behave(Boid b,Grid grid){
         updatePath(b,grid);
         Vector2D force = b.followPath(forceFactor);
-        System.out.println("FollowPath force: " + force);
+        /* System.out.println("FollowPath force: " + force); */
         return force;
     }
 

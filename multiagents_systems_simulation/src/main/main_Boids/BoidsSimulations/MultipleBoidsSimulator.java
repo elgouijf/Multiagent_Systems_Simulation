@@ -10,11 +10,9 @@ import main.main_Boids.Boids.Species.Eagle;
 import main.main_Boids.Boids.Species.Wolf;
 import gui.Simulable;
 import gui.GUISimulator;
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import gui.Oval;
 import gui.Rectangle;
 
 public class MultipleBoidsSimulator implements Simulable {
@@ -66,62 +64,106 @@ public class MultipleBoidsSimulator implements Simulable {
     }
 
     public void moveBoids() {
-    
 
         for (Boids boids : boidsLists) {
             ArrayList<Boid> listeBoids = boids.getlisteBoids();
             HashMap<GridType, Grid> grids = boids.getGrids();
             
             for (Boid b : listeBoids) {
-                if (b instanceof Wolf ){  // check instance for specific behavior
-                  Wolf wolf = (Wolf) b; // Upcast to access Wolf-specific methods
-                  boolean changethePrey = wolf.changePrey();
-                  if (changethePrey){
-                    Grid grid = grids.get(GridType.PREDATOR_DETECTION);
-                    wolf.updateLeader(grid);
-                  }
+                // Wolf-specific leader update
+                if (b instanceof Wolf) {
+                    Wolf wolf = (Wolf) b;
+                    if (wolf.changePrey()) {
+                        Grid grid = grids.get(GridType.PREDATOR_DETECTION);
+                        wolf.updateLeader(grid);
+                    }
                 }
+
                 b.submittoGroupBehavior(grids, windField);
             }
 
-        // Collect all prey Boids caught by Eagles
-        ArrayList<Boid> toRemove = new ArrayList<>();
-
-        for (Boids boids2 : boidsLists) {
-            for (Boid b : boids2.getlisteBoids()) {
-
-                if (b instanceof Eagle) {
-
-                    for (Boids preyGroup : boidsLists) {
-                        if (preyGroup == boids2) continue;  // skip its own species
-
-                        // Only chase birds
-                        if (!preyGroup.getlisteBoids().isEmpty() &&
-                            preyGroup.getlisteBoids().get(0) instanceof Bird) {
-
-                            ArrayList<Boid> caught = ((Eagle)b).hunt(preyGroup.getlisteBoids());
-                            toRemove.addAll(caught);
+            // ======= Handling Eagles catching Birds =======
+            ArrayList<Boid> toRemoveBird = new ArrayList<>();
+            for (Boids boids_ : boidsLists) {
+                for (Boid b : boids_.getlisteBoids()) {
+                    if (b instanceof Eagle) {
+                        for (Boids preyGroup : boidsLists) {
+                            if (preyGroup == boids_) continue;
+                            if (!preyGroup.getlisteBoids().isEmpty() &&
+                                preyGroup.getlisteBoids().get(0) instanceof Bird) {
+                                toRemoveBird.addAll(((Eagle)b).hunt(preyGroup.getlisteBoids()));
+                            }
                         }
                     }
                 }
-
             }
-        }
 
+            // Collect all Deer caught by Wolves
+            ArrayList<Deer> toRemoveDeer = new ArrayList<>();
 
-        // Supprimer les birds attrapés des listes et grids
-        for (Boid prey : toRemove) {
-            for (Boids group : boidsLists) {
-                if (group.getlisteBoids().remove(prey)) {
-                    for (Grid grid : group.getGrids().values()) {
-                        grid.removeBoid(prey);
+            for (Boids boids_ : boidsLists) {
+                for (Boid b : boids_.getlisteBoids()) {
+                    if (b instanceof Wolf) {
+                        Wolf wolf = (Wolf) b;
+                        for (Boids preyGroup : boidsLists) {
+                            if (preyGroup == boids_) continue; // skip own pack
+
+                            // Only consider Deer as prey
+                            if (!preyGroup.getlisteBoids().isEmpty() && preyGroup.getlisteBoids().get(0) instanceof Deer) {
+                                ArrayList<Boid> caught = wolf.hunt(preyGroup.getlisteBoids());
+                                for (Boid prey : caught) {
+                                    toRemoveDeer.add((Deer) prey); // cast safely
+                                }
+                            }
+                        }
                     }
-                    break;
                 }
             }
-        }
 
-            // Update all boids
+            // Remove caught Deer from their groups and grids
+            for (Deer prey : toRemoveDeer) {
+                for (Boids group : boidsLists) {
+                    if (group.getlisteBoids().remove(prey)) {
+                        for (Grid grid : group.getGrids().values()) {
+                            grid.removeBoid(prey);
+                        }
+                        break; // Deer removed, stop searching
+                    }
+                }
+            }
+
+            //  Wolves dispersion: steer slightly if no prey nearby (exploring)
+            for (Wolf wolf : Wolf.getPack()) {
+                boolean preyNearby = false;
+                for (Boid b : boidsLists.get(0).getlisteBoids()) { // Deer group assumed at index 0
+                    if (wolf.distanceTo(b) < wolf.getpathRadius()) {
+                        preyNearby = true;
+                        break;
+                    }
+                }
+                if (!preyNearby) {
+                    // add a small random steering vector to make wolves explore
+                    Vector2D dispersion = new Vector2D(Math.random()-0.5, Math.random()-0.5);
+                    wolf.getAcceleration().add(dispersion);
+                }
+            }
+
+        
+
+
+            // Remove all caught prey (Birds or Deer) from lists and grids
+            for (Boid prey : toRemoveBird) {
+                for (Boids group : boidsLists) {
+                    if (group.getlisteBoids().remove(prey)) {
+                        for (Grid grid : group.getGrids().values()) {
+                            grid.removeBoid(prey);
+                        }
+                        break;
+                    }
+                }
+            }
+
+            // ======= Update all boids =======
             for (Boid b : listeBoids) {
                 b.updatestate();
                 for (Behavior behavior : b.getBehaviors()) {
@@ -136,6 +178,7 @@ public class MultipleBoidsSimulator implements Simulable {
 
         this.reDisplay();
     }
+
 
     @Override
     public void restart() {
@@ -157,7 +200,6 @@ public class MultipleBoidsSimulator implements Simulable {
         double steerStrength = 0.5;
 
         Vector2D pos = b.getPosition();
-        Vector2D vel = b.getVelocity();
         Vector2D steer = new Vector2D();
 
         // Left

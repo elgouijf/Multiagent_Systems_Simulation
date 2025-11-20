@@ -21,12 +21,12 @@ public class Deer extends Boid{
         this.species = "Deer";
 
         // Tries to avoid others and predators;
-        this.wanderRadius = 3;
+        this.wanderRadius = 10;
         this.initializeBehaviors(windowWidth, windowHeight);
         this.path = new Path(pathRadius);
         // Initialize a random path
         Random rand = new Random();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1000; i++) {
             double x = rand.nextDouble() * windowWidth;
             double y = rand.nextDouble() * windowHeight;
             this.path.add(new Vector2D(x, y));
@@ -39,12 +39,13 @@ public class Deer extends Boid{
         
         this.behaviors.clear();
         // they dont like being 
-        this.behaviors.add(new Separation(1, width, height, this.closeDistance * 1.5));
+        this.behaviors.add(new Alignment(1.2, width, height, this.neighborDistance));
+        this.behaviors.add(new Separation(0.5, width, height, this.closeDistance * 1.5));
 
         // strongest – survival first
         this.behaviors.add(new FleeFromPredator(3.5,Math.pow(this.neighborDistance,2)));
 
         // keeps migration direction
-        this.behaviors.add(new FollowPath(2,100.0,100));
+        this.behaviors.add(new FollowPath(6,100.0,1000));
     }      
 }
