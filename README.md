@@ -278,7 +278,7 @@ Deux autres classes filles de `Boid` ont été créées : `Wolf` et `Deer`.
 
 - Si la distance devient inférieure à `slowRadius`, ils encerclent.
 
-- Sous `killRadius`, la proie est considérée morte et un nouveau leader
+- Sous `killRadius`, la proie est considérée morte, on la supprime de l'interface graphique et un nouveau leader
   est choisi.
 
 - Le leader est mis à jour à chaque `next`.
