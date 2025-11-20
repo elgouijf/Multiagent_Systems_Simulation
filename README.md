@@ -296,7 +296,7 @@ Deux autres classes filles de `Boid` ont été créées : `Wolf` et `Deer`.
 
 **Comment exécuter :**
 
-    make test-TestWolfChase
+    make test-TestWolfChase (Il est préferable d'augmenter la vitesse d'execution du simulateur)
 #### Gestion du temps : EventManager
 
 Les boids sont mis à jour par un gestionnaire d’événements discrets, imposé par le sujet.
