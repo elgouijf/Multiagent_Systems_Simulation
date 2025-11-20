@@ -19,7 +19,7 @@ public class ConwayAndImmigration {
     }
 }
 
-    public int[] n_neighbors  (int x , int y ){ /* renvoie le nombre de voisins pour chaque etat */
+    public int[] nNeighbors  (int x , int y ){ /* renvoie le nombre de voisins pour chaque etat */
         int count[] = new int[n]  ; 
         
         for ( int i = -1 ; i<= 1 ; i++ ){
@@ -33,11 +33,11 @@ public class ConwayAndImmigration {
         return count ;
     }
 
-    public void update_grid (){ // met a jour la grille selon les regles de conway ou de l'immigration
+    public void updateGrid (){ // met a jour la grille selon les regles de conway ou de l'immigration
         int[][] newgrid = new int[h][w] ;
         for ( int i = 0 ; i < h ; i++ ){
             for ( int j = 0 ; j < w ; j++ ){
-                int[] ng = n_neighbors(i,j) ;
+                int[] ng = nNeighbors(i,j) ;
                 if (n==2){
                     if ( curgrid[i][j]==1 ){
                         if ( ng[1] == 2 || ng[1] == 3 ) newgrid[i][j] = 1 ;
@@ -59,7 +59,7 @@ public class ConwayAndImmigration {
         this.curgrid = newgrid ;
     }
 
-    public int[][] getgrid (){
+    public int[][] getGrid (){
         return this.curgrid ;
     }
     
