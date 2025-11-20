@@ -1,23 +1,17 @@
 package tests.tests_on_automates;
-
+import java.math.*;
 import gui.GUISimulator;
 import main.Automate.ConwayAndImmigration.*;;
 
 public class TestImmigration {
     public static void main(String[] args) {
-        int height = 10, width = 10, n = 4, pix = 50;
-        int[][] s = {
-            {3, 3, 0, 0, 1, 1, 1, 1, 0, 0},
-            {3, 3, 0, 0, 1, 1, 1, 1, 0, 0},
-            {3, 3, 1, 1, 1, 1, 1, 1, 2, 2},
-            {3, 3, 1, 1, 1, 1, 1, 1, 2, 2},
-            {1, 1, 1, 1, 3, 3, 2, 2, 2, 2},
-            {1, 1, 1, 1, 3, 3, 2, 2, 2, 2},
-            {0, 0, 1, 1, 2, 2, 2, 2, 2, 2},
-            {0, 0, 1, 1, 2, 2, 2, 2, 2, 2},
-            {0, 0, 3, 3, 2, 2, 2, 2, 1, 1},
-            {0, 0, 3, 3, 2, 2, 2, 2, 1, 1}
-        };
+        int height = 30, width = 30, n = 4, pix = 50;
+        int[][] s = new int[30][30];
+        for ( int i = 0 ; i < 30 ; i++ ) {
+            for ( int j = 0 ; j < 30 ; j++ ) {
+                s[i][j] = (int)(Math.random() * 4);
+            }
+        }
 
         GUISimulator gui = new GUISimulator(500, 500, java.awt.Color.WHITE);
         ImmigrationSimulator simulator = new ImmigrationSimulator(height, width, n, s, pix, gui);
