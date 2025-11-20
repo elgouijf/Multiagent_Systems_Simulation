@@ -38,8 +38,8 @@ L’application s’appuie sur :
 │       │   ├── Boids/
 │       │   │   ├── Behaviors/       # Règles : Cohésion, Alignement, Séparation, …
 │       │   │   ├── Boids/           # Classes Boid, Bird, autres espèces
-│       │   │   ├── BoidsSimulations/# Simulateurs de boids (implémentent Simulable)
-│       │   │   └── Boidutils/       # Outils : Vector_2D, Grid, FlowField, Path, …
+│       │   │   ├── BoidsSimulations/# Simulateurs de boids (Filles d'une abstract class Behavior)
+│       │   │   └── Boidutils/       # Outils : Vector2D, Grid, FlowField, Path,Arrow,GridType,Line,Perlin,ImprovedNoise,PolygonGraphics,FlowFieldDraw
 │       │   ├── EventManaging/
 │       │   │   ├── Event.java
 │       │   │   ├── EventBalls.java
@@ -140,7 +140,7 @@ Il gère :
 
 Les simulateurs (`ConwaySimulator` et `ImmigrationSimulator`) ne font que :
 - gérer l’affichage,
-- appeler `update_grid()`.
+- appeler `updateGrid()`.
 
 #### Modèle de Schelling
 
@@ -174,7 +174,7 @@ Les boids sont divisés en sous-composants :
   - Fuite / Poursuite
   - Wander, etc.
 - **Boidutils/** : outils indispensables
-  - `Vector_2D`
+  - `Vector2D`
   - `Grid` (accélération de la détection locale)
   - `FlowField` (déplacement guidé)
   - `PolygonGraphics` pour le rendu des agents
@@ -186,7 +186,7 @@ Les boids sont divisés en sous-composants :
 
 Ce test vérifie le fonctionnement du `BoidSimulator`, utilisant les
 comportements *seek* et *wander*. Le simulateur reçoit un
-`Vector_2D target` fixe sur l’écran que le Boid suit.
+`Vector2D target` fixe sur l’écran que le Boid suit.
 
 **Comment exécuter :**
 
@@ -223,8 +223,7 @@ Ce test reprend le `BoidSimulator` mais ajoute un **vent** modélisé par
 une grille de vecteurs. L’affichage peut être activé en passant `true`
 lors du lancement.
 
-Une classe `FlowField` a été créée et la méthode `FlowMov` implémentée
-pour gérer le mouvement dans le vent.
+Une classe `FlowField` a été créée pour cela. Le caractère dynamique est assuré par un modèle de Perlin et l'ajout d'un bruit.
 
 **Comment exécuter :**
 
