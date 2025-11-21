@@ -11,7 +11,7 @@ L’application s’appuie sur :
 - la librairie graphique fournie `lib/gui.jar` (classe `GUISimulator`, interface `Simulable`),
 - un **Makefile** pour compiler / exécuter facilement,
 - une architecture orientée objet (séparation modèle / vue / contrôleur, héritage, collections, etc.).
-**Remarque ** : Afin de tester Invader il faut revenir au repertoire de base 
+**Remarque ** : Afin de tester Invader, il faut revenir au repertoire de base 
 ---
 
 ## Arborescence du projet
@@ -241,7 +241,7 @@ Deux classes filles de `Boid` ont été ajoutées : `Eagle` et `Bird`.
 - Si la distance devient inférieure à `killRadius`, l’oiseau est
   considéré comme mangé et retiré de la simulation.
 
-La classe `Eagle` implémente `hunt`, enregistre et supprimame les Birds
+La classe `Eagle` implémente `hunt`, enregistre et supprime les Birds
 capturés. Le test utilise un `MultipleBoidsSimulator` gérant plusieurs
 groupes simultanément.
 
@@ -259,7 +259,7 @@ Teste la **Cohesion** des Birds
 
 ## TestBirdCohesionWithWind
 
-Test le comportement des **Birds** mais avec cette fois du vent comme dans **TestBoidWithWind**
+Teste le comportement des **Birds** mais avec cette fois du vent comme dans **TestBoidWithWind**
 
 **Comment exécuter :**
 
@@ -296,7 +296,7 @@ Deux autres classes filles de `Boid` ont été créées : `Wolf` et `Deer`.
 
 **Comment exécuter :**
 
-    make test-TestWolfChase (Il est préferable d'augmenter la vitesse d'execution du simulateur)
+    make test-TestWolfChase (Il est préférable d'augmenter la vitesse d'exécution du simulateur)
 #### Gestion du temps : EventManager
 
 Les boids sont mis à jour par un gestionnaire d’événements discrets, imposé par le sujet.
