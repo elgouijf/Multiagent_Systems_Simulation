@@ -46,15 +46,23 @@ L’application s’appuie sur :
 │       │   │   ├── EventBoids.java
 │       │   │   └── EventManager.java
 │       │   └── App.java             # Point d’entrée possible pour lancer une démo globale
-│       └── tests/
+│       └── tests/test_on_boids
+│       |   ├── TestBoid.java
+│       |   ├── TestBoidWithWind.java
+│       |   ├── TestBoids.java
+│       |   ├── TestBoidsCohesion.java
+│       |   ├── TestBoidsAlignement.java
+│       |   └── TestEagleChase.java
+│       |   └── TestBirdsCohesionWithWind.java
+│       |   └── TestBirdsCohesion.java
+│       |   └── TestWolfChase.java
+|       └── tests/test_on_automates
+│       |   ├── TestConway.java
+│       |   ├── TestImmigration.java
+│       |   ├── TestSchelling.java
+|       └── tests/
 │           ├── TestBalls.java
-│           ├── TestConway.java
-│           ├── TestImmigration.java
-│           ├── TestSchelling.java
-│           ├── TestBoid.java
-│           ├── TestBoids.java
-│           ├── TestBoidsCohesion.java
-│           └── TestBirdsCohesion.java
+
 ├── Makefile
 └── README.md
 ```
